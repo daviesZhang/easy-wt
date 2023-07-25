@@ -175,7 +175,7 @@ export class ReportComponent implements OnInit {
         {
           headerName: this.translate.instant("step.field.expression"), field: "step.expression"
         },
-        {
+        {hide: this.domLayout == "print",
           headerName: this.translate.instant("step.field.selector"), field: "step.selector",
           cellRendererParams: {renderer: true},
           cellRenderer: SelectorLocatorComponent

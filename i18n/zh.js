@@ -12,8 +12,8 @@ var lang = {
     "copy_success": "拷贝成功",
     "save": "保存",
     "confirm": "确定",
-    'close': '关闭',
-    'clear': '清空',
+    "close": "关闭",
+    "clear": "清空",
     "ask_confirm": "确定要进行这个操作吗?",
     "begin_time": "开始时间",
     "end_time": "结束时间",
@@ -55,13 +55,12 @@ var lang = {
     "reload": "重新载入",
     "close": "退出应用",
     "lang_change": {
-      "success_tip": "language is switched successfully,  reloaded to take effect.",
+      "success_tip":
+        "language is switched successfully,  reloaded to take effect.",
       "reload": "reload"
     }
   },
-  "start": {
-    "fail": "启动核心服务时出现异常~"
-  },
+  "start": { "fail": "启动核心服务时出现异常~" },
   "report": {
     "dialog_title": "导出{{type}}报告",
     "name_file": "用例报告",
@@ -69,9 +68,8 @@ var lang = {
     "exporting": "导出{{type}}文件中...",
     "export_complete": "导出完成~",
     "export_error": "导出失败,请检查相关配置~",
-
-    'disable_step': '已禁用',
-    'skip_step': '未执行',
+    "disable_step": "已禁用",
+    "skip_step": "未执行",
     "stat": {
       "title": "总计",
       "success": "成功运行",
@@ -88,20 +86,14 @@ var lang = {
       "browser_type": "浏览器类型",
       "time": "耗时(秒)",
       "total_check": "检查数",
-      'success_count': '通过数',
-      'count': '执行次数',
+      "success_count": "通过数",
+      "count": "执行次数"
     }
   },
-  "menu": {
-    "case": "测试用例",
-    "schedule": "定时调度",
-    "report": "测试报告"
-  },
+  "menu": { "case": "测试用例", "schedule": "定时调度", "report": "测试报告" },
   "run_config": {
     "tip": "成功保存后将生效配置预览(配置会自动从上级目录继承)",
-    "button": {
-      "add_params": "添加变量"
-    },
+    "button": { "add_params": "添加变量" },
     "field": {
       "step_retry": "步骤重试次数",
       "retry_suffix": "次",
@@ -125,9 +117,14 @@ var lang = {
     "delay_placeHolder": "步骤之间延迟时间",
     "add_run_pool": "正在添加用例任务~",
     "add_run_pool_success": "用例任务添加成功~",
-    "run_status": {
-      "run": "运行中",
-      "idle": "闲置中"
+    "run_status": { "run": "运行中", "idle": "闲置中" },
+    "field": {
+      "name": "名称",
+      "name_tip": "名称必须填写,且不能用以空格开头或结尾~",
+      "run_config": "运行配置",
+      "directory": "节点类型",
+      "directory_true": "目录",
+      "directory_false": "用例"
     },
     "button": {
       "add_case": "添加用例",
@@ -138,15 +135,7 @@ var lang = {
       "delete": "删除节点",
       "run": "运行用例",
       "add_step": "添加步骤",
-      "refresh": "刷新",
-      "field": {
-        "name": "名称",
-        "name_tip": "名称必须填写,且不能用以空格开头或结尾~",
-        "run_config": "运行配置",
-        "directory": "节点类型",
-        "directory_true": "目录",
-        "directory_false": "用例"
-      }
+      "refresh": "刷新"
     }
   },
   "step": {
@@ -160,7 +149,6 @@ var lang = {
       "desc": "步骤描述",
       "selector": "元素选择器",
       "type": "步骤类型"
-
     },
     "type_options": {
       "open_browser": "启动浏览器",
@@ -187,13 +175,10 @@ var lang = {
       "txt_save": "文本存储",
       "image_save": "图片存储"
     }
-
   },
   "schedule": {
     "next_time": "下次运行",
-    "button": {
-      "add_schedule": "添加定时任务"
-    },
+    "button": { "add_schedule": "添加定时任务" },
     "field": {
       "case_name": "用例/目录",
       "name": "调度名称",
@@ -207,8 +192,5 @@ var lang = {
       "last_date": "最后运行时间"
     }
   },
-
-  'step_options': {
-    'change_json': '切换为JSON模式',
-  }
+  "step_options": { "change_json": "切换为JSON模式" }
 }
