@@ -1,0 +1,112 @@
+var lang = {
+  'common': {
+    'action': '操作',
+    'enable': '启用',
+    'delete': '删除',
+    'copy': '拷贝',
+    'save': '保存',
+    'confirm': '确定',
+    'ask_confirm': '确定要进行这个操作吗?',
+    'id': 'ID',
+  },
+  'app': {
+    'setting': '应用设置',
+    'minus': '最小化',
+    'reload': '重新载入',
+    'close': '退出应用',
+    'lang_change': {
+      'success_tip': '语言切换成功,需要重新载入后生效.',
+      'reload': '重新载入',
+    },
+  },
+  'start': {
+    'fail': '启动核心服务时出现异常~',
+  },
+  'report': {
+    'name_file': '用例报告',
+    'download_ready_tip': '用例报告导出已准备就绪,请等待下载自动开始...',
+  },
+  'menu': {
+    'case': '测试用例',
+    'schedule': '定时调度',
+    'report': '测试报告',
+  },
+  'run_config': {
+    'tip': '成功保存后将生效配置预览(配置会自动从上级目录继承)',
+    'button': {
+      'add_params': '添加变量',
+    },
+    'field': {
+      'step_retry': '步骤重试次数',
+      'retry_suffix': '次',
+      'step_retry_tip': '当用例中步骤失败时,进行重试的次数',
+      'retry': '用例重试次数',
+      'retry_tip': '当用例失败时,进行重试的次数',
+      'browser_type': '测试浏览器',
+      'browser_type_tip': '需要在哪些浏览器中运行用例',
+      'browser_type_error_tip': '至少选择一个浏览器进行测试',
+      'params': {
+        'label': '运行变量',
+        'name': '名称',
+        'name_tip': '名称必须填写,且不能用以空格开头或结尾~',
+        'value': '内容',
+      },
+    },
+  },
+  'case': {
+    'empty_tip': '请选择用例~',
+    'empty_tree': '没有任何用例',
+    'delay_placeHolder': '步骤之间延迟时间',
+    'run_status': {
+      'run': '运行中',
+      'idle': '闲置中',
+    },
+    'button': {
+      'add_case': '添加用例',
+      'add_siblings_case': '添加同级节点',
+      'add_children_case': '添加下级节点',
+      'schedule': '定时运行',
+      'editor': '修改配置',
+      'delete': '删除节点',
+      'run': '运行用例',
+      'add_step': '添加步骤',
+      'refresh': '刷新',
+      'field': {
+        'name': '名称',
+        'name_tip': '名称必须填写,且不能用以空格开头或结尾~',
+        'run_config': '运行配置',
+        'directory': '节点类型',
+        'directory_true': '目录',
+        'directory_false': '用例',
+      },
+    },
+  },
+  'step': {
+    'default_name': '新增步骤',
+    'bottom_create': '插入一行',
+    'enable_tip': '启用/禁用',
+    'field': {
+      'name': '步骤名称',
+      'options': '步骤配置',
+      'expression': '内容',
+      'desc': '步骤描述',
+      'selector': '元素选择器',
+      'type': '步骤类型',
+    },
+  },
+  'schedule': {
+    'next_time': '下次运行',
+    'button': {
+      'add_schedule': '添加定时任务',
+    },
+    'field': {
+      'scriptName': '用例/目录',
+      'name': '定时任务名称',
+      'name_error_tip': '定时任务名称必须填写',
+      'cron': 'cron表达式',
+      'cron_validating': '验证中~',
+      'cron_required': 'cron表达式必须填写~',
+      'cron_format': 'cron表达式格式不正确~',
+    },
+  },
+};

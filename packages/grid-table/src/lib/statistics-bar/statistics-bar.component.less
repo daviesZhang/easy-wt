@@ -1,0 +1,36 @@
+
+.flex {
+  display: flex;
+  flex-wrap: nowrap;
+  justify-content: flex-end;
+}
+
+.row {
+  > * {
+    padding: 0 10px;
+  }
+
+  > label {
+    padding: 0 5px;
+  }
+
+  margin-bottom: 5px;
+
+  .row-value label {
+    margin-right: 10px;
+  }
+
+  .row-value .value {
+    color: #000;
+    font-weight: 600;
+    font-size: 12px;
+  }
+
+  .shadow-divider-right:last-child {
+    box-shadow: none;
+  }
+}
+
+.row:last-child {
+  margin-bottom: 0;
+}

@@ -1,0 +1,9 @@
+<button nzType="primary" nzSize="small" nz-button (click)="onRefresh()">
+  <i [nzSpin]="refresh" nz-icon nzType="sync" nzTheme="outline"></i>
+  <span *ngIf="!refresh">{{'autoRefresh'|gridTableI18n}}</span>
+</button>
+<nz-progress (click)="onRefresh()" nzStrokeLinecap="square" class="progress" *ngIf="refresh"
+             [nzSteps]="3"
+             [nzShowInfo]="false"
+             nzStrokeColor="#1890ff"
+             [nzPercent]="percent$ | async"></nz-progress>

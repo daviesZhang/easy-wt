@@ -1,0 +1,52 @@
+.grid-table.grid {
+  .ag-status-bar {
+    border-bottom: 0;
+    box-shadow: inset 0 -1px 0 0 #BDC3C7;
+  }
+
+  .cell-text-right {
+    display: flex;
+    justify-content: flex-end;
+  }
+
+
+}
+
+.grid-table.grid:not(.has-status-bar) {
+  .ag-status-bar {
+    border-top: none;
+  }
+}
+
+
+.grid-table.grid-footer {
+  .ag-status-bar {
+    display: none;
+  }
+
+  .ag-root {
+    border-top: none !important;
+
+    .ag-header {
+      display: none;
+    }
+
+
+    .ag-body-viewport {
+      overflow-y: hidden !important;
+
+      .ag-row:first-child {
+        border-top: none;
+      }
+
+      .ag-row:last-child {
+        border-bottom: none;
+      }
+    }
+  }
+}
+
+
+.grid-batch-delete .batch-delete-text {
+  margin-top: -8px;
+}

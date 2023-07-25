@@ -1,0 +1,76 @@
+<div class="grid-table grid-buttons" *ngIf="topButton">
+  <div class="left">
+    <ng-container *ngIf="topButton.left" [ngTemplateOutlet]="topButton.left"></ng-container>
+  </div>
+  <div class="center">
+    <ng-container *ngIf="topButton.center" [ngTemplateOutlet]="topButton.center"></ng-container>
+  </div>
+  <div class="right">
+    <ng-container *ngIf="topButton.right" [ngTemplateOutlet]="topButton.right"></ng-container>
+  </div>
+</div>
+<ag-grid-angular
+  [class]="gridTheme"
+  [gridOptions]="gridOptions"
+  [ngClass]="gridTableClass"
+  [ngStyle]="gridTableStyle"
+  class="grid-table grid"
+></ag-grid-angular>
+
+
+<div *ngIf="!suppressGridStatisticsBar&&columnApi&&statistics&&statistics.length"
+     class="statistics-bar flex flex-grow-0 flex-shrink-1 justify-end  flex-wrap ">
+  <easy-wt-statistics-bar [api]="api" [columnApi]="columnApi"
+                          [statistics]="statistics"></easy-wt-statistics-bar>
+</div>
+<div *ngIf="showFooter" class="footer flex flex-grow-0 flex-shrink-1 space-between  flex-wrap flex-middle">
+  <div *ngIf="showFooterAction" class="action">
+    <!--            导出-->
+    <button (nzOnConfirm)="exportAllPageData()" *ngIf="showFooterAction.export"
+            [disabled]="(!!total)&&dataLoading"
+            [nzLoading]="progressPercent>0&&progressPercent<100"
+            [nzPopconfirmTitle]="'export'|gridTableI18n"
+            nz-button nz-popconfirm nzSize="small" nzType="primary">
+      <i nz-icon nzTheme="outline" nzType="file-excel"></i>{{'export'|gridTableI18n}}</button>
+    <!--            自动刷新-->
+    <easy-wt-refresh-button *ngIf="showFooterAction.autoRefresh" [refreshFunc]="autoRefresh"
+                            [time]="refreshInterval"></easy-wt-refresh-button>
+  </div>
+  <nz-pagination (nzPageIndexChange)="onPageIndexChange($event)"
+                 (nzPageSizeChange)="onPageSizeChange($event)"
+                 *ngIf="gridTablePagination&&options.rowModelType!=='serverSide'"
+                 [(nzPageIndex)]="currentPage"
+                 [nzHideOnSinglePage]="false"
+                 [nzPageSizeOptions]="gridTablePagination.pageSizeOptions!"
+                 [nzPageSize]="this.currentPageSize"
+                 [nzShowQuickJumper]="gridTablePagination['showQuickJumper']"
+                 [nzShowSizeChanger]="gridTablePagination['showSizeChanger']"
+                 [nzShowTotal]="gridTablePagination.showTotal===undefined?rangeTemplate:gridTablePagination['showTotal']!"
+                 [nzSize]="gridTablePagination['size']"
+                 [nzTotal]="total"
+                 class="pagination"
+  >
+    <ng-template #rangeTemplate let-range="range" let-total>
+      <ng-container *ngIf="total">
+        {{'paginationTotal'|gridTableI18n:{'begin': range[0], 'end': range[1], 'total': total}:''}}
+      </ng-container>
+    </ng-template>
+
+
+  </nz-pagination>
+</div>
+
+
+<nz-modal [(nzVisible)]="showProgress" [nzClosable]="false" [nzFooter]="undefined"
+          [nzMaskClosable]="false">
+  <nz-progress [nzPercent]="progressPercent"></nz-progress>
+</nz-modal>
+
+
+<ng-template #deleteContent>
+  <div class="batch-delete-text">
+    {{'deleteConfirm'|gridTableI18n:{'number': selectedNodes.length}:''}}
+  </div>
+  <nz-progress *ngIf="progressPercent>0" [nzPercent]="progressPercent" [nzStatus]="progressStatus"></nz-progress>
+</ng-template>
+

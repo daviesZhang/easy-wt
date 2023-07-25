@@ -1,0 +1,209 @@
+<easy-wt-menu-bar-control
+  *ngIf="windowName"
+  [show]="{close:true}"
+  [windowName]="windowName"
+  class="menu-bar">
+
+</easy-wt-menu-bar-control>
+<ng-container *ngIf="report else loading">
+  <div [ngClass]="{'electron':windowName,'body':true}">
+
+    <div class="site-page-header-ghost-wrapper">
+      <nz-page-header [nzGhost]="false">
+        <nz-page-header-title>{{report.name}}</nz-page-header-title>
+        <nz-page-header-subtitle>{{report.casePath}}</nz-page-header-subtitle>
+        <nz-page-header-tags>
+          <nz-tag nzColor="yellow">{{report.browserType}}</nz-tag>
+          <nz-tag *ngIf="report.success" nzColor="green">通过</nz-tag>
+          <nz-tag *ngIf="!report.success" nzColor="red">未通过</nz-tag>
+        </nz-page-header-tags>
+        <nz-page-header-extra *ngIf="domLayout!=='print'&&windowName">
+          <nz-space>
+            <button (click)="exportHTML()" *nzSpaceItem nz-button nzType="primary">导出网页</button>
+            <button (click)="exportPDF()" *nzSpaceItem nz-button nzType="primary">导出PDF</button>
+
+          </nz-space>
+        </nz-page-header-extra>
+        <nz-page-header-content>
+          <div class="content">
+            <div class="main">
+              <nz-descriptions [nzColumn]="2" nzSize="small">
+                <nz-descriptions-item [nzSpan]="1"
+                                      nzTitle="开始时间">{{report.beginTime|date:'yyyy-MM-dd HH:mm:ss'}}</nz-descriptions-item>
+                <nz-descriptions-item [nzSpan]="1"
+                                      nzTitle="结束时间">{{report.endTime|date:'yyyy-MM-dd HH:mm:ss'}}</nz-descriptions-item>
+                <nz-descriptions-item [nzSpan]="1"
+                                      nzTitle="检查点">{{report.totalCheck}}</nz-descriptions-item>
+                <nz-descriptions-item [nzSpan]="1"
+                                      nzTitle="通过数">{{report.successCount}}</nz-descriptions-item>
+
+              </nz-descriptions>
+            </div>
+            <div class="extra">
+              <div>
+                <nz-statistic [nzValue]="(report.endTime-report.beginTime)/1000 | number:'1.2-2'"
+                              nzSuffix="s"
+                              nzTitle="耗时"></nz-statistic>
+                <nz-statistic *ngIf="report.totalCheck"
+                              [nzValue]="report.successCount/report.totalCheck |percent:'1.2-2'"
+                              nzTitle="检查点成功率"
+                              style="margin: 0 32px"></nz-statistic>
+                <nz-statistic *ngIf="!report.totalCheck" [nzValue]="1 |percent:'1.2-2'"
+                              nzTitle="检查点成功率"
+                              style="margin: 0 32px"></nz-statistic>
+
+              </div>
+            </div>
+          </div>
+        </nz-page-header-content>
+      </nz-page-header>
+
+    </div>
+    <div class="detail">
+      <easy-wt-grid-table (gridReady)="onGridReady($event)"
+                          [getData]="getData"
+                          [initLoadData]="true"
+                          [options]="options" [showFooter]="false" [topButton]="{left,right}"
+                          class="grid-table">
+
+        <ng-template #left>
+          <nz-tag *ngIf="domLayout!=='print'" nzColor="#55acee">用例尝试执行了 {{report.runCount}} 次</nz-tag>
+
+          <div *ngIf="domLayout==='print'">
+            <a>用例尝试执行了 {{report.runCount}} 次</a>
+          </div>
+        </ng-template>
+        <
+        <ng-template #right>
+
+
+        </ng-template>
+      </easy-wt-grid-table>
+
+
+      <nz-modal (nzOnCancel)="onVideoClose()"
+                [nzBodyStyle]="{padding:'1px'}"
+                [nzCloseIcon]="null"
+                [nzMaskClosable]="false"
+                [nzOkText]="null"
+                [nzStyle]="{top:'50px'}"
+                [nzTitle]="null"
+                [nzVisible]="!!video"
+                [nzWidth]="'fit-content'"
+                nzCancelText="关闭">
+        <ng-container *nzModalContent>
+          <div
+            (nzResize)="onResize($event)"
+            [style.height.px]="videoHeight"
+            [style.width.px]="videoWidth"
+            class="box"
+            nz-resizable
+          >
+            <nz-resize-handles></nz-resize-handles>
+            <vg-player>
+              <vg-overlay-play></vg-overlay-play>
+              <vg-buffering></vg-buffering>
+              <vg-scrub-bar>
+                <vg-scrub-bar-current-time></vg-scrub-bar-current-time>
+                <vg-scrub-bar-buffering-time></vg-scrub-bar-buffering-time>
+              </vg-scrub-bar>
+              <vg-controls>
+                <vg-play-pause></vg-play-pause>
+                <vg-playback-button></vg-playback-button>
+                <vg-time-display vgFormat="mm:ss" vgProperty="current"></vg-time-display>
+                <vg-scrub-bar style="pointer-events: none;"></vg-scrub-bar>
+                <vg-time-display vgFormat="mm:ss" vgProperty="left"></vg-time-display>
+                <vg-time-display vgFormat="mm:ss" vgProperty="total"></vg-time-display>
+
+                <vg-mute></vg-mute>
+                <vg-volume></vg-volume>
+                <vg-fullscreen></vg-fullscreen>
+              </vg-controls>
+              <video #media [vgMedia]="$any(media)" crossorigin id="singleVideo" preload="auto">
+                <source *ngIf="video" [src]="video" type="video/webm">
+              </video>
+            </vg-player>
+          </div>
+        </ng-container>
+      </nz-modal>
+
+
+      <nz-collapse *ngIf="images" class="collapse">
+        <nz-collapse-panel
+          *ngFor="let img of images"
+          [nzActive]="img.active"
+          [nzExtra]="extraTpl"
+          [nzHeader]="header"
+          class="image-panel"
+        >
+          <ng-template #extraTpl>
+
+          </ng-template>
+          <ng-template #header>
+            <nz-tag>步骤名称:{{img.step.name}}</nz-tag>
+            <nz-tag> 步骤类型:{{img.type}}</nz-tag>
+          </ng-template>
+
+          <ng-container
+            *ngComponentOutlet="img.component;injector:createInjector(img.params)"></ng-container>
+          <pre *ngIf="img.data.message">信息:{{img.data.message}}</pre>
+          <div (click)="showImages(img.src)" class="image">
+            <img [alt]="img.step.name" [src]="img.src" height="200px"/>
+          </div>
+        </nz-collapse-panel>
+      </nz-collapse>
+
+
+    </div>
+  </div>
+</ng-container>
+
+<ng-template #loading>
+  <nz-spin>
+
+  </nz-spin>
+</ng-template>
+<ng-template #rowButtonTemplate let-node let-params="params">
+
+  <ng-container *ngIf="hasImage(node.data);">
+    <nz-tag (click)="showImages(node.data.data['screenshot'])" *ngIf="domLayout!=='print'" class="tag-button"
+            nzColor="#FF9800">
+      <span nz-icon nzType="file-image"></span>
+      <span>{{params.value}}</span>
+    </nz-tag>
+    <div *ngIf="domLayout==='print'">
+      {{params.value}
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="node.data&&node.data.data&&node.data.data['video'];">
+    <nz-tag (click)="playVideo(node.data)" *ngIf="domLayout!=='print'" class="tag-button" nzColor="#607D8B">
+      <span nz-icon nzType="video-camera"></span>
+      <span>{{params.value}}</span>
+    </nz-tag>
+    <div *ngIf="domLayout==='print'">
+      {{params.value}
+    </div>
+  </ng-container>
+
+  <ng-container *ngIf="!node.data||!node.data.data||(!node.data.data['screenshot']&&!node.data.data['video'])">
+    {{params.value}}
+  </ng-container>
+</ng-template>
+
+
+<ng-template #resultTemplate let-node let-params='params'>
+  <span *ngIf="node.data&&node.data.data&&node.data.data.message;else stringResultTemplate"
+        [nzPopoverContent]="errorContent"
+        nz-popover nzPopoverTitle="步骤信息">{{params.valueFormatted}}</span>
+
+  <ng-template #errorContent>
+    <div style="max-width: 300px;max-height: 200px;overflow-y: auto;">{{node.data.data.message}}</div>
+  </ng-template>
+  <ng-template #stringResultTemplate>
+    <span>{{params.valueFormatted}}</span>
+  </ng-template>
+</ng-template>
+
+
+
