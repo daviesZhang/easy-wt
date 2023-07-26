@@ -232,6 +232,7 @@ export class ReportComponent implements OnInit {
           hide: this.domLayout === 'print',
           headerName: this.translate.instant('step.field.options'),
           field: 'step.options',
+          valueFormatter: null,
           cellRendererParams: { renderer: true },
           cellRendererSelector: (params) =>
             optionsComponentSelector(params.data.step.type),
