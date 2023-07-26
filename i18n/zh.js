@@ -1,3 +1,5 @@
+import { InputTextOptionsComponent } from "../packages/ui-shared/src"
+
 var lang = {
   "common": {
     "action": "操作",
@@ -13,6 +15,7 @@ var lang = {
     "save": "保存",
     "confirm": "确定",
     "close": "关闭",
+    "cancel": "取消",
     "clear": "清空",
     "ask_confirm": "确定要进行这个操作吗?",
     "begin_time": "开始时间",
@@ -192,5 +195,43 @@ var lang = {
       "last_date": "最后运行时间"
     }
   },
-  "step_options": { "change_json": "切换为JSON模式" }
+  "step_options": {
+    "change_json": "切换为JSON模式",
+    "editor_options_title": "编辑配置",
+    "timeout_label": "超时时间",
+    "timeout": "超时{{timeout}}ms",
+    "alwaysScreenshot_true": "始终截图",
+    "alwaysScreenshot_false": "仅失败截图",
+    "alwaysScreenshot_label": "检查通过时截图(默认仅失败截图)",
+    "screenshot_options": {
+      "area": "截图区域",
+      "element_true": "截图元素内容",
+      "full_page_true": "整页截图",
+      "full_page_false": "可视部分"
+    },
+    "check_element_exist": {
+      "exist_label": "检查存在",
+      "exist_true": "要求元素存在",
+      "exist_false": "要求元素不存在"
+    },
+    "check_element_text": {
+      "pattern_label": "匹配模式"
+    },
+    "click_element": {
+      "click_count_label": "单击次数",
+      "click_count_placeHolder": "每次单击间的延迟",
+      "delay_label": "单击延迟",
+      "delay_placeHolder": "单击延迟",
+      "click_count": "单击{{count}}次",
+      "delay": "单击延迟{{delay}}ms"
+    },
+    "click_link": {
+      "switch_page": "切换到新页面",
+      "switch_page_label": "完成后切换到新页面",
+      "timeout_tip": "打开链接的超时时间"
+    },
+    "input_text": {
+      "force": "绕过可操作性检查"
+    }
+  }
 }
