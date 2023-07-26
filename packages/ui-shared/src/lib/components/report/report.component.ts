@@ -167,10 +167,9 @@ export class ReportComponent implements OnInit {
       });
     };
     this.domLayout = this.forPDF ? 'print' : 'autoHeight';
+
     this.options = {
       getRowId: (params) => params.data.step.id.toString(),
-      domLayout: this.domLayout,
-
       columnDefs: [
         {
           headerName: this.translate.instant('step.field.name'),
@@ -179,6 +178,7 @@ export class ReportComponent implements OnInit {
           cellRendererParams: {
             ngTemplate: this.rowButtonTemplate,
           },
+
           onCellDoubleClicked: (event) => {
             if (this.hasImage(event.node.data)) {
               this.showImages(event.node.data.data.screenshot);
@@ -229,7 +229,7 @@ export class ReportComponent implements OnInit {
         },
 
         {
-          hide: this.domLayout == 'print',
+          hide: this.domLayout === 'print',
           headerName: this.translate.instant('step.field.options'),
           field: 'step.options',
           cellRendererParams: { renderer: true },
@@ -304,11 +304,7 @@ export class ReportComponent implements OnInit {
   }
 
   mediaProtocol(path: string) {
-    if (
-      !path.startsWith('http') &&
-      !path.startsWith('//') &&
-      !path.startsWith('./')
-    ) {
+    if (path.startsWith('/') && !path.startsWith('//')) {
       return `file://${path}`;
     }
     return path;

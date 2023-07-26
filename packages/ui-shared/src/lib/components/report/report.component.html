@@ -6,7 +6,7 @@
 
 </easy-wt-menu-bar-control>
 <ng-container *ngIf="report else loading">
-  <div [ngClass]="{'electron':windowName,'body':true}">
+  <div [ngClass]="{'electron':windowName,'body':!forPDF}">
 
     <div class="site-page-header-ghost-wrapper">
       <nz-page-header [nzGhost]="false">
@@ -64,14 +64,12 @@
                           [getData]="getData"
                           [initLoadData]="true"
                           [options]="options" [showFooter]="false" [topButton]="{left,right}"
-                          class="grid-table">
+                          class="report-grid-table">
 
         <ng-template #left>
-          <nz-tag *ngIf="domLayout!=='print'" nzColor="#55acee">用例尝试执行了 {{report.runCount}} 次</nz-tag>
+          <nz-tag nzColor="#55acee">用例尝试执行了 {{report.runCount}} 次</nz-tag>
 
-          <div *ngIf="domLayout==='print'">
-            <a>用例尝试执行了 {{report.runCount}} 次</a>
-          </div>
+
         </ng-template>
         <
         <ng-template #right>
@@ -166,24 +164,20 @@
 <ng-template #rowButtonTemplate let-node let-params="params">
 
   <ng-container *ngIf="hasImage(node.data);">
-    <nz-tag (click)="showImages(node.data.data['screenshot'])" *ngIf="domLayout!=='print'" class="tag-button"
+    <nz-tag (click)="showImages(node.data.data['screenshot'])" class="tag-button"
             nzColor="#FF9800">
       <span nz-icon nzType="file-image"></span>
       <span>{{params.value}}</span>
     </nz-tag>
-    <div *ngIf="domLayout==='print'">
-      {{params.value}}
-    </div>
+
   </ng-container>
 
   <ng-container *ngIf="node.data&&node.data.data&&node.data.data['video'];">
-    <nz-tag (click)="playVideo(node.data)" *ngIf="domLayout!=='print'" class="tag-button" nzColor="#607D8B">
+    <nz-tag (click)="playVideo(node.data)" class="tag-button" nzColor="#607D8B">
       <span nz-icon nzType="video-camera"></span>
       <span>{{params.value}}</span>
     </nz-tag>
-    <div *ngIf="domLayout==='print'">
-      {{params.value}}
-    </div>
+
   </ng-container>
 
   <ng-container *ngIf="!node.data||!node.data.data||(!node.data.data['screenshot']&&!node.data.data['video'])">

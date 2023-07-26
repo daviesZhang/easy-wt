@@ -1,14 +1,3 @@
 {
-  "singleQuote": true,
-  "overrides": [
-    {
-      "files": "i18n/*.js",
-      "options": {
-        "singleQuote": false,
-        "quoteProps": "preserve",
-        "trailingComma": "none",
-        "semi": false
-      }
-    }
-    ]
+  "singleQuote": true
 }
