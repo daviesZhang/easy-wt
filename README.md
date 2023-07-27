@@ -1,6 +1,14 @@
 # Easy-Web-Test
 
-基于[playwright](https://playwright.dev/)的一个简单WEB自动化测试工具
+基于[playwright](https://playwright.dev/)的一个WEB自动化测试工具
+
+
+
+![home](./doc/images/home.jpg)
+![report](./doc/images/report.jpg)
+![example](./doc/images/example.gif)
+
+## 特性和亮点
 
 * 用例管理
 * 并发执行
@@ -11,9 +19,19 @@
 * 多数据库支持 `sqlite`  `mysql`
 * 多浏览器支持 `chrome` `edge` `firefox` `safari`
 
-![home](./doc/images/home.jpg)
-![report](./doc/images/report.jpg)
-![example](./doc/images/example.gif)
+### 其他常规功能
+
+* 多页面切换测试
+* 全页面截图,可见区域截图,指定元素截图
+* 录制测试过程
+* 用例失败重试
+* 步骤失败重试
+* 导出详细的HTML报告和PDF报告
+* 无需任何浏览器驱动,指定浏览器执行文件路径即可
+* 无需编程 Excel式的用例编写过程
+* 执行进度实时展示
+* 支持步骤循环执行
+* 支持分支判断
 
 ## 使用
 
