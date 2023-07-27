@@ -7,9 +7,9 @@
 * 定时执行
 * 用例执行报告
 * 服务端部署
-* 多平台客户端支持(`windows`,`mac`,`linux`)
-* 多数据库支持(`sqlite`, `mysql`)
-* 多浏览器支持(`chrome`,`edge`,`firefox`,`safari`)
+* 多平台客户端支持 `windows` `mac` `linux`
+* 多数据库支持 `sqlite`  `mysql`
+* 多浏览器支持 `chrome` `edge` `firefox` `safari`
 
 ![home](./doc/images/home.jpg)
 ![report](./doc/images/report.jpg)
@@ -55,7 +55,6 @@ npm run server:dev
 #### 桌面端
 
 自动根据当前环境打包桌面端安装包,windows下构建exe,mac os构建dmg
-ffmpeg -i video.mp4 -s 640x400 -f gif output.gif
 
 ```npm
 npm run desktop:production
