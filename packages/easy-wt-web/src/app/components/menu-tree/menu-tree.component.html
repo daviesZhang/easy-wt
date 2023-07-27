@@ -53,7 +53,7 @@
     <ng-template #contentTpl>
         <span>
           {{"case.empty_tree"|translate}}&nbsp;&nbsp;
-          <a (click)="createNode()">{{"case.button.add_case"|translate}}</a>
+          <a (click)="onCaseImport(null,false)">{{"case.button.import"|translate}}</a>
         </span>
     </ng-template>
     <ng-template #footerTpl>

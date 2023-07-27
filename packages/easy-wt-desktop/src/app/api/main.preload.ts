@@ -4,23 +4,23 @@ import {
   CaseEvent,
   EnvironmentConfig,
   ISchedule,
-  IScriptCase,
   QueryParams,
   Report,
   RunConfig,
-  ScriptCase,
   StatReport,
   Step,
 } from '@easy-wt/common';
 import * as path from 'path';
 
 import {ReportService, ScriptCaseService, StepService,} from '@easy-wt/database-core';
-import {DAVIE_NAME_LIST, ReportExportService} from '@easy-wt/browser-core';
+import {ReportExportService} from '@easy-wt/browser-core';
 
 import {v4 as uuidv4} from 'uuid';
 import {environment} from '../../environments/environment';
 import {CasePoolService, easyWTCore, ReportHelpService, ScheduleTaskService,} from '@easy-wt/easy-wt-core';
 import {LoggerService} from '@nestjs/common/services/logger.service';
+import {sendLogger} from './expose';
+import {ExposeCaseService} from './case.preload';
 
 /**
  * 获取环境配置文件路径
@@ -28,10 +28,6 @@ import {LoggerService} from '@nestjs/common/services/logger.service';
 async function getEnvFilePath(): Promise<string> {
   const userDataPath = await ipcRenderer.invoke('get-path', ['userData']);
   return path.join(userDataPath, 'environment.env');
-}
-
-function sendLogger(level: string, message: string, label?: string) {
-  ipcRenderer.send('logger', [level, message, label]);
 }
 
 class Logger implements LoggerService {
@@ -103,7 +99,7 @@ async function createCoreService(environmentConfig: EnvironmentConfig) {
     ): void => {
       casePoolService.eventEmitter.off(eventName, listener);
     },
-    deviceDescriptors: () => DAVIE_NAME_LIST,
+
     exportPDF: async (
       report: Report,
       savePath: string,
@@ -150,62 +146,10 @@ async function createCoreService(environmentConfig: EnvironmentConfig) {
   const reportService = module.get(ReportService);
   const reportHelpService = module.get(ReportHelpService);
 
-  contextBridge.exposeInMainWorld('scriptCaseService', {
-    findAll: () => scriptCaseService.findAll(),
-    findById: (id: number) => scriptCaseService.findById(id),
-    save: (item: ScriptCase) => scriptCaseService.save(item),
-    update: (id: number, item: ScriptCase) =>
-      scriptCaseService.update(id, item),
-    findCasesById: (categoryId: number) =>
-      scriptCaseService.findCasesById(categoryId),
-    findDescendantsById: (categoryId: number) =>
-      scriptCaseService.findDescendantsById(categoryId),
-    findTrees: () => scriptCaseService.findTrees(),
-    copyCase: (id: number) => scriptCaseService.copyCase(id),
-    findRoots: () => scriptCaseService.findRoots(),
-    findAncestorsTree: (id: number) => scriptCaseService.findAncestorsTree(id),
-    delete: (id: number): Promise<number[]> => scriptCaseService.delete(id),
-
-    exportCase: async (
-      id: number,
-      savePath: string,
-      parentTree: boolean
-    ): Promise<void> => {
-      const parent = await scriptCaseService.findAncestorsTree(id);
-      const scriptCase = await scriptCaseService.findDescendantTreeById(id);
-      parent.children = scriptCase.children;
-      if (!parentTree) {
-        parent.parent = null;
-        parent.parentId = null;
-      }
-      await fs.writeJSON(savePath, parent, {
-        replacer: (key, value) => {
-          if (key === 'id' || key === 'caseId' || key === 'parentId') {
-            return null;
-          }
-          return value;
-        },
-      });
-    },
-    importCase: async (
-      id: number | null,
-      filePath: string
-    ): Promise<IScriptCase> => {
-      let scriptCase: IScriptCase;
-      try {
-        scriptCase = (await fs.readJSON(filePath)) as IScriptCase;
-      } catch (e) {
-        sendLogger('error', e.message);
-        return Promise.reject(new Error('case.import.file_error'));
-      }
-      try {
-        return await scriptCaseService.saveTree(scriptCase, id);
-      } catch (e) {
-        sendLogger('error', e.message);
-        return Promise.reject(new Error('case.import.file_error'));
-      }
-    },
-  });
+  contextBridge.exposeInMainWorld(
+    'scriptCaseService',
+    new ExposeCaseService(scriptCaseService).expose()
+  );
   contextBridge.exposeInMainWorld('stepService', {
     findAll: () => stepService.findAll(),
     findById: (id: number) => stepService.findById(id),

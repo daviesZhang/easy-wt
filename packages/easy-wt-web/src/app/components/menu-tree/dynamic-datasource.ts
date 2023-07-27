@@ -172,6 +172,13 @@ export class DynamicDatasource<T> implements DataSource<FlatNode> {
   }
 
   /**
+   * 节点是否展开过
+   * @param node
+   */
+  childrenLoaded(node: FlatNode) {
+    return this.childrenLoadedSet.has(node);
+  }
+  /**
    * 根据ID获取节点
    * @param id
    */

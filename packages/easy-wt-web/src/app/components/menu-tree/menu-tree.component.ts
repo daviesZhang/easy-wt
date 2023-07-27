@@ -47,6 +47,8 @@ import { NzDrawerModule } from 'ng-zorro-antd/drawer';
 import { DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
+const CASE_FILE_SUFFIX = '.et';
+
 @Component({
   selector: 'easy-wt-menu-tree',
   standalone: true,
@@ -326,17 +328,17 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     if (typeof contextNode.parentId === 'number') {
       parent = this.dataSource.getNode(contextNode.parentId);
     }
-    this.forEachTree([result], parent);
+    this.updateTreeData([result], parent);
     this.message.remove(messageId);
     this.message.success(this.translate.instant('common.copy_success'));
   }
 
-  forEachTree(tree: IScriptCase[], parent: FlatNode) {
+  updateTreeData(tree: IScriptCase[], parent: FlatNode) {
     this.dataSource.addFullNode(tree, parent);
     for (const scriptCase of tree) {
       if (scriptCase.children && scriptCase.children.length) {
         const parent = this.dataSource.getNode(scriptCase.id);
-        this.forEachTree(scriptCase.children, parent);
+        this.updateTreeData(scriptCase.children, parent);
       }
     }
   }
@@ -349,8 +351,8 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     if (!filePath) {
       return null;
     }
-    if (!filePath.endsWith('.et')) {
-      filePath = `${filePath}.et`;
+    if (!filePath.endsWith(CASE_FILE_SUFFIX)) {
+      filePath = `${filePath}${CASE_FILE_SUFFIX}`;
     }
     await window.scriptCaseService.exportCase(
       contextNode.id,
@@ -362,30 +364,50 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     );
   }
 
-  async onCaseImport(contextNode: FlatNode, siblings: boolean) {
+  /**
+   * 导入用例
+   * @param contextNode 当前选中的节点
+   * @param siblings 是否导入为兄弟节点
+   */
+  async onCaseImport(contextNode: FlatNode | null, siblings: boolean) {
     const filePath = await window.electron.showOpenDialog({
       title: this.translate.instant('common.open_file'),
       properties: ['openFile', 'treatPackageAsDirectory'],
-      filters: { extensions: ['et'] },
+      filters: { extensions: [CASE_FILE_SUFFIX] },
     });
     if (filePath && filePath.length) {
-      const caseFile = filePath[0];
-      try {
-        const result = await window.scriptCaseService.importCase(
-          siblings ? contextNode.parentId : contextNode.id,
-          caseFile
-        );
-        let parent = null;
+      return;
+    }
+    const caseFile = filePath[0];
+    let parentId = null;
+    if (contextNode !== null) {
+      parentId = siblings ? contextNode.parentId : contextNode.id;
+    }
+    try {
+      const result = await window.scriptCaseService.importCase(
+        parentId,
+        caseFile
+      );
+      if (!this.dataSource.getData().length) {
+        //还没有任何一条用例时,直接刷新根节点树
+        await this.refreshTree();
+      } else {
         if (!siblings) {
-          parent = contextNode;
+          //载入作为当前节点的下级时,如果当前节点还没有展开过,无需处理
+          // 等待用户手动展开节点时发起请求查询下级节点列表
+          // 如果用户已经展开过节点,更新节点树
+          if (this.dataSource.childrenLoaded(contextNode)) {
+            this.updateTreeData([result], contextNode);
+          }
         } else if (typeof contextNode.parentId === 'number') {
-          parent = this.dataSource.getNode(contextNode.parentId);
+          //如果载入作为同级节点,并且非顶级节点,则更新节点树
+          const parent = this.dataSource.getNode(contextNode.parentId);
+          this.updateTreeData([result], parent);
         }
-        this.forEachTree([result], parent);
-        this.message.success(this.translate.instant('case.import.success'));
-      } catch (e) {
-        this.message.error(this.translate.instant(e.message));
       }
+      this.message.success(this.translate.instant('case.import.success'));
+    } catch (e) {
+      this.message.error(this.translate.instant(e.message));
     }
   }
 }

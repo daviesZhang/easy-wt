@@ -164,7 +164,6 @@ export class ScriptCaseService {
 
     getParent(scriptCase);
     getChildren(scriptCase.children || []);
-    console.log(scriptCases);
     const saved = await this.dataSource.transaction(async (manager) => {
       let root: ScriptCaseEntity;
       for (let i = 0; i < scriptCases.length; i++) {
