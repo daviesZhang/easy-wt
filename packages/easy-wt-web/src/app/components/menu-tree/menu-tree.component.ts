@@ -347,6 +347,12 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     let filePath = await window.electron.showSaveDialog({
       title: this.translate.instant('case.export.dialog_title'),
       properties: ['createDirectory'],
+      filters: [
+        {
+          name: 'Easy WT Case',
+          extensions: [CASE_FILE_SUFFIX.substring(1)],
+        },
+      ],
     });
     if (!filePath) {
       return null;
@@ -373,7 +379,12 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     const filePath = await window.electron.showOpenDialog({
       title: this.translate.instant('common.open_file'),
       properties: ['openFile', 'treatPackageAsDirectory'],
-      filters: { extensions: [CASE_FILE_SUFFIX] },
+      filters: [
+        {
+          name: 'Easy WT Case',
+          extensions: [CASE_FILE_SUFFIX.substring(1)],
+        },
+      ],
     });
     if (filePath && filePath.length) {
       return;
