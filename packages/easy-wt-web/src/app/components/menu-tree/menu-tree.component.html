@@ -4,40 +4,43 @@
                              [nzDirectoryTree]="true"
                              [nzTreeControl]="treeControl"
                              class="tree">
-  <nz-tree-node
-    (click)="nodeClick(node)"
-    (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node; when: hasChild" class="node-row"
-    nzTreeNodePadding>
-    <nz-tree-node-toggle *ngIf="!node.loading">
-      <span nz-icon nzType="caret-down" nzTreeNodeToggleRotateIcon></span>
-    </nz-tree-node-toggle>
-    <nz-tree-node-toggle *ngIf="node.loading" nzTreeNodeNoopToggle>
-      <span nz-icon nzTreeNodeToggleActiveIcon nzType="loading"></span>
-    </nz-tree-node-toggle>
+    <nz-tree-node
+
+            (click)="nodeClick(node)"
+            (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node; when: hasChild" class="node-row"
+            nzTreeNodePadding>
+        <nz-tree-node-toggle *ngIf="!node.loading">
+            <span nz-icon nzTreeNodeToggleRotateIcon nzType="caret-down"></span>
+        </nz-tree-node-toggle>
+        <nz-tree-node-toggle *ngIf="node.loading" nzTreeNodeNoopToggle>
+            <span nz-icon nzTreeNodeToggleActiveIcon nzType="loading"></span>
+        </nz-tree-node-toggle>
 
 
-    <nz-tree-node-option
-      [nzSelected]="selectListSelection.isSelected(node)"
-    >
-      <span nz-icon [nzType]="treeControl.isExpanded(node) ? 'folder-open' : 'folder'" nzTheme="outline"></span>
-      {{ node.label }}
-    </nz-tree-node-option>
-  </nz-tree-node>
-  <nz-tree-node
-    (click)="nodeClick(node)"
-    (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node;" class="node-row" nzTreeNodePadding>
-    <nz-tree-node-toggle nzTreeNodeNoopToggle></nz-tree-node-toggle>
-    <nz-tree-node-option
-      [nzSelected]="selectListSelection.isSelected(node)"
-      class="tree-node-option"
-    >
-      <span *ngIf="running[node.id];else file" [nzSpin]="true" nz-icon nzTheme="outline" nzType="sync"></span>
-      <ng-template #file>
-        <span nz-icon nzTheme="outline" nzType="file"></span>
-      </ng-template>
-      {{ node.label }}
-    </nz-tree-node-option>
-  </nz-tree-node>
+        <nz-tree-node-option
+                [nzSelected]="selectListSelection.isSelected(node)"
+        >
+            <span [nzType]="treeControl.isExpanded(node) ? 'folder-open' : 'folder'" nz-icon nzTheme="outline"></span>
+            {{ node.label }}
+        </nz-tree-node-option>
+    </nz-tree-node>
+    <nz-tree-node
+
+            (click)="nodeClick(node)"
+            (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node;" class="node-row"
+            nzTreeNodePadding>
+        <nz-tree-node-toggle nzTreeNodeNoopToggle></nz-tree-node-toggle>
+        <nz-tree-node-option
+                [nzSelected]="selectListSelection.isSelected(node)"
+                class="tree-node-option"
+        >
+            <span *ngIf="running[node.id];else file" [nzSpin]="true" nz-icon nzTheme="outline" nzType="sync"></span>
+            <ng-template #file>
+                <span nz-icon nzTheme="outline" nzType="file"></span>
+            </ng-template>
+            {{ node.label }}
+        </nz-tree-node-option>
+    </nz-tree-node>
 
 
 </nz-tree-virtual-scroll-view>
@@ -47,68 +50,95 @@
           [nzNotFoundFooter]="footerTpl"
           class="empty"
 >
-  <ng-template #contentTpl>
+    <ng-template #contentTpl>
         <span>
           {{"case.empty_tree"|translate}}&nbsp;&nbsp;
           <a (click)="createNode()">{{"case.button.add_case"|translate}}</a>
         </span>
-  </ng-template>
-  <ng-template #footerTpl>
-    <button (click)="createNode()" nz-button nzType="primary">{{"case.button.add_case"|translate}}</button>
-  </ng-template>
+    </ng-template>
+    <ng-template #footerTpl>
+        <button (click)="createNode()" nz-button nzType="primary">{{"case.button.add_case"|translate}}</button>
+    </ng-template>
 </nz-empty>
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul class="case-buttons" nz-menu>
-    <li (click)="createNode(contextNode,true)" *ngIf="contextNode" nz-menu-item>
+    <ul class="case-buttons" nz-menu>
+        <li (click)="createNode(contextNode,true)" *ngIf="contextNode" nz-menu-item>
       <span nz-icon>
        <svg><path
-         d="M384 704c17.066667 0 32-14.933333 32-32v-128h128c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32h-128v-128c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v128h-128c-17.066667 0-32 14.933333-32 32s14.933333 32 32 32h128v128c0 17.066667 14.933333 32 32 32z"
-         fill="#212121" p-id="12527"></path><path
-         d="M938.666667 53.333333H682.666667c-17.066667 0-32 14.933333-32 32v106.666667h-554.666667C78.933333 192 64 206.933333 64 224v576c0 17.066667 14.933333 32 32 32H640v96c0 17.066667 14.933333 32 32 32h256c17.066667 0 32-14.933333 32-32v-256c0-17.066667-14.933333-32-32-32h-256c-17.066667 0-32 14.933333-32 32V768H128V256h522.666667v85.333333c0 17.066667 14.933333 32 32 32h256c17.066667 0 32-14.933333 32-32V85.333333c0-17.066667-14.933333-32-32-32z m-32 256h-192v-192h192v192z"
-         fill="#212121" p-id="12528"></path></svg>
+               d="M384 704c17.066667 0 32-14.933333 32-32v-128h128c17.066667 0 32-14.933333 32-32s-14.933333-32-32-32h-128v-128c0-17.066667-14.933333-32-32-32s-32 14.933333-32 32v128h-128c-17.066667 0-32 14.933333-32 32s14.933333 32 32 32h128v128c0 17.066667 14.933333 32 32 32z"
+               fill="#212121" p-id="12527"></path><path
+               d="M938.666667 53.333333H682.666667c-17.066667 0-32 14.933333-32 32v106.666667h-554.666667C78.933333 192 64 206.933333 64 224v576c0 17.066667 14.933333 32 32 32H640v96c0 17.066667 14.933333 32 32 32h256c17.066667 0 32-14.933333 32-32v-256c0-17.066667-14.933333-32-32-32h-256c-17.066667 0-32 14.933333-32 32V768H128V256h522.666667v85.333333c0 17.066667 14.933333 32 32 32h256c17.066667 0 32-14.933333 32-32V85.333333c0-17.066667-14.933333-32-32-32z m-32 256h-192v-192h192v192z"
+               fill="#212121" p-id="12528"></path></svg>
       </span>  {{"case.button.add_siblings_case"|translate}}
-    </li>
-    <li (click)="createNode(contextNode,false)" *ngIf="contextNode&&contextNode.expandable" nz-menu-item>
+        </li>
+        <li (click)="createNode(contextNode,false)" *ngIf="contextNode&&contextNode.expandable" nz-menu-item>
       <span nz-icon>
         <svg><path
-          d="M980.4 546.1c10.9-11.4 10.9-29.9 0-41.3l-26.3-27.5c-10.9-11.4-28.5-11.4-39.4 0l-32.8 34.5 65.7 68.8 32.8-34.5zM935.3 594.9L869.7 526 691.3 711.8l65.5 68.8zM743.5 793.5l-65-68.3-39.9 111.9z"
-          p-id="9319"></path><path
-          d="M982 848.5c-19.3 0-35 15.7-35 35v40.9H379V653.7h191c19.3 0 35-15.7 35-35s-15.7-35-35-35H344c-19.3 0-35 15.7-35 35V754H189V370.3h427.8c32 0 58-26 58-58V87.5c0-32-25.9-58-58-58H65c-32 0-58 26-58 58v224.8c0 32 26 58 58 58h54V785c0 15.3 9.8 28.3 23.5 33 5.6 3.8 12.3 6 19.5 6h147v135.4c0 19.3 15.7 35 35 35h638c19.3 0 35-15.7 35-35v-75.9c0-19.3-15.7-35-35-35zM77 99.5h527.8v200.8H77V99.5z"
-          p-id="9320"></path></svg>
+                d="M980.4 546.1c10.9-11.4 10.9-29.9 0-41.3l-26.3-27.5c-10.9-11.4-28.5-11.4-39.4 0l-32.8 34.5 65.7 68.8 32.8-34.5zM935.3 594.9L869.7 526 691.3 711.8l65.5 68.8zM743.5 793.5l-65-68.3-39.9 111.9z"
+                p-id="9319"></path><path
+                d="M982 848.5c-19.3 0-35 15.7-35 35v40.9H379V653.7h191c19.3 0 35-15.7 35-35s-15.7-35-35-35H344c-19.3 0-35 15.7-35 35V754H189V370.3h427.8c32 0 58-26 58-58V87.5c0-32-25.9-58-58-58H65c-32 0-58 26-58 58v224.8c0 32 26 58 58 58h54V785c0 15.3 9.8 28.3 23.5 33 5.6 3.8 12.3 6 19.5 6h147v135.4c0 19.3 15.7 35 35 35h638c19.3 0 35-15.7 35-35v-75.9c0-19.3-15.7-35-35-35zM77 99.5h527.8v200.8H77V99.5z"
+                p-id="9320"></path></svg>
       </span>{{"case.button.add_children_case"|translate}}
-    </li>
-    <li nz-menu-divider></li>
-    <li (click)="run(contextNode)" nz-menu-item>
-      <span nz-icon nzTheme="outline" nzType="play-circle"></span>
-      {{"case.button.run"|translate}}
-    </li>
-    <li (click)="onScheduleCase(contextNode)" nz-menu-item>
-      <span nz-icon nzTheme="outline" nzType="field-time"></span>
-      {{"case.button.schedule"|translate}}
-    </li>
-    <li nz-menu-divider></li>
-    <li (click)="updateNode(contextNode)" nz-menu-item>
+        </li>
+        <li nz-menu-divider></li>
+        <li (click)="run(contextNode)" nz-menu-item>
+            <span nz-icon nzTheme="outline" nzType="play-circle"></span>
+            {{"case.button.run"|translate}}
+        </li>
+        <li (click)="onScheduleCase(contextNode)" nz-menu-item>
+            <span nz-icon nzTheme="outline" nzType="field-time"></span>
+            {{"case.button.schedule"|translate}}
+        </li>
+        <li nz-menu-divider></li>
+        <li (click)="updateNode(contextNode)" nz-menu-item>
 
  <span nz-icon>
       <svg><path
-        d="M993.760151 704.386146l-41.03394 12.784554c1.179682 8.863611 2.455338 17.504282 2.455338 26.654816 0 9.05456-1.434613 17.854188-2.805244 26.52585l41.383846 12.880529c9.692388 2.806244 17.854188 9.373474 22.572915 18.237084 4.686737 8.863611 5.642479 19.257809 2.422348 28.822232-6.663204 19.703689-28.5663 30.351819-49.066775 24.03952l-41.862717-12.976502a207.334117 207.334117 0 0 1-32.169329 43.265338l25.538116 33.731909a36.378195 36.378195 0 0 1-8.60768 52.159941 39.88525 39.88525 0 0 1-54.42533-8.225783l-25.665083-33.890865a217.951255 217.951255 0 0 1-52.733786 17.089393v41.128915c0 20.595449-17.472291 37.39792-38.929508 37.39792-21.552191 0-38.99249-16.706497-38.99249-37.39892v-41.128914a217.759307 217.759307 0 0 1-52.765778-17.088394l-25.602099 33.890865a40.172172 40.172172 0 0 1-54.455323 8.225783 36.155255 36.155255 0 0 1-8.576688-52.159941l25.793048-34.050823a201.084801 201.084801 0 0 1-33.285029-42.691493l-40.905975 12.785554c-20.596449 6.440264-42.499545-4.335831-49.099766-24.039521a36.920049 36.920049 0 0 1 24.964272-47.059316l41.064931-12.720571c-1.147691-8.83162-2.519321-17.600256-2.519321-26.686807 0-9.181525 1.499596-17.854188 2.839235-26.652816l-41.416837-12.817546c-20.564457-6.440264-31.659467-27.482593-24.963271-47.123298 6.598222-19.607715 28.502318-30.287836 49.098766-24.00753l41.829726 13.040485a211.000129 211.000129 0 0 1 32.170329-43.360313l-25.506126-33.636933a36.442178 36.442178 0 0 1 8.576689-52.191933 39.949232 39.949232 0 0 1 54.455322 8.289766l25.633091 33.890865a214.412209 214.412209 0 0 1 52.734787-17.120386v-41.128914c0-20.62844 17.408308-37.39892 38.99249-37.39892 21.489208 0 38.960499 16.642514 38.960499 37.39892v41.064932a216.675599 216.675599 0 0 1 52.702795 17.152377l25.665082-33.922857a40.109189 40.109189 0 0 1 54.424331-8.289766c17.344325 12.179717 21.265268 35.485436 8.640671 52.223924l-25.825039 34.018831c12.720571 12.91252 24.358435 26.97273 33.349011 42.595519l40.873984-12.656588c20.532466-6.313298 42.403571 4.398814 49.066775 24.070512 6.759178 19.608715-4.52678 40.651043-24.995263 47.059316zM740.928297 613.13774c-75.306702 0-136.426229 58.600205-136.426229 130.78275 0 72.246527 61.119526 130.719767 136.426229 130.719767 75.211728 0 136.363246-58.47324 136.363246-130.719767 0-72.182545-61.056543-130.78275-136.363246-130.78275z"
-        p-id="5503"></path><path
-        d="M441.708946 895.428654H99.640144a49.736594 49.736594 0 0 1-49.768586-49.769586V99.570163c0-27.451601 22.285993-49.769586 49.768586-49.769586h447.698331v223.849666a99.50618 99.50618 0 0 0 99.50618 99.50618h198.948377v36.441178a322.016207 322.016207 0 0 1 49.768586 32.011372V348.286126l-8.799628-8.767637 1.529588-8.799628L581.324315 0.095974H99.671136A99.50618 99.50618 0 0 0 0.164956 99.602154V845.722051a99.50618 99.50618 0 0 0 99.50618 99.50618h390.34079a322.876975 322.876975 0 0 1-48.301981-49.800577z"
-        p-id="5504"></path><path
-        d="M597.107061 91.12144l217.758307 232.265397H646.843655a49.736594 49.736594 0 0 1-49.769585-49.736594V91.12144h0.031991zM174.276027 422.893017H422.99399v-49.736594H174.277027v49.736594zM422.99399 223.880657H174.277027v49.769586H422.99399V223.879657zM174.277027 743.857507H422.99399v-49.737594H174.277027v49.736594z m339.838403-198.980368h-339.838403v49.736594h339.838403v-49.736594z"
-        p-id="5505"></path></svg>
+              d="M993.760151 704.386146l-41.03394 12.784554c1.179682 8.863611 2.455338 17.504282 2.455338 26.654816 0 9.05456-1.434613 17.854188-2.805244 26.52585l41.383846 12.880529c9.692388 2.806244 17.854188 9.373474 22.572915 18.237084 4.686737 8.863611 5.642479 19.257809 2.422348 28.822232-6.663204 19.703689-28.5663 30.351819-49.066775 24.03952l-41.862717-12.976502a207.334117 207.334117 0 0 1-32.169329 43.265338l25.538116 33.731909a36.378195 36.378195 0 0 1-8.60768 52.159941 39.88525 39.88525 0 0 1-54.42533-8.225783l-25.665083-33.890865a217.951255 217.951255 0 0 1-52.733786 17.089393v41.128915c0 20.595449-17.472291 37.39792-38.929508 37.39792-21.552191 0-38.99249-16.706497-38.99249-37.39892v-41.128914a217.759307 217.759307 0 0 1-52.765778-17.088394l-25.602099 33.890865a40.172172 40.172172 0 0 1-54.455323 8.225783 36.155255 36.155255 0 0 1-8.576688-52.159941l25.793048-34.050823a201.084801 201.084801 0 0 1-33.285029-42.691493l-40.905975 12.785554c-20.596449 6.440264-42.499545-4.335831-49.099766-24.039521a36.920049 36.920049 0 0 1 24.964272-47.059316l41.064931-12.720571c-1.147691-8.83162-2.519321-17.600256-2.519321-26.686807 0-9.181525 1.499596-17.854188 2.839235-26.652816l-41.416837-12.817546c-20.564457-6.440264-31.659467-27.482593-24.963271-47.123298 6.598222-19.607715 28.502318-30.287836 49.098766-24.00753l41.829726 13.040485a211.000129 211.000129 0 0 1 32.170329-43.360313l-25.506126-33.636933a36.442178 36.442178 0 0 1 8.576689-52.191933 39.949232 39.949232 0 0 1 54.455322 8.289766l25.633091 33.890865a214.412209 214.412209 0 0 1 52.734787-17.120386v-41.128914c0-20.62844 17.408308-37.39892 38.99249-37.39892 21.489208 0 38.960499 16.642514 38.960499 37.39892v41.064932a216.675599 216.675599 0 0 1 52.702795 17.152377l25.665082-33.922857a40.109189 40.109189 0 0 1 54.424331-8.289766c17.344325 12.179717 21.265268 35.485436 8.640671 52.223924l-25.825039 34.018831c12.720571 12.91252 24.358435 26.97273 33.349011 42.595519l40.873984-12.656588c20.532466-6.313298 42.403571 4.398814 49.066775 24.070512 6.759178 19.608715-4.52678 40.651043-24.995263 47.059316zM740.928297 613.13774c-75.306702 0-136.426229 58.600205-136.426229 130.78275 0 72.246527 61.119526 130.719767 136.426229 130.719767 75.211728 0 136.363246-58.47324 136.363246-130.719767 0-72.182545-61.056543-130.78275-136.363246-130.78275z"
+              p-id="5503"></path><path
+              d="M441.708946 895.428654H99.640144a49.736594 49.736594 0 0 1-49.768586-49.769586V99.570163c0-27.451601 22.285993-49.769586 49.768586-49.769586h447.698331v223.849666a99.50618 99.50618 0 0 0 99.50618 99.50618h198.948377v36.441178a322.016207 322.016207 0 0 1 49.768586 32.011372V348.286126l-8.799628-8.767637 1.529588-8.799628L581.324315 0.095974H99.671136A99.50618 99.50618 0 0 0 0.164956 99.602154V845.722051a99.50618 99.50618 0 0 0 99.50618 99.50618h390.34079a322.876975 322.876975 0 0 1-48.301981-49.800577z"
+              p-id="5504"></path><path
+              d="M597.107061 91.12144l217.758307 232.265397H646.843655a49.736594 49.736594 0 0 1-49.769585-49.736594V91.12144h0.031991zM174.276027 422.893017H422.99399v-49.736594H174.277027v49.736594zM422.99399 223.880657H174.277027v49.769586H422.99399V223.879657zM174.277027 743.857507H422.99399v-49.737594H174.277027v49.736594z m339.838403-198.980368h-339.838403v49.736594h339.838403v-49.736594z"
+              p-id="5505"></path></svg>
      </span>
-      {{"case.button.editor"|translate}}
-    </li>
-    <li (click)="copyNode(contextNode)" nz-menu-item>
-      <span nz-icon nzTheme="outline" nzType="copy"></span>
-      {{"common.copy"|translate}}</li>
-    <li nz-menu-divider></li>
-    <li (click)="deleteConfirm(contextNode)" nz-menu-item>
-      <span nz-icon nzTheme="outline" nzType="delete"></span>
-      {{"case.button.delete"|translate}}
-    </li>
-  </ul>
+            {{"case.button.editor"|translate}}
+        </li>
+        <li (click)="copyNode(contextNode)" nz-menu-item>
+            <span nz-icon nzTheme="outline" nzType="copy"></span>
+            {{"common.copy"|translate}}</li>
+
+        <li *ngIf="!isBrowser" [nzTitle]="exportTitle" nz-submenu>
+            <ng-template #exportTitle>
+                <span nz-icon nzTheme="outline" nzType="export"></span>
+                {{'case.button.export'|translate}}
+            </ng-template>
+            <ul>
+                <li (click)="exportCase(contextNode,true)" [nzDisabled]="contextNode&&contextNode.level===0"
+                    nz-menu-item>{{'case.button.export_parent_true'|translate}}</li>
+                <li (click)="exportCase(contextNode,false)"
+                    nz-menu-item>{{'case.button.export_parent_false'|translate}} </li>
+            </ul>
+        </li>
+        <li *ngIf="!isBrowser" [nzTitle]="importTitle" nz-submenu>
+            <ng-template #importTitle>
+                <span nz-icon nzTheme="outline" nzType="import"></span>  {{'case.button.import'|translate}}
+            </ng-template>
+            <ul>
+                <li (click)="onCaseImport(contextNode,false)" [nzDisabled]="contextNode&&!contextNode.expandable"
+                    nz-menu-item>{{'case.button.import_siblings_false'|translate}} </li>
+                <li (click)="onCaseImport(contextNode,true)"
+                    nz-menu-item>{{'case.button.import_siblings_true'|translate}}</li>
+
+            </ul>
+        </li>
+        <li nz-menu-divider></li>
+
+
+        <li (click)="deleteConfirm(contextNode)" nz-menu-item>
+            <span nz-icon nzTheme="outline" nzType="delete"></span>
+            {{"case.button.delete"|translate}}
+        </li>
+    </ul>
 </nz-dropdown-menu>
 
 

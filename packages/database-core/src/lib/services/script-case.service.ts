@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, TreeRepository } from 'typeorm';
 import { IScriptCase, ScriptCase } from '@easy-wt/common';
-import { ScriptCaseEntity, StepEntity } from '../entitys';
+import { RunConfigEntity, ScriptCaseEntity, StepEntity } from '../entitys';
 
 @Injectable()
 export class ScriptCaseService {
@@ -47,8 +47,21 @@ export class ScriptCaseService {
     return await this.caseTreeRepository.findBy({ parentId: id });
   }
 
-  update(id: number, data: IScriptCase): Promise<string> {
-    return this.caseTreeRepository.update(id, data).then((next) => next.raw);
+  /**
+   * 找到他的所有下级树
+   * @param id
+   */
+  findDescendantTreeById(id: number): Promise<IScriptCase> {
+    const scriptCase = new ScriptCase();
+    scriptCase.id = id;
+    return this.caseTreeRepository.findDescendantsTree({ id } as ScriptCase, {
+      relations: ['runConfig', 'steps'],
+    });
+  }
+
+  async update(id: number, data: IScriptCase): Promise<string> {
+    const next = await this.caseTreeRepository.update(id, data);
+    return await next.raw;
   }
 
   async findTrees(): Promise<IScriptCase[]> {
@@ -79,12 +92,10 @@ export class ScriptCaseService {
       where: { id },
       relations: ['runConfig', 'steps'],
     });
-
     const tree = await this.caseTreeRepository.findDescendantsTree(
       categoryEntity,
       { relations: ['runConfig', 'steps'] }
     );
-
     const saved = await this.dataSource.transaction(async (manager) => {
       async function saveRoot(node: ScriptCase, parentId: number) {
         const newNode = Object.assign({}, node, {
@@ -126,7 +137,62 @@ export class ScriptCaseService {
 
       return await saveRoot(tree, tree.parentId);
     });
+    return this.caseTreeRepository.findDescendantsTree(saved);
+  }
 
+  async saveTree(
+    scriptCase: IScriptCase,
+    parentId: number | null
+  ): Promise<IScriptCase> {
+    let scriptCases: Array<IScriptCase> = [];
+
+    function getParent(scriptCase: IScriptCase) {
+      scriptCases = [scriptCase, ...scriptCases];
+      if (scriptCase.parent) {
+        getParent(scriptCase.parent);
+      }
+    }
+
+    function getChildren(scriptCaseList: IScriptCase[]) {
+      for (const scriptCase of scriptCaseList) {
+        scriptCases = [...scriptCases, scriptCase];
+        if (scriptCase.children && scriptCase.children.length) {
+          getChildren(scriptCase.children);
+        }
+      }
+    }
+
+    getParent(scriptCase);
+    getChildren(scriptCase.children || []);
+    console.log(scriptCases);
+    const saved = await this.dataSource.transaction(async (manager) => {
+      let root: ScriptCaseEntity;
+      for (let i = 0; i < scriptCases.length; i++) {
+        const parent = scriptCases[i];
+        if (parentId !== null) {
+          parent.parent = { id: parentId } as IScriptCase;
+          parent.parentId = parentId;
+        }
+        const { steps, runConfig, children, ...other } = parent;
+        const saved = await manager.save(ScriptCaseEntity, other);
+        if (i === 0) {
+          root = saved;
+        }
+        const id = saved.id;
+        if (other.directory) {
+          parentId = id;
+        } else if (steps && steps.length) {
+          steps.forEach((step) => Object.assign(step, { caseId: id }));
+          await manager.save(StepEntity, steps);
+        }
+
+        if (runConfig) {
+          runConfig.caseId = id;
+          await manager.save(RunConfigEntity, runConfig);
+        }
+      }
+      return root;
+    });
     return this.caseTreeRepository.findDescendantsTree(saved);
   }
 

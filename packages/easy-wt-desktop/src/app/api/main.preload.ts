@@ -1,9 +1,10 @@
-import { contextBridge, ipcRenderer } from 'electron';
+import {contextBridge, ipcRenderer} from 'electron';
 import * as fs from 'fs-extra';
 import {
   CaseEvent,
   EnvironmentConfig,
   ISchedule,
+  IScriptCase,
   QueryParams,
   Report,
   RunConfig,
@@ -13,22 +14,13 @@ import {
 } from '@easy-wt/common';
 import * as path from 'path';
 
-import {
-  ReportService,
-  ScriptCaseService,
-  StepService,
-} from '@easy-wt/database-core';
-import { DAVIE_NAME_LIST, ReportExportService } from '@easy-wt/browser-core';
+import {ReportService, ScriptCaseService, StepService,} from '@easy-wt/database-core';
+import {DAVIE_NAME_LIST, ReportExportService} from '@easy-wt/browser-core';
 
-import { v4 as uuidv4 } from 'uuid';
-import { environment } from '../../environments/environment';
-import {
-  CasePoolService,
-  easyWTCore,
-  ReportHelpService,
-  ScheduleTaskService,
-} from '@easy-wt/easy-wt-core';
-import { LoggerService } from '@nestjs/common/services/logger.service';
+import {v4 as uuidv4} from 'uuid';
+import {environment} from '../../environments/environment';
+import {CasePoolService, easyWTCore, ReportHelpService, ScheduleTaskService,} from '@easy-wt/easy-wt-core';
+import {LoggerService} from '@nestjs/common/services/logger.service';
 
 /**
  * 获取环境配置文件路径
@@ -173,6 +165,46 @@ async function createCoreService(environmentConfig: EnvironmentConfig) {
     findRoots: () => scriptCaseService.findRoots(),
     findAncestorsTree: (id: number) => scriptCaseService.findAncestorsTree(id),
     delete: (id: number): Promise<number[]> => scriptCaseService.delete(id),
+
+    exportCase: async (
+      id: number,
+      savePath: string,
+      parentTree: boolean
+    ): Promise<void> => {
+      const parent = await scriptCaseService.findAncestorsTree(id);
+      const scriptCase = await scriptCaseService.findDescendantTreeById(id);
+      parent.children = scriptCase.children;
+      if (!parentTree) {
+        parent.parent = null;
+        parent.parentId = null;
+      }
+      await fs.writeJSON(savePath, parent, {
+        replacer: (key, value) => {
+          if (key === 'id' || key === 'caseId' || key === 'parentId') {
+            return null;
+          }
+          return value;
+        },
+      });
+    },
+    importCase: async (
+      id: number | null,
+      filePath: string
+    ): Promise<IScriptCase> => {
+      let scriptCase: IScriptCase;
+      try {
+        scriptCase = (await fs.readJSON(filePath)) as IScriptCase;
+      } catch (e) {
+        sendLogger('error', e.message);
+        return Promise.reject(new Error('case.import.file_error'));
+      }
+      try {
+        return await scriptCaseService.saveTree(scriptCase, id);
+      } catch (e) {
+        sendLogger('error', e.message);
+        return Promise.reject(new Error('case.import.file_error'));
+      }
+    },
   });
   contextBridge.exposeInMainWorld('stepService', {
     findAll: () => stepService.findAll(),

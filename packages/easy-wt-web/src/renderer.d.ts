@@ -97,6 +97,12 @@ export interface ScriptCaseService {
   findRoots: () => Promise<IScriptCase[]>;
   findAncestorsTree: (id: number) => Promise<IScriptCase>;
   delete: (id: number) => Promise<number[]>;
+  exportCase: (
+    id: number,
+    savePath: string,
+    parentTree: boolean
+  ) => Promise<void>;
+  importCase: (id: number | null, filePath: string) => Promise<IScriptCase>;
 }
 
 export interface StepService {

@@ -1,6 +1,6 @@
-import { IStep } from './step';
-import { StepResult, StepResultData } from './common';
-import { IScriptCase, RunConfig } from './script-case';
+import {IStep} from './step';
+import {StepResult, StepResultData} from './common';
+import {IScriptCase, RunConfig} from './script-case';
 
 /**
  * 返回成功
@@ -117,45 +117,24 @@ export function margeRunConfig(
  * @param timestamp 对于时间是否转换为时间戳,或根据传入时间格式转换
  * @param removeEmpty 是否移除空参数
  */
-export function transformParams(
-  params: { [key: string]: any } = {},
-  timestamp: boolean,
-  removeEmpty = true
-): {} {
+export function transformParams(params: { [key: string]: any } = {}): unknown {
   params = { ...params };
-  Object.values(params)
-    .filter(
-      (value) =>
-        !Array.isArray(value) &&
-        typeof value === 'object' &&
-        Object.keys(value).length >= 1
-    )
-    .forEach((value) => Object.assign({}, params, value));
-  // @ts-ignore
   return Object.keys(params)
     .map((key) => {
       let value = params[key];
       if (
-        !Array.isArray(value) &&
-        typeof value === 'object' &&
-        Object.keys(value).length >= 1
+        value === null ||
+        value === undefined ||
+        (typeof value === 'string' && !value.trim()) ||
+        (Array.isArray(value) && !value.length)
       ) {
         return null;
       }
-      if (removeEmpty) {
-        if (
-          value === null ||
-          value === undefined ||
-          (typeof value === 'string' && !value.trim()) ||
-          (Array.isArray(value) && !value.length)
-        ) {
-          return null;
-        }
+      if (typeof value === 'object' && Object.keys(value).length >= 1) {
+        return { [key]: transformParams(value) };
       }
       if (value instanceof Date) {
-        if (timestamp) {
-          value = value.getTime();
-        }
+        value = value.getTime();
       } else if (typeof value === 'string') {
         value = value.trim();
       }

@@ -113,9 +113,9 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     ]),
   });
 
-  modalBodyMaxHight: string;
+  modalBodyMaxHeight: string;
 
-  modalTopHight = 65;
+  modalTopHeight = 65;
 
   constructor(
     private fb: FormBuilder,
@@ -132,7 +132,7 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     /**
      * 145=modalHeader+modalFooter+ space
      */
-    this.modalBodyMaxHight = `${height - this.modalTopHight - 145}px`;
+    this.modalBodyMaxHeight = `${height - this.modalTopHeight - 145}px`;
   }
 
   hasChild = (_: number, node: FlatNode): boolean => node.expandable;
@@ -226,11 +226,11 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     this.modal.create({
       nzTitle: this.translate.instant('case.button.add_case'),
       nzWidth: '90%',
-      nzStyle: { top: `${this.modalTopHight}px` },
+      nzStyle: { top: `${this.modalTopHeight}px` },
       nzClassName: 'case-editor-modal',
       nzMaskClosable: false,
       nzContent: CaseEditorComponent,
-      nzBodyStyle: { maxHeight: this.modalBodyMaxHight },
+      nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
       nzData: {
         caseId: node ? node.id : null,
         siblings: siblings,
@@ -260,8 +260,8 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
       nzTitle: this.translate.instant('case.button.editor'),
       nzWidth: '90%',
       nzMaskClosable: false,
-      nzStyle: { top: `${this.modalTopHight}px` },
-      nzBodyStyle: { maxHeight: this.modalBodyMaxHight },
+      nzStyle: { top: `${this.modalTopHeight}px` },
+      nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
       nzClassName: 'case-editor-modal',
       nzContent: CaseEditorComponent,
       nzData: {
@@ -337,6 +337,54 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
       if (scriptCase.children && scriptCase.children.length) {
         const parent = this.dataSource.getNode(scriptCase.id);
         this.forEachTree(scriptCase.children, parent);
+      }
+    }
+  }
+
+  async exportCase(contextNode: FlatNode, parentTree: boolean) {
+    let filePath = await window.electron.showSaveDialog({
+      title: this.translate.instant('case.export.dialog_title'),
+      properties: ['createDirectory'],
+    });
+    if (!filePath) {
+      return null;
+    }
+    if (!filePath.endsWith('.et')) {
+      filePath = `${filePath}.et`;
+    }
+    await window.scriptCaseService.exportCase(
+      contextNode.id,
+      filePath,
+      parentTree
+    );
+    this.message.success(
+      this.translate.instant('case.export.success', { fileName: filePath })
+    );
+  }
+
+  async onCaseImport(contextNode: FlatNode, siblings: boolean) {
+    const filePath = await window.electron.showOpenDialog({
+      title: this.translate.instant('common.open_file'),
+      properties: ['openFile', 'treatPackageAsDirectory'],
+      filters: { extensions: ['et'] },
+    });
+    if (filePath && filePath.length) {
+      const caseFile = filePath[0];
+      try {
+        const result = await window.scriptCaseService.importCase(
+          siblings ? contextNode.parentId : contextNode.id,
+          caseFile
+        );
+        let parent = null;
+        if (!siblings) {
+          parent = contextNode;
+        } else if (typeof contextNode.parentId === 'number') {
+          parent = this.dataSource.getNode(contextNode.parentId);
+        }
+        this.forEachTree([result], parent);
+        this.message.success(this.translate.instant('case.import.success'));
+      } catch (e) {
+        this.message.error(this.translate.instant(e.message));
       }
     }
   }

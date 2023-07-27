@@ -179,7 +179,21 @@
       "delete": "Delete Node",
       "run": "运行用例",
       "add_step": "添加步骤",
-      "refresh": "Refresh"
+      "refresh": "Refresh",
+      "export": "导出用例",
+      "import": "导入用例",
+      "export_parent_true": "包含上级目录",
+      "export_parent_false": "忽略上级目录",
+      "import_siblings_true": "作为同级导入",
+      "import_siblings_false": "作为下级导入"
+    },
+    "export": {
+      "dialog_title": "导出用例",
+      "success": "[{{fileName}}] 导出成功"
+    },
+    "import": {
+      "file_error": "文件已损坏或格式错误,无法导入~",
+      "success": "用例导入成功"
     }
   },
   "step": {

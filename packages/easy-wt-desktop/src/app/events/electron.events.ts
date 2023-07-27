@@ -223,6 +223,7 @@ ipcMain.on('toggleDevTools', (event, args) => {
   }
 });
 
+
 // Handle App termination
 ipcMain.on('quit', (event, code) => {
   app.exit(code);

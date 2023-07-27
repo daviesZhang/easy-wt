@@ -226,7 +226,7 @@ export class CaseEditorComponent implements OnInit {
     const { params, ...other } = value.runConfig;
     const runParams = this.flatRunParams({ params });
     const runConfig = Object.assign({ runParams }, other);
-    scriptCase.runConfig = transformParams(runConfig, true);
+    scriptCase.runConfig = transformParams(runConfig);
     return await this.coreService.saveCase(scriptCase);
   }
 
