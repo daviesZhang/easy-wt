@@ -1,0 +1,23 @@
+<form [formGroup]="formGroup" class="cron-editor-form" nz-form
+      style="width: 300px">
+
+  <nz-form-item>
+    <nz-form-label [nzSm]="8" [nzXs]="24" nzFor="cron" nzRequired>{{'schedule.field.cron'|translate}}</nz-form-label>
+    <nz-form-control [nzErrorTip]="cronErrorTpl" [nzSm]="16" [nzXs]="24"
+                     nzValidatingTip="{{'schedule.field.cron_validating'|translate}}">
+      <input formControlName="cron" nz-input nzSize="small" placeholder="{{'schedule.field.cron'|translate}}"/>
+      <ng-template #cronErrorTpl let-control>
+        <ng-container *ngIf="control.hasError('required')">{{'schedule.field.cron_required'|translate}}</ng-container>
+        <ng-container *ngIf="control.hasError('format')">{{'schedule.field.cron_format'|translate}}</ng-container>
+      </ng-template>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-divider style="margin: 4px 0"/>
+  <div class="list-footer">
+    <nz-tag *ngIf="nextDate">{{'schedule.next_time'|translate}}:{{nextDate}}</nz-tag>
+    <div *ngIf="!nextDate"></div>
+    <button (click)="save()" [nzSize]="'small'" nz-button
+            nzGhost nzType="primary">{{"common.save"|translate}}
+    </button>
+  </div>
+</form>

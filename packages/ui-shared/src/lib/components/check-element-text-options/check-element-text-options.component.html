@@ -1,0 +1,43 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+
+  <div class="list-item">
+
+    <nz-input-group nzAddOnBefore="{{'step_options.timeout_label'|translate}}" nzCompact nzSize="small">
+      <nz-input-number [nzMin]="0" [nzStep]="1" formControlName="timeout" nzSize="small"
+                       style="width: 100%;"></nz-input-number>
+    </nz-input-group>
+  </div>
+
+  <div class="list-item">
+    <nz-input-group nzAddOnBefore="{{'step_options.check_element_text.pattern_label'|translate}}" nzCompact
+                    nzSize="small">
+      <nz-select formControlName="pattern" nzShowSearch nzSize="small" style="width: 100%;">
+        <nz-option *ngFor="let item of checkPattern"
+                   [nzValue]="item" nzLabel="{{'common.check_pattern.'+item|lowercase|translate}}"></nz-option>
+      </nz-select>
+    </nz-input-group>
+
+  </div>
+
+
+  <div class="list-item">
+    <nz-input-group class="group-switch" nzSize="small"
+                    nzAddOnBefore="{{'step_options.screenshot_options.area'|translate}}" nzCompact>
+
+      <nz-select formControlName="screenshotOption" nzSize="small" style="width: 100%;">
+        <nz-option nzLabel="{{'step_options.screenshot_options.full_page_true'|translate}}" [nzValue]="0"></nz-option>
+        <nz-option nzLabel="{{'step_options.screenshot_options.full_page_false'|translate}}" [nzValue]="1"></nz-option>
+        <nz-option nzLabel="{{'step_options.screenshot_options.element_true'|translate}}" [nzValue]="2"></nz-option>
+      </nz-select>
+    </nz-input-group>
+  </div>
+  <div class="list-item">
+    <label formControlName="alwaysScreenshot" nz-checkbox>{{'step_options.alwaysScreenshot_label'|translate}}</label>
+  </div>
+</easy-wt-case-step-options>
+

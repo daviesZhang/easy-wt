@@ -1,0 +1,42 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+  <div class="list-item">
+    <nz-input-group nzAddOnBefore="{{'step_options.put_params.key_label'|translate}}" nzCompact nzSize="small">
+      <input formControlName="key" nz-input nzSize="small"/>
+    </nz-input-group>
+  </div>
+  <div class="list-item">
+
+    <nz-input-group class="group-switch" nzAddOnBefore="{{'step_options.put_params.simple_label'|translate}}"
+                    nzCompact nzSize="small">
+      <nz-switch style="margin-left: 10px" nzSize="small"
+                 formControlName="simple"
+                 nzCheckedChildren="{{'step_options.put_params.simple_true'|translate}}"
+                 nzUnCheckedChildren="{{'step_options.put_params.simple_false'|translate}}"></nz-switch>
+    </nz-input-group>
+  </div>
+
+
+  <div class="list-item">
+    <ng-template #attrTemplate>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzRequired
+                     nzTooltipTitle="{{'step_options.put_params.attr_tip'|translate}}">
+        <span>{{'step_options.put_params.attr'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="attrTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <input formControlName="attr" nz-input nzSize="small"/>
+      </nz-form-control>
+    </nz-input-group>
+  </div>
+
+
+</easy-wt-case-step-options>
+

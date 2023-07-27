@@ -1,0 +1,32 @@
+<div *ngIf="!renderer" class="editor-list">
+
+  <ng-content></ng-content>
+
+  <div class="list-footer">
+    <button (click)="changeMode()" [nzSize]="'small'"
+            nz-button nzDanger>{{'step_options.change_json'|translate}}
+    </button>
+    <div>
+      <button (click)="clearOptions()" *ngIf="allowClear" [nzSize]="'small'" nz-button
+              nzGhost
+              nzType="primary" style="margin-right: 4px">{{"common.clear"|translate}}
+      </button>
+      <button (click)="cancel()" [nzSize]="'small'" nz-button
+              nzGhost
+              nzType="primary" style="margin-right: 4px">{{"common.close"|translate}}
+      </button>
+      <button (click)="saveOptions()" [nzSize]="'small'"
+              nz-button nzType="primary">{{"common.save"|translate}}
+      </button>
+    </div>
+  </div>
+</div>
+<easy-wt-json-editor-modal (closeModal)="closeModal($event)"
+                           *ngIf="!renderer&&jsonMode" [code]="formGroup.value"
+                           title='{{"step_options.editor_options_title"|translate}}'>
+
+</easy-wt-json-editor-modal>
+
+<ng-container *ngIf="renderer">
+  <easy-wt-options-renderer [items]="items"></easy-wt-options-renderer>
+</ng-container>

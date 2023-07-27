@@ -1,0 +1,193 @@
+<ng-template #configTemplate>
+  <form nz-form [formGroup]="formGroup" class="env-config-form">
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="concurrent">{{'env_config.concurrent'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <nz-input-number [nzMin]="1" [nzStep]="1" formControlName="concurrent"
+                         nzPlaceHolder="{{'env_config.concurrent_tip'|translate}}"
+                         style="width: 100%"/>
+      </nz-form-control>
+    </nz-form-item>
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="chromium">{{'env_config.chromium'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.chromium_tip'|translate}}">
+
+        <nz-input-group [nzAddOnAfter]="chromiumAfter" nzSearch>
+          <input formControlName="chromium" nz-input
+                 placeholder="{{'env_config.browser_placeholder'|translate:{browser:'chromium'} }}"/>
+          <ng-template #chromiumAfter>
+            <button nz-button (click)="selectFile('chromium')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24"
+                     nzFor="chromiumUserData">{{'env_config.browser_user_data'|translate:{browser: 'chromium'} }}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+
+        <nz-input-group [nzAddOnAfter]="chromiumUserDataAfter" nzSearch>
+          <input formControlName="chromiumUserData" nz-input
+                 placeholder="{{'env_config.browser_user_data'|translate:{browser:'chromium'} }}"/>
+          <ng-template #chromiumUserDataAfter>
+            <button nz-button (click)="selectPath('chromiumUserData')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="webkit">{{'env_config.webkit'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+
+        <nz-input-group [nzAddOnAfter]="webkitAfter" nzSearch>
+          <input formControlName="webkit" nz-input
+                 placeholder="{{'env_config.browser_placeholder'|translate:{browser:'webkit'} }}"/>
+          <ng-template #webkitAfter>
+            <button nz-button (click)="selectFile('webkit')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24"
+                     nzFor="webkitUserData">{{'env_config.browser_user_data'|translate:{browser: 'webkit'} }}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+
+        <nz-input-group [nzAddOnAfter]="webkitUserDataAfter" nzSearch>
+          <input formControlName="webkitUserData" nz-input
+                 placeholder="{{'env_config.browser_user_data'|translate:{browser:'webkit'} }}"/>
+          <ng-template #webkitUserDataAfter>
+            <button nz-button (click)="selectPath('webkitUserData')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="firefox">{{'env_config.firefox'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+
+        <nz-input-group [nzAddOnAfter]="firefoxAfter" nzSearch>
+          <input formControlName="firefox" nz-input
+                 placeholder="{{'env_config.browser_placeholder'|translate:{browser:'firefox'} }}"/>
+          <ng-template #firefoxAfter>
+            <button nz-button (click)="selectFile('firefox')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24"
+                     nzFor="firefoxUserData">{{'env_config.browser_user_data'|translate:{browser: 'firefox'} }}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+
+        <nz-input-group [nzAddOnAfter]="firefoxUserDataAfter" nzSearch>
+          <input formControlName="firefoxUserData" nz-input
+                 placeholder="{{'env_config.browser_user_data'|translate:{browser:'firefox'} }}"/>
+          <ng-template #firefoxUserDataAfter>
+            <button nz-button (click)="selectPath('firefoxUserData')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="output" nzRequired>{{'env_config.output'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.output_error'|translate}}">
+
+        <nz-input-group [nzAddOnAfter]="outputAfter" nzSearch>
+          <input formControlName="output" nz-input placeholder="{{'env_config.output_placeholder'|translate}}"/>
+          <ng-template #outputAfter>
+            <button nz-button (click)="selectPath('output')">
+              <span nz-icon nzTheme="outline" nzType="ellipsis"></span>
+            </button>
+
+          </ng-template>
+        </nz-input-group>
+      </nz-form-control>
+    </nz-form-item>
+
+    <div formGroupName="dbconfig">
+      <nz-form-item>
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="type" nzRequired>{{'env_config.db_type'|translate}}</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24">
+          <nz-select formControlName="type" id="type" nzPlaceHolder="{{'env_config.db_type_placeHolder'|translate}}">
+            <nz-option *ngFor="let type of dbTypes" [nzLabel]="type" [nzValue]="type"></nz-option>
+          </nz-select>
+        </nz-form-control>
+      </nz-form-item>
+
+      <div *ngIf="dbConfigForm.value.type!=='sqlite'" formGroupName="data">
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="host"
+                         nzRequired>{{'env_config.db_host'|translate}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.db_host_error'|translate}}">
+            <input formControlName="host" nz-input placeholder="HOST"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="port"
+                         nzRequired>{{'env_config.db_port'|translate}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.db_port_error'|translate}}">
+            <nz-input-number [nzMin]="0" [nzStep]="1" formControlName="port" nzPlaceHolder="PORT"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="database"
+                         nzRequired>{{'env_config.db_database'|translate}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.db_database_error'|translate}}">
+            <input formControlName="database" nz-input placeholder="database"/>
+          </nz-form-control>
+        </nz-form-item>
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="username"
+                         nzRequired>{{'env_config.db_username'|translate}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.db_username_error'|translate}}">
+            <input formControlName="username" nz-input
+                   placeholder="{{'env_config.db_username_placeholder'|translate}}"/>
+          </nz-form-control>
+        </nz-form-item>
+
+        <nz-form-item>
+          <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="password">{{'env_config.db_password'|translate}}</nz-form-label>
+          <nz-form-control [nzSm]="14" [nzXs]="24">
+            <input formControlName="password" nz-input placeholder="{{'env_config.db_password_placeholder'|translate}}"
+                   type="password"/>
+          </nz-form-control>
+        </nz-form-item>
+
+      </div>
+
+
+      <nz-form-item *ngIf="dbConfigForm.value.type==='sqlite'">
+        <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="data"
+                       nzRequired>{{'env_config.db_sqlite'|translate}}</nz-form-label>
+        <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'env_config.db_sqlite_error'|translate}}">
+
+          <input formControlName="data" nz-input placeholder="{{'env_config.db_sqlite_placeholder'|translate}}"/>
+
+
+        </nz-form-control>
+      </nz-form-item>
+
+    </div>
+  </form>
+</ng-template>

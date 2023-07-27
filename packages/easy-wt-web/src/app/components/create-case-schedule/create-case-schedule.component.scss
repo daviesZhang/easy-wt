@@ -1,0 +1,8 @@
+.schedule-form {
+  width: 100%;
+
+  ::ng-deep nz-form-control.ant-col {
+    max-width: initial;
+  }
+
+}

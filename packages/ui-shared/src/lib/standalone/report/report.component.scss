@@ -1,0 +1,116 @@
+.body {
+  overflow-x: hidden;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+
+.menu-bar {
+  position: fixed;
+  top: 0;
+  right: 0;
+  left: 0;
+  z-index: 1;
+}
+
+.electron {
+  padding-top: 28px;
+
+}
+
+.tag-button {
+  cursor: pointer;
+}
+
+.collapse {
+  margin-top: 8px;
+
+  ::ng-deep .ant-collapse-content-box {
+    padding-top: 2px;
+  }
+
+  .image-panel .image {
+    display: flex;
+
+    justify-content: center;
+
+    img {
+      cursor: pointer;
+      border: 1px solid;
+    }
+  }
+}
+
+.detail {
+
+  ::ng-deep .failure-row {
+    background-color: #ff000057;
+    //background: linear-gradient(238.72deg, #FF0000 0%, #56124F 100%), linear-gradient(127.43deg, #00FFFF 0%, #FF4444 100%), radial-gradient(100.22% 100% at 70.57% 0%, #FF0000 0%, #00FFE0 100%), linear-gradient(127.43deg, #B7D500 0%, #3300FF 100%);
+    //background-blend-mode: hard-light, color-burn, color-dodge, normal;
+  }
+
+  ::ng-deep .skip-row {
+
+    background-color: #4e4a4a57;
+  }
+
+  padding: 0 24px;
+}
+
+.images {
+  padding: 12px 0;
+}
+
+.row-image-icon {
+
+  cursor: pointer;
+  position: absolute;
+  left: 0;
+}
+
+nz-breadcrumb {
+  margin: 16px 0;
+}
+
+.inner-content {
+  background: #fff;
+  padding: 12px;
+  min-height: 380px;
+}
+
+nz-footer {
+  text-align: center;
+}
+
+.content {
+  display: flex;
+}
+
+.extra > div {
+  display: flex;
+  width: max-content;
+  justify-content: flex-end;
+}
+
+@media (max-width: 576px) {
+  .content {
+    display: block;
+  }
+
+  .main {
+    width: 100%;
+    margin-bottom: 12px;
+  }
+
+  .extra {
+    width: 100%;
+    margin-left: 0;
+    text-align: left;
+  }
+
+}
+
+.step-tag {
+  white-space: pre-line;
+  margin-bottom: 5px;
+}

@@ -1,0 +1,153 @@
+<nz-list *ngIf="!renderer" [formGroup]="formGroup" class="editor-list" nz-form nzBordered nzSize="small"
+         style="width: 340px">
+  <nz-list-item>
+    <nz-input-group [nzAddOnBefore]="typeTemplate" nzCompact nzSize="small">
+      <ng-template #typeTemplate>
+        <nz-form-label class="tooltip-title-wrapper" nzNoColon
+                       nzRequired
+                       nzTooltipTitle="{{'step_selector.type_tip'|translate}}"
+        >
+          <span>{{'step_selector.type'|translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <nz-form-control>
+        <nz-select formControlName="type" nzSize="small" style="width: 100%;">
+          <nz-option *ngFor="let v of selectorTypes" [nzLabel]="v.toLowerCase()" [nzValue]="v"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+  <nz-list-item>
+    <ng-template #valueTemplate>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzRequired
+                     nzTooltipTitle="{{'step_selector.value_tip'|translate}}">
+        <span>{{'step_selector.value'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="valueTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <input formControlName="value" nz-input nzSize="small"/>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
+  <nz-list-item>
+    <ng-template #nthTemplate>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzTooltipTitle="{{'step_selector.nth_tip'|translate}}">
+        <span>{{'step_selector.nth_label'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="nthTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <nz-input-number [nzMin]="0" [nzStep]="1" formControlName="nth" nzSize="small"/>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
+  <nz-list-item>
+    <ng-template #exactTemplate>
+      <nz-form-label class="tooltip-title-wrapper" nzFor="mouseButton" nzLabelAlign="right"
+                     nzNoColon
+                     nzTooltipTitle="{{'step_selector.exact_tip'|translate}}">
+        <span>{{'step_selector.exact'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group
+      [nzAddOnBefore]="exactTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <nz-radio-group formControlName="exact" nzButtonStyle="solid" nzSize="small" style="width: 100%;">
+          <label [nzValue]="true" nz-radio-button>{{'step_selector.exact_true'|translate}}</label>
+          <label [nzValue]="false" nz-radio-button>{{'step_selector.exact_false'|translate}}</label>
+        </nz-radio-group>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
+  <nz-list-item>
+    <ng-template #filterTemplate>
+      <nz-form-label class="tooltip-title-wrapper" nzFor="mouseButton" nzLabelAlign="right"
+                     nzNoColon
+
+                     nzTooltipTitle="{{'step_selector.filter_tip'|translate}}">
+        <span>{{'step_selector.filter'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group
+      [nzAddOnBefore]="filterTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <nz-select formControlName="filter" nzAllowClear nzSize="small" style="width: 100%;">
+          <nz-option nzLabel="{{'step_selector.filter_has_text'|translate}}" nzValue="has_text"></nz-option>
+          <nz-option nzLabel="{{'step_selector.filter_has_not_text'|translate}}" nzValue="has_not_text"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
+  <nz-list-item *ngIf="formGroup.value.filter">
+    <ng-template #filterValueTemplate>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzRequired
+                     nzTooltipTitle="{{'step_selector.filter_value_tip'|translate}}">
+        <span>{{'step_selector.filter_value'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="filterValueTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <input formControlName="filterValue" nz-input nzSize="small"/>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
+
+  <nz-list-item>
+    <ng-template #connectTemplate>
+      <nz-form-label class="tooltip-title-wrapper" nzFor="mouseButton" nzLabelAlign="right"
+                     nzNoColon
+
+                     nzTooltipTitle="{{'step_selector.connect_tip'|translate}}">
+        <span>{{'step_selector.connect'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group
+      [nzAddOnBefore]="connectTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <nz-select formControlName="connect" nzAllowClear nzSize="small" style="width: 100%;">
+          <nz-option nzLabel="{{'step_selector.connect_locator'|translate}}" nzValue="locator"></nz-option>
+          <nz-option nzLabel="{{'step_selector.connect_and'|translate}}" nzValue="and"></nz-option>
+          <nz-option nzLabel="{{'step_selector.connect_or'|translate}}" nzValue="or"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+  <nz-list-footer class="list-footer">
+    <button (click)="changeMode()" [nzSize]="'small'"
+            nz-button nzDanger>{{'step_options.change_json'|translate}}
+    </button>
+    <div>
+      <button (click)="clearOptions()" [nzSize]="'small'" nz-button
+              nzGhost
+              nzType="primary" style="margin-right: 4px">{{'common.clear'|translate}}
+      </button>
+      <button (click)="saveOptions()" [nzSize]="'small'"
+              nz-button nzType="primary">{{'common.save'|translate}}
+      </button>
+    </div>
+  </nz-list-footer>
+</nz-list>
+<easy-wt-json-editor-modal (closeModal)="closeModal($event)" *ngIf="!renderer&&jsonMode" [code]="options"
+></easy-wt-json-editor-modal>
+
+<ng-template #popover>
+  <easy-wt-options-renderer
+    [items]="items"></easy-wt-options-renderer>
+</ng-template>
+
+<ng-container *ngIf="renderer">
+  <easy-wt-options-renderer [items]="items" [nzPopoverContent]="popover" nz-popover
+                            nzPopoverOverlayClassName="selector-locator-popover"></easy-wt-options-renderer>
+</ng-container>

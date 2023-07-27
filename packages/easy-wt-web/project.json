@@ -1,0 +1,147 @@
+{
+  "name": "easy-wt-web",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "projectType": "application",
+  "prefix": "easy-wt",
+  "sourceRoot": "packages/easy-wt-web/src",
+  "tags": [],
+  "targets": {
+    "build": {
+      "executor": "@angular-devkit/build-angular:browser",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "options": {
+        "outputPath": "dist/packages/easy-wt-web",
+        "index": "packages/easy-wt-web/src/index.html",
+        "main": "packages/easy-wt-web/src/main.ts",
+        "polyfills": [
+          "zone.js"
+        ],
+        "tsConfig": "packages/easy-wt-web/tsconfig.app.json",
+        "assets": [
+          "packages/easy-wt-web/src/favicon.ico",
+          {
+            "glob": "**/*",
+            "input": "i18n",
+            "output": "assets/i18n/"
+          },
+          "packages/easy-wt-web/src/assets",
+          {
+            "glob": "**/*",
+            "input": "node_modules/monaco-editor/min/vs",
+            "output": "assets/vs/"
+          }
+        ],
+        "styles": [
+          "packages/easy-wt-web/src/styles.scss",
+          "packages/easy-wt-web/src/styles.less",
+          "node_modules/@videogular/ngx-videogular/fonts/videogular.css"
+        ],
+        "scripts": [
+        ]
+      },
+      "configurations": {
+        "production": {
+          "baseHref": "index.html",
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "3mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "outputHashing": "all"
+        },
+        "development": {
+          "buildOptimizer": false,
+          "optimization": false,
+          "vendorChunk": true,
+          "extractLicenses": false,
+          "sourceMap": true,
+          "namedChunks": true
+        },
+        "report": {
+          "budgets": [
+            {
+              "type": "initial",
+              "maximumWarning": "500kb",
+              "maximumError": "3mb"
+            },
+            {
+              "type": "anyComponentStyle",
+              "maximumWarning": "2kb",
+              "maximumError": "4kb"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "apps/puppeteer-robot-web/src/environments/environment.ts",
+              "with": "apps/puppeteer-robot-web/src/environments/environment.report.ts"
+            }
+          ],
+          "outputHashing": "all"
+        }
+      },
+      "defaultConfiguration": "production"
+    },
+    "serve": {
+      "executor": "@angular-devkit/build-angular:dev-server",
+      "configurations": {
+        "production": {
+          "browserTarget": "easy-wt-web:build:production"
+        },
+        "development": {
+          "proxyConfig": "packages/easy-wt-web/proxy.conf.json",
+          "browserTarget": "easy-wt-web:build:development"
+        }
+      },
+      "defaultConfiguration": "development"
+    },
+    "extract-i18n": {
+      "executor": "@angular-devkit/build-angular:extract-i18n",
+      "options": {
+        "browserTarget": "easy-wt-web:build"
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/easy-wt-web/**/*.ts",
+          "packages/easy-wt-web/**/*.html"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "packages/easy-wt-web/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    },
+    "serve-static": {
+      "executor": "@nx/web:file-server",
+      "options": {
+        "buildTarget": "easy-wt-web:build"
+      }
+    }
+  }
+}

@@ -1,0 +1,8 @@
+<ng-template #editor>
+  <nz-code-editor
+    (ngModelChange)="valueChange($event)"
+    class="editor"
+    nzEditorMode="normal"
+    [ngModel]="optionsString"
+    [nzEditorOption]="{ language: 'json' }"></nz-code-editor>
+</ng-template>

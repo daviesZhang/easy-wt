@@ -1,0 +1,16 @@
+<nz-select #selectComponent
+           (ngModelChange)="onChangeValue($event)"
+           [(ngModel)]="value"
+           [nzAutoFocus]="true"
+           [nzBorderless]="true"
+           class="step-type-select"
+           nzOpen
+           nzShowSearch
+           nzSize="small">
+
+  <nz-option *ngFor="let option of options | keyvalue"
+             [nzValue]="option.key" nzLabel="{{'step.type_options.'+option.value|lowercase|translate}}">
+
+  </nz-option>
+
+</nz-select>

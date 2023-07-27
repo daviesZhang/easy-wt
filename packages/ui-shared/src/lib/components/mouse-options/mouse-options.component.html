@@ -1,0 +1,72 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+  <div class="list-item">
+    <nz-input-group nzSize="small" [nzAddOnBefore]="typeTemplate" nzCompact>
+      <ng-template #typeTemplate>
+        <nz-form-label nzRequired class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.mouse.type_tip'|translate}}">
+          <span>{{'step_options.mouse.type'|translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <nz-form-control>
+        <nz-select formControlName="type" nzSize="small" style="width: 100%;">
+          <nz-option *ngFor="let v of mouseType" [nzValue]="v"
+                     nzLabel="{{'step_options.mouse.event_'+v|translate}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-input-group>
+  </div>
+  <div *ngIf="formGroup.value.type==='click'
+             ||formGroup.value.type==='dblclick'
+             ||formGroup.value.type==='up'
+             ||formGroup.value.type==='down'" class="list-item">
+    <ng-template #buttonTemplate>
+      <nz-form-label nzFor="mouseButton" nzLabelAlign="right" class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzRequired
+                     nzTooltipTitle="{{'step_options.mouse.button'|translate}}">
+        <span>{{'step_options.mouse.button'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group
+      nzSize="small" [nzAddOnBefore]="buttonTemplate" nzCompact>
+      <nz-form-control>
+        <nz-select id="mouseButton" formControlName="mouseButton" nzSize="small" style="width: 100%;">
+          <nz-option *ngFor="let b of mouseButtons" [nzValue]="b"
+                     nzLabel="{{'step_options.mouse.button_'+b|translate}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-input-group>
+  </div>
+  <div *ngIf="formGroup.value.type==='move'
+  ||formGroup.value.type==='click'||
+  formGroup.value.type==='dblclick'
+             ||formGroup.value.type==='wheel'" class="list-item">
+    <nz-input-group [nzAddOnBefore]="mouse_target" nzCompact nzSize="small">
+      <ng-template #mouse_target>
+        <nz-form-label nzRequired nzLabelAlign="right" class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.mouse.mouse_target_tip'|translate}}"
+        >
+          <span>{{'step_options.mouse.mouse_target'|translate}}</span>
+        </nz-form-label>
+
+      </ng-template>
+      <nz-form-control style="display: inline-flex;width: 50%;">
+        <nz-input-number formControlName="x" [nzMin]="0" nzSize="small" nzPlaceHolder="x"
+        ></nz-input-number>
+      </nz-form-control>
+      <nz-form-control style="display: inline-flex;width: 50%;">
+        <nz-input-number formControlName="y" [nzMin]="0" nzSize="small" nzPlaceHolder="y"
+        ></nz-input-number>
+      </nz-form-control>
+    </nz-input-group>
+
+  </div>
+
+</easy-wt-case-step-options>
+

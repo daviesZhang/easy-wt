@@ -1,0 +1,20 @@
+<div>
+
+
+  <span *ngIf="contentString">{{contentString}}</span>
+
+  <ng-container *ngIf="!!this.contentTemplate">
+
+    <ng-container *ngTemplateOutlet="contentTemplate; context:templateParams">
+    </ng-container>
+  </ng-container>
+
+  <ng-template #footer>
+
+    <div class="modal-footer">
+      <button (click)="cancel()" *ngIf="allowClose" nz-button type="button">{{'common.cancel'|translate}}</button>
+      <button (click)="submit()" [nzLoading]="loading" nz-button nzType="primary" type="submit">{{okText}}</button>
+    </div>
+  </ng-template>
+
+</div>

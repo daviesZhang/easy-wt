@@ -1,0 +1,10 @@
+<button (click)="changeLang()" class="lang"
+        nz-button
+        nzGhost nzSize="small" nzType="primary">{{currentLang|uppercase}}</button>
+
+
+<ng-template #successTipTemplate>
+  {{"app.lang_change.success_tip"|translate}}
+  <button (click)="reload()" nz-button nzDanger nzSize="small" nzType="dashed"
+          style="margin-left: 8px">{{"app.lang_change.reload"|translate}}</button>
+</ng-template>

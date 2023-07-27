@@ -1,0 +1,12 @@
+<ng-container *ngFor="let item of items">
+
+
+  <nz-tag class="tag" *ngIf="item.value!==null&&item.value!==undefined&&item.value!==''">
+    <ng-container *ngIf="item.label">
+      {{item.label}}:
+    </ng-container>
+    <span class="value">{{item.value}}</span>
+  </nz-tag>
+
+</ng-container>
+

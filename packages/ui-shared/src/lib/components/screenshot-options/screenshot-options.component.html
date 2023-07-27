@@ -1,0 +1,22 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+  <div class="list-item">
+    <nz-input-group class="group-switch" nzAddOnBefore="{{'step_options.screenshot_options.area'|translate}}"
+                    nzCompact nzSize="small">
+      <nz-switch style="margin-left: 10px" nzSize="small"
+                 formControlName="fullPage"
+                 nzCheckedChildren="{{'step_options.screenshot_options.full_page_true'|translate}}"
+                 nzUnCheckedChildren="{{'step_options.screenshot_options.full_page_false'|translate}}"></nz-switch>
+    </nz-input-group>
+  </div>
+  <div class="list-item">
+    <nz-input-group nzAddOnBefore="{{'step_options.screenshot_options.path'|translate}}" nzCompact nzSize="small">
+      <input formControlName="path" nz-input nzSize="small"/>
+    </nz-input-group>
+  </div>
+</easy-wt-case-step-options>
+

@@ -1,0 +1,70 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+  <div class="list-item">
+    <ng-template #devicesName>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzTooltipTitle="{{'step_options.open_browser.devices_name_tip'|translate}}"
+      >
+        <span>{{'step_options.open_browser.devices_name_label'|translate}}</span>
+      </nz-form-label>
+
+    </ng-template>
+    <nz-input-group nzSize="small" [nzAddOnBefore]="devicesName" nzCompact>
+
+      <input *ngIf="!deviceDescriptors" formControlName="devicesName" nz-input/>
+
+      <nz-select *ngIf="deviceDescriptors" formControlName="devicesName" nzAllowClear nzShowSearch nzSize="small"
+                 style="width: 100%;">
+        <nz-option *ngFor="let device of deviceDescriptors" [nzLabel]="device" [nzValue]="device"></nz-option>
+
+      </nz-select>
+    </nz-input-group>
+  </div>
+  <div class="list-item">
+    <ng-template #userAgent>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzTooltipTitle="{{'step_options.open_browser.user_agent_tip'|translate}}">
+        <span>{{'step_options.open_browser.user_agent_label'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+
+
+    <nz-input-group [nzAddOnBefore]="userAgent" nzCompact nzSize="small">
+      <input formControlName="userAgent" nz-input/>
+    </nz-input-group>
+  </div>
+
+  <div class="list-item">
+
+    <nz-input-group [nzAddOnBefore]="viewportSize" nzCompact nzSize="small">
+      <ng-template #viewportSize>
+        <nz-form-label class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.open_browser.viewport_tip'|translate}}"
+        >
+          <span>{{'step_options.open_browser.viewport_label'|translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <nz-input-number [ngClass]="{'has-error':formGroup.hasError('width')}" [nzMin]="0"
+                       formControlName="width" nzPlaceHolder="{{'step_options.open_browser.viewport_width'|translate}}"
+                       nzSize="small"
+                       style="width: 50%"></nz-input-number>
+      <nz-input-number [ngClass]="{'has-error':formGroup.hasError('height')}" [nzMin]="0"
+                       formControlName="height"
+                       nzPlaceHolder="{{'step_options.open_browser.viewport_height'|translate}}" nzSize="small"
+                       style="width: 50%"></nz-input-number>
+    </nz-input-group>
+  </div>
+  <div class="list-item">
+    <label formControlName="headless" nz-checkbox>{{'step_options.open_browser.headless_label'|translate}}</label>
+    <label formControlName="recordVideo"
+           nz-checkbox>{{'step_options.open_browser.record_video_label'|translate}}</label>
+  </div>
+
+</easy-wt-case-step-options>

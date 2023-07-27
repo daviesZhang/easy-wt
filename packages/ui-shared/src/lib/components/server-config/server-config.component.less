@@ -1,0 +1,63 @@
+:host {
+  -webkit-app-region: drag;
+  display: flex;
+  height: 28px;
+  justify-content: space-between;
+  padding: 0 4px;
+
+  align-items: center;
+  background: #444444;
+
+  .left, .right {
+    display: flex;
+    align-items: center;
+  }
+
+  //padding-right: 10px;
+  .left > div, .right > div {
+    -webkit-app-region: no-drag;
+    margin-left: 8px;
+    width: 13px;
+    height: 13px;
+    cursor: pointer;
+
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    > span {
+      margin: auto;
+      font-size: 8px;
+      color: black;
+      display: none;
+    }
+
+    &:hover > span {
+      display: block;
+    }
+  }
+
+  .close {
+    background: red;
+  }
+
+  .minus {
+    background: yellow;
+  }
+
+  .dev-tools {
+    background: gold;
+    margin-right: 5px;
+
+
+  }
+
+  .fullscreen {
+
+    background: rgba(12, 232, 157, 0.49);
+
+  }
+
+}
+

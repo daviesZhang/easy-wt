@@ -1,0 +1,46 @@
+:host {
+  min-width: 240px;
+  display: block;
+}
+
+div.editor-list {
+  padding: 6px;
+
+  ::ng-deep {
+
+    .list-item {
+      display: flex;
+      padding: 2px;
+      border-bottom: 1px solid #f0f0f0;
+
+      .ant-form-item-explain {
+        text-align: right;
+      }
+
+      .ant-checkbox-wrapper {
+        margin: auto;
+      }
+
+      nz-input-number {
+        width: 100%;
+      }
+
+
+      .has-error,
+      .ng-dirty.ng-invalid:not(nz-select),
+      .ng-touched.ng-invalid:not(nz-select),
+      nz-select.ng-dirty.ng-invalid nz-select-top-control,
+      nz-select.ng-touched.ng-invalid nz-select-top-control {
+        border-color: #ff4d4f;
+      }
+
+    }
+  }
+}
+
+div.list-footer {
+  height: 28px;
+  display: flex;
+  padding-top: 4px;
+  justify-content: space-between;
+}

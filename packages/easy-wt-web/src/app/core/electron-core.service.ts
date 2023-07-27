@@ -1,0 +1,193 @@
+import { Injectable } from '@angular/core';
+
+import {
+  CaseEvent,
+  ISchedule,
+  IScriptCase,
+  IStep,
+  QueryParams,
+  Report,
+  RunConfig,
+  StatReport,
+} from '@easy-wt/common';
+import { CoreService } from './core.service';
+import { fromEventPattern, Observable } from 'rxjs';
+import { TranslateService } from '@ngx-translate/core';
+
+@Injectable({
+  providedIn: 'root',
+})
+export class ElectronCoreService extends CoreService {
+  constructor(private translate: TranslateService) {
+    super();
+  }
+
+  findCaseById(id: number): Promise<IScriptCase> {
+    return window.scriptCaseService.findById(id);
+  }
+
+  /**
+   * 返回全部目录树
+   */
+  findCaseByTree(): Promise<IScriptCase[]> {
+    return window.scriptCaseService.findTrees();
+  }
+
+  /**
+   * 保存节点
+   * @param item
+   */
+  saveCase(item: Partial<IScriptCase>): Promise<IScriptCase> {
+    return window.scriptCaseService.save(item);
+  }
+
+  deleteStep(id: Array<number>): Promise<string> {
+    return window.stepService.delete(id);
+  }
+
+  findStepByCaseId(caseId: number): Promise<IStep[]> {
+    return window.stepService.findByCaseId(caseId);
+  }
+
+  saveStep(item: IStep[], sort?: boolean): Promise<IStep[]> {
+    return window.stepService.save(item, sort);
+  }
+
+  async executeCase(
+    caseId: Array<number>,
+    config: Partial<RunConfig>
+  ): Promise<void> {
+    await window.browserCore.executeCase(caseId, config);
+  }
+
+  findAncestorsTree(id: number): Promise<IScriptCase> {
+    return window.scriptCaseService.findAncestorsTree(id);
+  }
+
+  eventObservable<T>(eventName: CaseEvent): Observable<T> {
+    return fromEventPattern<T>(
+      (handler) => {
+        window.browserCore.onEvent(eventName, handler);
+        return eventName;
+      },
+      (handler, signal) => {
+        window.browserCore.offEvent(signal, handler);
+      }
+    );
+  }
+
+  deleteCase(id: number): Promise<number[]> {
+    return window.scriptCaseService.delete(id);
+  }
+
+  findCasesById(id: number): Promise<IScriptCase[]> {
+    return window.scriptCaseService.findCasesById(id);
+  }
+
+  findDescendantsById(id: number): Promise<IScriptCase[]> {
+    return window.scriptCaseService.findDescendantsById(id);
+  }
+
+  updateStep(id: number, item: Partial<IStep>): Promise<string> {
+    return window.stepService.update(id, item);
+  }
+
+  findReportPage(query: QueryParams): Promise<[Report[], StatReport]> {
+    return window.reportService.findPage(query);
+  }
+
+  findReportById(reportId: number): Promise<Report> {
+    return window.reportService.findById(reportId);
+  }
+
+  async exportReportHTML(id: number): Promise<string> {
+    let filePath = await window.electron.showSaveDialog({
+      title: this.translate.instant('report.dialog_title', { type: 'HTML' }),
+      properties: ['createDirectory'],
+    });
+    if (!filePath) {
+      return null;
+    }
+    if (!filePath.endsWith('.zip')) {
+      filePath = `${filePath}.zip`;
+    }
+    const report = await this.findReportById(id);
+    await window.browserCore.exportHTML(
+      report,
+      filePath,
+      this.translate.currentLang
+    );
+    return filePath;
+  }
+
+  async exportReportPDF(id: number): Promise<string> {
+    let filePath: string = await window.electron.showSaveDialog({
+      title: this.translate.instant('report.dialog_title', { type: 'PDF' }),
+      properties: ['createDirectory'],
+    });
+    if (!filePath) {
+      return null;
+    }
+    if (!filePath.endsWith('.pdf')) {
+      filePath = `${filePath}.pdf`;
+    }
+    const report = await this.findReportById(id);
+    await window.browserCore.exportPDF(
+      report,
+      filePath,
+      this.translate.currentLang
+    );
+    return filePath;
+  }
+
+  async openReportPage(id: number): Promise<void> {
+    const url = await window.electron.getMainLoadURL();
+    await window.electron.newWindow(
+      `report-page-${id}`,
+      `${url}#report?id=${id}`,
+      false,
+      { modal: false, frame: false, width: 800, height: 1000 }
+    );
+  }
+
+  remoteServer() {
+    return false;
+  }
+
+  findRoots(): Promise<IScriptCase[]> {
+    return window.scriptCaseService.findRoots();
+  }
+
+  copyCase(caseId: number): Promise<IScriptCase> {
+    return window.scriptCaseService.copyCase(caseId);
+  }
+
+  deleteReport(id: number[]): Promise<void> {
+    return window.reportService.delete(id);
+  }
+
+  scheduleExecuteCase(params: {
+    caseId: number;
+    name: string;
+    cron: string;
+    enable?: boolean;
+  }): Promise<void> {
+    return window.scheduleService.scheduleExecuteCase(params);
+  }
+
+  deleteSchedule(scheduleId: number[]): Promise<void> {
+    return window.scheduleService.deleteSchedule(scheduleId);
+  }
+
+  findSchedulePage(query: QueryParams): Promise<[ISchedule[], number]> {
+    return window.scheduleService.findPage(query);
+  }
+
+  saveAndCreate(schedules: Partial<ISchedule>[]): Promise<void> {
+    return window.scheduleService.saveAndCreate(schedules);
+  }
+
+  getCronNextDate(cron: string): Promise<number | null> {
+    return window.scheduleService.getCronNextDate(cron);
+  }
+}

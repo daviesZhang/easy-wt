@@ -1,0 +1,89 @@
+$header-background: #faad1473;
+
+
+.default-layout {
+  height: 100%;
+
+  .logo {
+
+    padding: 0 8px;
+    margin: 16px 40px;
+    background: rgba(102, 11, 243, 0.3);
+    font-size: 2rem;
+    text-transform: uppercase;
+    color: white;
+    letter-spacing: .2rem;
+    line-height: 1;
+    position: relative;
+    border-radius: 10px;
+  }
+
+  .header {
+    user-select: none;
+    padding: 0 20px 0 0;
+    -webkit-app-region: drag;
+    position: relative;
+    display: flex;
+    width: 100%;
+    background: $header-background;
+    justify-content: space-between;
+    align-items: center;
+
+    .progress, .setting, .language {
+      -webkit-app-region: no-drag;
+    }
+
+    .left {
+      display: flex;
+      align-items: center;
+    }
+
+    .right {
+
+    }
+
+    button.run-status {
+
+    }
+  }
+
+  .menu.ant-menu {
+    background: transparent;
+    -webkit-app-region: no-drag;
+    //background: radial-gradient(ellipse farthest-side at 76% 77%, rgba(245, 228, 212, 0.25) 4%, rgba(255, 255, 255, 0) calc(4% + 1px)), radial-gradient(circle at 76% 40%, #fef6ec 4%, rgba(255, 255, 255, 0) 4.18%), linear-gradient(135deg, #ff0000 0%, #000036 100%), radial-gradient(ellipse at 28% 0%, #ffcfac 0%, rgba(98, 149, 144, 0.5) 100%), linear-gradient(180deg, #cd6e8a 0%, #f5eab0 69%, #d6c8a2 70%, #a2758d 100%);
+    //background-blend-mode: normal, normal, screen, overlay, normal;
+  }
+
+  nz-header {
+    background: #fff;
+    padding: 0;
+  }
+
+  nz-content {
+    //margin: 16px;
+  }
+
+
+  .inner-content {
+    //padding: 24px;
+    background: #fff;
+    min-height: 360px;
+    height: 100%;
+
+    > *:last-child {
+      display: flex;
+      height: 100%;
+      width: 100%;
+      //flex-direction: column;
+    }
+  }
+
+  nz-footer {
+    text-align: center;
+  }
+
+}
+
+.rounded {
+  border-radius: 10px;
+}

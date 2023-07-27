@@ -1,0 +1,59 @@
+{
+  "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
+  "asar": true,
+  "artifactName": "EasyWebTest_${os}_${arch}",
+  "productName": "EasyWebTest",
+  "extraResources": [
+    {
+      "from": "dist/packages/easy-wt-report-web",
+      "to": "report"
+    },
+    {
+      "from": "icon",
+      "to": ""
+    }
+  ],
+  "icon": "robot_512.png",
+  "mac": {
+    "icon": "robot_512.png",
+    "target": "dmg"
+  },
+  "dmg": {
+    "artifactName": "EasyWebTest_${os}_${arch}.dmg",
+    "sign": false,
+    "iconSize": 100,
+    "backgroundColor": "#9ca6a0",
+    "contents": [
+      {
+        "x": 255,
+        "y": 85,
+        "type": "file"
+      },
+      {
+        "x": 253,
+        "y": 325,
+        "type": "link",
+        "path": "/Applications"
+      }
+    ],
+    "window": {
+      "width": 560,
+      "height": 500
+    }
+  },
+  "nsis": {
+    "artifactName": "EasyWebTest_${os}_${arch}_Install.${ext}",
+    "oneClick": false,
+    "installerIcon": "./icon/icon.ico",
+    "installerHeaderIcon": "./icon/icon.ico",
+    "allowToChangeInstallationDirectory": true,
+    "deleteAppDataOnUninstall": true
+  },
+  "win": {
+    "icon": "./icon/icon.ico",
+    "target": [
+      "nsis",
+      "7z"
+    ]
+  }
+}

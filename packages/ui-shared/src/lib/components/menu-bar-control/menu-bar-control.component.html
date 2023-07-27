@@ -1,0 +1,16 @@
+<div class="left">
+  <div (click)="closeApp()" *ngIf="show.close" class="close">
+    <span nz-icon nzTheme="outline" nzType="close"></span>
+  </div>
+  <div (click)="minus()" *ngIf="show.minus" class="minus">
+    <span nz-icon nzTheme="outline" nzType="minus"></span>
+  </div>
+  <div (click)="fullscreen()" *ngIf="show.fullscreen" class="fullscreen">
+    <span nz-icon nzTheme="outline" nzType="fullscreen"></span>
+  </div>
+</div>
+
+<div class="right" *ngIf="isDevelopmentMode">
+
+</div>
+

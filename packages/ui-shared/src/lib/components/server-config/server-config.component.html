@@ -1,0 +1,14 @@
+<form nz-form [formGroup]="formGroup">
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzRequired nzFor="serverURL">服务端地址</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="地址必须填写~">
+      <input nz-input placeholder="http://localhost:3333/" formControlName="serverURL" id="serverURL"/>
+    </nz-form-control>
+  </nz-form-item>
+  <nz-form-item>
+    <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="enabled">服务端模式</nz-form-label>
+    <nz-form-control [nzSm]="14" [nzXs]="24">
+      <nz-switch formControlName="enabled" id="enabled" nzCheckedChildren="启用" nzUnCheckedChildren="禁用"></nz-switch>
+    </nz-form-control>
+  </nz-form-item>
+</form>

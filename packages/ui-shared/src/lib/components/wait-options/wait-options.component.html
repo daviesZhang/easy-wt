@@ -1,0 +1,16 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+
+  <div class="list-item">
+    <nz-input-number-group nzAddOnAfter="ms" nzAddOnBefore="{{'step_options.timeout_label'|translate}}" nzCompact
+                           nzSize="small">
+      <nz-input-number [nzMin]="0" formControlName="timeout" nzPlaceHolder="{{'step_options.timeout_label'|translate}}"
+                       nzSize="small"></nz-input-number>
+    </nz-input-number-group>
+  </div>
+
+</easy-wt-case-step-options>

@@ -1,0 +1,35 @@
+<ng-template #content>
+
+
+  <form [formGroup]="formGroup" class="schedule-form" nz-form>
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="scriptName">{{"schedule.field.case_name"|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24">
+        <input formControlName="scriptName" nz-input placeholder="{{'schedule.field.case_mame'|translate}}"/>
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="name" nzRequired>{{'schedule.field.name'|translate}}</nz-form-label>
+      <nz-form-control [nzSm]="14" [nzXs]="24" nzErrorTip="{{'schedule.field.name_error_tip'|translate}}">
+        <input formControlName="name" nz-input placeholder="{{'schedule.field.name'|translate}}"/>
+      </nz-form-control>
+    </nz-form-item>
+
+
+    <nz-form-item>
+      <nz-form-label [nzSm]="6" [nzXs]="24" nzFor="cron" nzRequired>{{'schedule.field.cron'|translate}}</nz-form-label>
+      <nz-form-control [nzErrorTip]="cronErrorTpl" [nzSm]="14" [nzXs]="24"
+                       nzValidatingTip="{{'schedule.field.cron_validating'|translate}}">
+        <input formControlName="cron" nz-input placeholder="{{'schedule.field.cron'|translate}}"/>
+        <ng-template #cronErrorTpl let-control>
+          <ng-container *ngIf="control.hasError('required')">{{'schedule.field.cron_required'|translate}}</ng-container>
+          <ng-container *ngIf="control.hasError('format')">{{'schedule.field.cron_format'|translate}}</ng-container>
+        </ng-template>
+      </nz-form-control>
+    </nz-form-item>
+
+
+  </form>
+</ng-template>

@@ -1,0 +1,14 @@
+.task-list {
+  max-height: 200px;
+  overflow-y: auto;
+  border-top: none;
+  border-bottom: none;
+
+  .ant-list-item {
+    padding: 4px 8px;
+  }
+}
+
+::ng-deep .run-status-run-popover .ant-popover-inner-content {
+  padding: 0;
+}

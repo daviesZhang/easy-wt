@@ -1,0 +1,14 @@
+{
+  "concurrent": 5,
+  "chromium": null,
+  "chromiumUserData": null,
+  "webkit": "",
+  "webkitUserData": null,
+  "firefox": null,
+  "firefoxUserData": null,
+  "output": "dist/outputs",
+  "dbconfig": {
+    "type": "sqlite",
+    "data": "dist/db.sql"
+  }
+}

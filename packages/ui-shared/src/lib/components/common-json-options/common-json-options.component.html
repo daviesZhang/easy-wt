@@ -1,0 +1,6 @@
+<easy-wt-json-editor-modal title='{{"step_options.editor_options_title"|translate}}' *ngIf="!renderer"
+                           (closeModal)="closeModal($event)"
+                           [code]="options"></easy-wt-json-editor-modal>
+
+<span *ngIf="renderer&&!isNullOptions">{{options|json}}</span>
+

@@ -1,0 +1,17 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+  <div class="list-item">
+    <nz-input-group nzAddOnBefore="{{'step_options.keyboard.type'|translate}}" nzCompact>
+      <nz-select formControlName="type" nzShowSearch style="width: 100%;min-width: 100px">
+        <nz-option *ngFor="let item of keyboardEvent" [nzValue]="item"
+                   nzLabel="{{'common.keyboard.'+item|lowercase|translate}}"></nz-option>
+      </nz-select>
+    </nz-input-group>
+  </div>
+
+</easy-wt-case-step-options>
+

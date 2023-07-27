@@ -1,0 +1,42 @@
+{
+  "compileOnSave": false,
+  "compilerOptions": {
+    "rootDir": ".",
+    "sourceMap": true,
+    "declaration": false,
+    "moduleResolution": "node",
+    "emitDecoratorMetadata": true,
+    "experimentalDecorators": true,
+    "importHelpers": true,
+    "target": "es2015",
+    "module": "esnext",
+    "lib": [
+      "es2020",
+      "dom"
+    ],
+    "skipLibCheck": true,
+    "skipDefaultLibCheck": true,
+    "baseUrl": ".",
+    "paths": {
+      "@easy-wt/browser-core": [
+        "packages/browser-core/src/index.ts"
+      ],
+      "@easy-wt/common": [
+        "packages/common/src/index.ts"
+      ],
+      "@easy-wt/database-core": [
+        "packages/database-core/src/index.ts"
+      ],
+      "@easy-wt/easy-wt-core": [
+        "packages/easy-wt-core/src/index.ts"
+      ],
+      "@easy-wt/ui-shared": [
+        "packages/ui-shared/src/index.ts"
+      ]
+    }
+  },
+  "exclude": [
+    "node_modules",
+    "tmp"
+  ]
+}

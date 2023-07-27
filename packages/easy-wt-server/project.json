@@ -1,0 +1,106 @@
+{
+  "name": "easy-wt-server",
+  "$schema": "../../node_modules/nx/schemas/project-schema.json",
+  "sourceRoot": "packages/easy-wt-server/src",
+  "projectType": "application",
+  "targets": {
+    "build": {
+      "executor": "@nx/webpack:webpack",
+      "outputs": [
+        "{options.outputPath}"
+      ],
+      "dependsOn": [
+        "easy-wt-web:build",
+        "easy-wt-report-web:build"
+      ],
+      "defaultConfiguration": "production",
+      "options": {
+        "target": "node",
+        "compiler": "tsc",
+        "outputPath": "dist/packages/easy-wt-server",
+        "main": "packages/easy-wt-server/src/main.ts",
+        "tsConfig": "packages/easy-wt-server/tsconfig.app.json",
+        "assets": [
+          "packages/easy-wt-server/src/assets",
+          {
+            "glob": "**/*",
+            "input": "dist/packages/easy-wt-report-web",
+            "output": "assets/easy-wt-report-web/"
+          }
+        ],
+        "isolatedConfig": true,
+        "webpackConfig": "packages/easy-wt-server/webpack.config.js"
+      },
+      "configurations": {
+        "development": {},
+        "production": {
+          "assets": [
+            "packages/easy-wt-server/src/assets",
+            {
+              "glob": "**/*",
+              "input": "dist/packages/easy-wt-report-web",
+              "output": "assets/easy-wt-report-web/"
+            },
+            {
+              "glob": "**/*",
+              "input": "dist/packages/easy-wt-web",
+              "output": "assets/easy-wt-web/"
+            }
+          ],
+          "fileReplacements": [
+            {
+              "replace": "packages/easy-wt-server/src/environments/environment.ts",
+              "with": "packages/easy-wt-server/src/environments/environment.prod.ts"
+            }
+          ]
+        }
+      }
+    },
+    "serve": {
+      "executor": "@nx/js:node",
+      "dependsOn": [
+        "easy-wt-report-web:build"
+      ],
+      "defaultConfiguration": "development",
+      "options": {
+        "buildTarget": "easy-wt-server:build"
+      },
+      "configurations": {
+        "development": {
+          "buildTarget": "easy-wt-server:build:development"
+        },
+        "production": {
+          "buildTarget": "easy-wt-server:build:production"
+        }
+      }
+    },
+    "lint": {
+      "executor": "@nx/linter:eslint",
+      "outputs": [
+        "{options.outputFile}"
+      ],
+      "options": {
+        "lintFilePatterns": [
+          "packages/easy-wt-server/**/*.ts"
+        ]
+      }
+    },
+    "test": {
+      "executor": "@nx/jest:jest",
+      "outputs": [
+        "{workspaceRoot}/coverage/{projectRoot}"
+      ],
+      "options": {
+        "jestConfig": "packages/easy-wt-server/jest.config.ts",
+        "passWithNoTests": true
+      },
+      "configurations": {
+        "ci": {
+          "ci": true,
+          "codeCoverage": true
+        }
+      }
+    }
+  },
+  "tags": []
+}

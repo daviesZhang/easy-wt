@@ -1,0 +1,204 @@
+<div *ngIf="!loading" class="content">
+  <form [formGroup]="caseForm" nz-form>
+    <nz-form-item class="case-config">
+      <nz-form-label nzFor="name" nzRequired>{{'case.field.name'|translate}}</nz-form-label>
+      <nz-form-control nzErrorTip="{{'case.field.name_tip'|translate}}">
+        <input formControlName="name" id="name" nz-input/>
+      </nz-form-control>
+    </nz-form-item>
+    <nz-form-item class="case-config">
+      <nz-form-label nzFor="directory" nzRequired>{{'case.field.directory'|translate}}</nz-form-label>
+      <nz-form-control>
+        <nz-select formControlName="directory" id="directory">
+          <nz-option [nzValue]="true" nzLabel="{{'case.field.directory_true'|translate}}"></nz-option>
+          <nz-option [nzValue]="false" nzLabel="{{'case.field.directory_false'|translate}}"></nz-option>
+        </nz-select>
+      </nz-form-control>
+    </nz-form-item>
+    <div formGroupName="runConfig">
+      <nz-collapse
+        [nzBordered]="false"
+        class="run-config">
+        <nz-collapse-panel
+          [(nzActive)]="configPanelActive"
+          class="config-panel"
+          nzHeader="{{'case.field.run_config'|translate}}"
+        >
+          <nz-form-item>
+            <nz-form-label
+              [nzRequired]="isRoot"
+              nzFor="browserType"
+              nzTooltipTitle="{{'run_config.field.browser_type_tip'|translate}}"
+            >{{'run_config.field.browser_type'|translate}}
+            </nz-form-label>
+            <nz-form-control
+              nzErrorTip="{{'run_config.field.browser_type_error_tip'|translate}}">
+              <nz-select
+                formControlName="browserType"
+                id="browserType"
+                nzAllowClear
+                nzMode="multiple"
+              >
+                <nz-option
+                  *ngFor="let type of supportBrowserType"
+                  [nzLabel]="type"
+                  [nzValue]="type"
+                ></nz-option>
+              </nz-select>
+            </nz-form-control>
+          </nz-form-item>
+
+          <nz-row [nzGutter]="{ xs: 24, sm: 12, md: 12}">
+            <nz-col>
+              <nz-form-item style="margin-bottom: 12px;">
+                <nz-form-label
+                  [nzRequired]="isRoot"
+                  nzFor="retry"
+                  nzTooltipTitle="{{'run_config.field.retry_tip'|translate}}"
+                >{{'run_config.field.retry'|translate}}
+                </nz-form-label
+                >
+                <nz-form-control [nzSm]="18" [nzXs]="24">
+                  <nz-input-number
+                    [nzMin]="0"
+
+                    [nzStep]="1"
+                    formControlName="retry"
+                    style="width: 100%"
+                  ></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+            <nz-col>
+              <nz-form-item style="margin-bottom: 0;">
+                <nz-form-label
+                  [nzRequired]="isRoot"
+                  nzFor="stepRetry"
+                  nzTooltipTitle="{{'run_config.field.step_retry_tip'|translate}}"
+                >{{'run_config.field.step_retry'|translate}}
+                </nz-form-label
+                >
+                <nz-form-control [nzSm]="18" [nzXs]="24">
+                  <nz-input-number
+                    [nzMin]="0"
+                    [nzStep]="1"
+                    formControlName="stepRetry"
+                    style="width: 100%"
+                  ></nz-input-number>
+                </nz-form-control>
+              </nz-form-item>
+            </nz-col>
+          </nz-row>
+
+        </nz-collapse-panel>
+      </nz-collapse>
+      <nz-collapse [nzBordered]="false">
+        <nz-collapse-panel
+          [nzActive]="true"
+          class="run-params"
+          formArrayName="params"
+          nzHeader="{{'run_config.field.params.label'|translate}}"
+        >
+          <nz-form-item
+            *ngFor="
+            let control of runConfigForm.controls.params.controls;
+            let i = index">
+            <div
+              [formGroupName]="i.toString()"
+              [nzGutter]="0"
+              nz-row
+              style="flex-grow: 1"
+            >
+              <div nz-col nzSpan="8">
+                <nz-input-group class="params-name"
+                                nzAddOnBefore="{{'run_config.field.params.name'|translate}}">
+                  <input formControlName="name" nz-input type="text"/>
+                </nz-input-group>
+              </div>
+              <div nz-col nzSpan="16">
+                <nz-input-group
+                  [nzAddOnAfter]="paramsAction"
+                  class="params-value"
+                  nzAddOnBefore="{{'run_config.field.params.value'|translate}}"
+                >
+                  <input formControlName="value" nz-input type="text"/>
+                </nz-input-group>
+              </div>
+
+              <ng-template #paramsAction>
+                <nz-button-group nzSize="small">
+                  <button
+                    (click)="onAddParams(i)"
+                    nz-button
+                    nzSize="small"
+                    nzType="text"
+                  >
+                    <span nz-icon nzType="plus"></span>
+                  </button>
+                  <button
+                    (click)="onRemoveParams(i)"
+                    nz-button
+                    nzSize="small"
+                    nzType="text"
+                  >
+                    <span nz-icon nzTheme="outline" nzType="minus"></span>
+                  </button>
+                </nz-button-group>
+              </ng-template>
+            </div>
+          </nz-form-item>
+          <div *ngIf="!runConfigForm.controls.params.controls.length">
+            <button
+              (click)="onAddParams(-1)"
+              nz-button
+              nzGhost
+              nzType="primary"
+              style="width: 100%"
+            >
+              <span nz-icon nzType="plus"></span>{{'run_config.button.add_params'|translate}}
+            </button>
+          </div>
+        </nz-collapse-panel>
+      </nz-collapse>
+    </div>
+  </form>
+  <div
+    (nzResize)="onResize($event)"
+    *ngIf="effectRunConfig"
+    [style.width.px]="boxWidth"
+    class="merge-config"
+    nz-resizable
+  >
+    <nz-resize-handle nzDirection="left">
+      <div class="left-wrap">
+        <span class="left" nz-icon nzTheme="outline" nzType="more"></span>
+      </div>
+    </nz-resize-handle>
+
+    <nz-alert nzMessage="{{'run_config.tip'|translate}}" nzShowIcon nzType="info"></nz-alert>
+
+    <nz-descriptions class="config" nzSize="small" [nzColumn]="2">
+      <nz-descriptions-item [nzSpan]="2" nzTitle="{{'run_config.field.browser_type'|translate}}">
+        <nz-tag *ngFor="let type of effectRunConfig.browserType">{{type}}</nz-tag>
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzSpan]="1" nzTitle="{{'run_config.field.retry'|translate}}">
+        <nz-tag>{{ effectRunConfig.retry || 0 }}</nz-tag>
+        {{'run_config.field.retry_suffix'|translate}}
+      </nz-descriptions-item>
+      <nz-descriptions-item [nzSpan]="1" nzTitle="{{'run_config.field.step_retry'|translate}}">
+        <nz-tag>{{ effectRunConfig.stepRetry || 0 }}</nz-tag>
+        {{'run_config.field.retry_suffix'|translate}}
+      </nz-descriptions-item>
+    </nz-descriptions>
+
+    <easy-wt-grid-table
+      (gridReady)="onGridReady($event)"
+      [getData]="getData"
+      [options]="gridOptions"
+      [serverSort]="false"
+      [showFooter]="false"
+      class="params-grid-table"
+    >
+    </easy-wt-grid-table>
+  </div>
+</div>

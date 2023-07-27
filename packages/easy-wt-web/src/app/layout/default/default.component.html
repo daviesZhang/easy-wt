@@ -1,0 +1,35 @@
+<nz-layout [ngClass]="{rounded:!this.isElectron}" class="default-layout">
+
+  <nz-layout>
+    <nz-header class="header">
+      <div class="left">
+        <div class="logo">
+          EASY-WT
+        </div>
+        <ul class="menu" nz-menu nzMode="horizontal" nzTheme="dark">
+          <!--          <li [routerLink]="['dashboard']" nz-menu-item nzMatchRouter>报告图表</li>-->
+          <li [routerLink]="['case']" nz-menu-item nzMatchRouter>{{'menu.case'|translate}}</li>
+          <li [routerLink]="['schedule']" nz-menu-item nzMatchRouter>{{'menu.schedule'|translate}}</li>
+          <li [routerLink]="['result']" nz-menu-item nzMatchRouter>{{'menu.report'|translate}}</li>
+        </ul>
+      </div>
+      <nz-space [nzSize]="48" class="right">
+        <easy-wt-case-progress *nzSpaceItem class="progress"></easy-wt-case-progress>
+        <easy-wt-language-setting *nzSpaceItem class="language"></easy-wt-language-setting>
+        <ng-container *ngIf="isElectron">
+          <easy-wt-setting *nzSpaceItem class="setting"/>
+        </ng-container>
+
+      </nz-space>
+    </nz-header>
+    <nz-content>
+      <div class="inner-content">
+        <router-outlet></router-outlet>
+      </div>
+    </nz-content>
+
+  </nz-layout>
+</nz-layout>
+
+
+
