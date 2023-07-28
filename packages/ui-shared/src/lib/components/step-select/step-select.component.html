@@ -4,13 +4,19 @@
            [nzAutoFocus]="true"
            [nzBorderless]="true"
            class="step-type-select"
+           [nzDropdownMatchSelectWidth]="false"
+           [nzSelectOnTab]="true"
            nzOpen
            nzShowSearch
            nzSize="small">
 
-  <nz-option *ngFor="let option of options | keyvalue"
-             [nzValue]="option.key" nzLabel="{{'step.type_options.'+option.value|lowercase|translate}}">
+  <nz-option-group *ngFor="let map of typeMap|keyvalue:operateTypeCompareFn"
+                   nzLabel="{{'step.type_options_group.'+map.key|lowercase|translate}}">
 
-  </nz-option>
+    <nz-option *ngFor="let option of map.value" [nzDisabled]="option.disabled"
+               [nzValue]="option.key" nzLabel="{{'step.type_options.'+option.key|lowercase|translate}}">
+    </nz-option>
+  </nz-option-group>
+
 
 </nz-select>

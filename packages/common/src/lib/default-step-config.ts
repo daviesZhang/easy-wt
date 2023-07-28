@@ -1,240 +1,284 @@
 import { StepType } from './common';
-import {
-  CheckElementExist,
-  CheckElementText,
-  ClickElement,
-  ClickLink,
-  InputText,
-  Keyboard,
-  Mouse,
-  OpenBrowser,
-  OpenPage,
-  PutParams,
-  RunScript,
-  Screenshot,
-  Wait,
-} from './step';
+import { IStep } from './step';
 
 export const DEFAULT_TIMEOUT = 5000;
 
 /**
+ * 步骤操作的类型
+ * check 检查点
+ * helper 辅助类
+ * operate 操作
+ * other 其他
+ */
+export const STEP_OPERATE_TYPE = [
+  'check',
+  'helper',
+  'operate',
+  'other',
+] as const;
+
+export type stepOperateType = (typeof STEP_OPERATE_TYPE)[number];
+
+/**
  * 每一种步骤类型 所对应的字段是否可填写和提示
  */
-export interface StepTypeConfig {
-  expression: {
-    tip?: string;
-    edit: boolean;
-    type?: 'string' | 'number';
-  };
-  selector: {
-    tip?: string;
-    edit: boolean;
-  };
-
-  [key: string]: {
-    tip?: string;
-    edit: boolean;
-    type?: 'string' | 'number';
-  };
+export interface StepTypeConfig<T extends IStep> {
+  order: number;
+  operateType: stepOperateType;
+  disabled?: boolean;
+  expression:
+    | false
+    | {
+        //输入提示
+        tip?: string;
+        //是否可以编辑
+        edit: boolean;
+        //输入类型
+        type?: 'string' | 'number';
+      };
+  selector: false | { edit: boolean; tip?: string };
+  options: Partial<T['options']>;
 }
 
-/**
- * 每一种步骤类型 所需要填写的内容和提示
- */
-export type stepTypeConfig = {
-  [StepType.OPEN_PAGE]: StepTypeConfig;
-  [StepType.CHECK_ELEMENT_EXIST]: StepTypeConfig;
-  [StepType.CLICK_LINK]: StepTypeConfig;
-  [StepType.KEYBOARD]: StepTypeConfig;
-  [StepType.CLICK_ELEMENT]: StepTypeConfig;
-  [StepType.CHECK_ELEMENT_TEXT]: StepTypeConfig;
-  [StepType.SCREENSHOT]: StepTypeConfig;
-  [StepType.WAIT]: StepTypeConfig;
-  [StepType.OPEN_BROWSER]: StepTypeConfig;
-  [StepType.INPUT_TEXT]: StepTypeConfig;
-  [StepType.PUT_PARAMS]: StepTypeConfig;
-  [StepType.MOUSE]: StepTypeConfig;
-  [StepType.RUN_SCRIPT]: StepTypeConfig;
-  [key: string]: StepTypeConfig;
-};
+export type stepConfig = Record<StepType, StepTypeConfig<IStep>>;
 
-/**
- * 每一种步骤类型,对应的输入框是否可以用以及输入提示
- */
-export const STEP_TYPE_CONFIG: stepTypeConfig = {
-  [StepType.OPEN_PAGE]: {
+export const STEP_CONFIG: stepConfig = {
+  //operate
+  OPEN_BROWSER: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: false },
+    expression: { edit: false },
+    options: {
+      //使用无头浏览器
+      headless: true,
+    },
+  },
+  OPEN_PAGE: {
+    order: 2,
     selector: { edit: false },
     expression: { edit: true, tip: '请填写需要打开的网址,必须以http开头~' },
+    options: {},
+    operateType: 'operate',
   },
-  [StepType.CHECK_ELEMENT_EXIST]: {
-    selector: {
-      edit: true,
-      tip: '请填写检查元素的选择器',
+  CLICK_LINK: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
+    expression: { edit: false },
+    options: {
+      timeout: DEFAULT_TIMEOUT,
     },
-    expression: { edit: false },
   },
-  [StepType.CLICK_LINK]: {
-    selector: { edit: true, tip: '请填写需要点击链接的选择器' },
-    expression: { edit: false },
-  },
-  [StepType.KEYBOARD]: {
+  KEYBOARD: {
+    operateType: 'operate',
+    order: 1,
     selector: { edit: false },
     expression: { edit: true, tip: '请填写需要操作的按键或者内容' },
+    options: {
+      type: 'press',
+    },
   },
-  [StepType.CLICK_ELEMENT]: {
-    selector: { edit: true, tip: '请填写需要点击元素的选择器' },
+  CLICK_ELEMENT: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
     expression: { edit: false },
+    options: { delay: 500, clickCount: 1 },
   },
-  [StepType.CHECK_ELEMENT_TEXT]: {
-    selector: { edit: true, tip: '请填写需要检查元素的选择器' },
-    expression: { edit: true, tip: '请填写待匹配的字符~' },
-  },
-  [StepType.SCREENSHOT]: {
+  SCREENSHOT: {
+    operateType: 'operate',
+    order: 1,
     selector: {
       edit: true,
-      tip: '如果填写选择器,则截图选择器内容,否截图页面内容',
     },
     expression: { edit: false },
+    options: {
+      //是否全页面截图
+      fullPage: false,
+      //base64|binary
+      encoding: 'binary',
+    },
   },
-  [StepType.WAIT]: {
-    selector: { edit: true, tip: '如果选择器不为空,等待元素出现~' },
+  WAIT: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
     expression: {
       edit: true,
       tip: '如果不为空,等待特定时间(毫秒)~',
       type: 'number',
     },
-  },
-  [StepType.OPEN_BROWSER]: {
-    selector: { edit: false },
-    expression: { edit: false },
-  },
-  [StepType.INPUT_TEXT]: {
-    selector: { edit: true, tip: '需要输入的输入框元素选择器' },
-    expression: { edit: true, tip: '需要输入的内容' },
-  },
-  [StepType.PUT_PARAMS]: {
-    selector: {
-      edit: true,
-      tip: '如果元素选择器不为空,则获取对应元素的文本存入变量',
+    options: {
+      //超时时间
+      timeout: DEFAULT_TIMEOUT,
     },
-    expression: { edit: true, tip: '如果元素选择器为空,则将此项内容存入变量' },
   },
-  [StepType.RUN_SCRIPT]: {
-    selector: { edit: false },
-    expression: { edit: true, tip: '脚本,拥有context,step,options变量' },
+  INPUT_TEXT: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
+    expression: { edit: true, tip: '需要输入的内容' },
+    options: {
+      //是否绕过可操作性检查
+      force: false,
+      timeout: DEFAULT_TIMEOUT,
+      //超时
+      //delay: ,
+    },
   },
-  [StepType.MOUSE]: {
+  MOUSE: {
+    operateType: 'operate',
+    order: 1,
     selector: { edit: false },
     expression: { edit: false },
+    options: {
+      type: 'down',
+      mouseButton: 'left',
+    },
   },
-  [StepType.SELECT_PAGE]: {
+  SELECT_PAGE: {
+    operateType: 'operate',
+    order: 1,
     selector: { edit: false },
     expression: {
       edit: true,
       tip: '如果是数字,按照顺序否则按照页面URL模糊匹配',
     },
+    options: {},
   },
-  [StepType.PAGE_LOCATOR]: {
+  CLOSE_BROWSER: {
+    order: 1,
+    selector: false,
+    expression: false,
+    operateType: 'operate',
+    options: {},
+  },
+
+  //check
+  CHECK_ELEMENT_EXIST: {
+    operateType: 'check',
+    order: 1,
+    selector: {
+      edit: true,
+    },
+    expression: { edit: false },
+    options: {
+      //总是截图,无论失败,成功
+      alwaysScreenshot: true,
+      //仅截图检查元素
+      element: false,
+      timeout: DEFAULT_TIMEOUT,
+      //是否全页面截图
+      fullPage: false,
+      //base64|binary
+      encoding: 'binary',
+      //如果检查失败,是否继续执行后续步骤
+      failedContinue: false,
+      //检查 true元素存在 ,false 元素不存在
+      exist: true,
+    },
+  },
+  CHECK_ELEMENT_TEXT: {
+    operateType: 'check',
+    order: 2,
+    selector: { edit: true },
+    expression: { edit: true, tip: '请填写待匹配的字符~' },
+    options: {
+      //总是截图,无论失败,成功
+      alwaysScreenshot: true,
+
+      timeout: DEFAULT_TIMEOUT,
+      //进截图检查元素
+      element: false,
+      //是否全页面截图
+      fullPage: false,
+      //base64|binary
+      encoding: 'binary',
+      //如果检查失败,是否继续执行后续步骤
+      failedContinue: false,
+      pattern: 'EQUALS',
+    },
+  },
+
+  //helper
+  PAGE_LOCATOR: {
+    operateType: 'helper',
+    order: 1,
     selector: { edit: true },
     expression: { edit: false },
+    options: {},
   },
-  [StepType.STRUCT_IF]: {
-    selector: { edit: true, tip: '如果选择器元素存在' },
+  STRUCT_IF: {
+    operateType: 'helper',
+    order: 2,
+    selector: { edit: true },
     expression: { edit: true, tip: '如果表达式成立' },
+    options: {},
   },
-  [StepType.STRUCT_WHILE]: {
-    selector: { edit: true, tip: '如果选择器元素存在' },
+  STRUCT_ELSE: {
+    order: 3,
+    selector: false,
+    expression: false,
+    operateType: 'helper',
+    options: {},
+  },
+  STRUCT_ENDIF: {
+    order: 4,
+    selector: false,
+    expression: false,
+    operateType: 'helper',
+    options: {},
+  },
+  STRUCT_WHILE: {
+    operateType: 'helper',
+    order: 5,
+    selector: { edit: true },
     expression: { edit: true, tip: '如果表达式成立' },
+    options: {},
   },
-};
-
-export type typeOptions = {
-  [StepType.OPEN_PAGE]: Partial<OpenPage['options']>;
-  [StepType.CHECK_ELEMENT_EXIST]: Partial<CheckElementExist['options']>;
-  [StepType.CLICK_LINK]: Partial<ClickLink['options']>;
-  [StepType.KEYBOARD]: Partial<Keyboard['options']>;
-  [StepType.CLICK_ELEMENT]: Partial<ClickElement['options']>;
-  [StepType.CHECK_ELEMENT_TEXT]: Partial<CheckElementText['options']>;
-  [StepType.SCREENSHOT]: Partial<Screenshot['options']>;
-  [StepType.WAIT]: Partial<Wait['options']>;
-  [StepType.OPEN_BROWSER]: Partial<OpenBrowser['options']>;
-  [StepType.INPUT_TEXT]: Partial<InputText['options']>;
-  [StepType.PUT_PARAMS]: Partial<PutParams['options']>;
-  [StepType.RUN_SCRIPT]: Partial<RunScript['options']>;
-  [StepType.MOUSE]: Partial<Mouse['options']>;
-};
-/**
- * 默认配置
- */
-export const DEFAULT_OPTIONS: typeOptions = {
-  [StepType.OPEN_PAGE]: {},
-  [StepType.CHECK_ELEMENT_EXIST]: {
-    //总是截图,无论失败,成功
-    alwaysScreenshot: true,
-    //仅截图检查元素
-    element: false,
-    timeout: DEFAULT_TIMEOUT,
-    //是否全页面截图
-    fullPage: false,
-    //base64|binary
-    encoding: 'binary',
-    //如果检查失败,是否继续执行后续步骤
-    failedContinue: false,
-    //检查 true元素存在 ,false 元素不存在
-    exist: true,
+  STRUCT_ENDWHILE: {
+    order: 6,
+    selector: false,
+    expression: false,
+    operateType: 'helper',
+    options: {},
+  },
+  PUT_PARAMS: {
+    operateType: 'helper',
+    order: 7,
+    selector: {
+      edit: true,
+    },
+    expression: { edit: true, tip: '如果元素选择器为空,则将此项内容存入变量' },
+    options: {
+      //简单模式,不以表达式计算
+      simple: false,
+    },
   },
 
-  [StepType.CLICK_LINK]: {
-    timeout: DEFAULT_TIMEOUT,
+  //other
+  RUN_SCRIPT: {
+    operateType: 'other',
+    order: 1,
+    selector: { edit: false },
+    expression: { edit: true, tip: '脚本,拥有context,step,options变量' },
+    options: {},
   },
-  [StepType.MOUSE]: {
-    type: 'down',
-    mouseButton: 'left',
+  IMAGE_SAVE: {
+    order: 2,
+    selector: false,
+    expression: false,
+    operateType: 'other',
+    options: {},
+    disabled: true,
   },
-
-  [StepType.KEYBOARD]: {
-    type: 'press',
+  TXT_SAVE: {
+    order: 3,
+    selector: false,
+    expression: false,
+    operateType: 'other',
+    options: {},
+    disabled: true,
   },
-  [StepType.CLICK_ELEMENT]: { delay: 500, clickCount: 1 },
-  [StepType.CHECK_ELEMENT_TEXT]: {
-    //总是截图,无论失败,成功
-    alwaysScreenshot: true,
-
-    timeout: DEFAULT_TIMEOUT,
-    //进截图检查元素
-    element: false,
-    //是否全页面截图
-    fullPage: false,
-    //base64|binary
-    encoding: 'binary',
-    //如果检查失败,是否继续执行后续步骤
-    failedContinue: false,
-    pattern: 'EQUALS',
-  },
-  [StepType.SCREENSHOT]: {
-    //是否全页面截图
-    fullPage: false,
-    //base64|binary
-    encoding: 'binary',
-  },
-  [StepType.WAIT]: {
-    //超时时间
-    timeout: DEFAULT_TIMEOUT,
-  },
-  [StepType.OPEN_BROWSER]: {
-    //使用无头浏览器
-    headless: true,
-  },
-  [StepType.INPUT_TEXT]: {
-    //是否绕过可操作性检查
-    force: false,
-    timeout: DEFAULT_TIMEOUT,
-    //超时
-    //delay: ,
-  },
-  [StepType.PUT_PARAMS]: {
-    //简单模式,不以表达式计算
-    simple: false,
-  },
-  [StepType.RUN_SCRIPT]: {},
 };

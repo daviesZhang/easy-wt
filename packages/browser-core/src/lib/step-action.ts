@@ -1,15 +1,7 @@
-import {
-  BrowserContext,
-  chromium,
-  devices,
-  firefox,
-  Locator,
-  Page,
-  webkit,
-} from 'playwright';
-import { lastValueFrom, take, timer } from 'rxjs';
+import {BrowserContext, chromium, devices, firefox, Locator, Page, webkit,} from 'playwright';
+import {lastValueFrom, take, timer} from 'rxjs';
 import * as vm from 'vm';
-import { Injectable } from '@nestjs/common';
+import {Injectable} from '@nestjs/common';
 
 import {
   CheckElementExist,
@@ -18,7 +10,6 @@ import {
   ClickLink,
   CloseBrowser,
   copyProperties2,
-  DEFAULT_OPTIONS,
   DEFAULT_TIMEOUT,
   InputText,
   IStep,
@@ -35,6 +26,7 @@ import {
   Screenshot,
   Selector,
   SelectPage,
+  STEP_CONFIG,
   StepAction,
   StepResult,
   StepType,
@@ -45,10 +37,10 @@ import {
   StructWhile,
   Wait,
 } from '@easy-wt/common';
-import { ensurePath, getNanoId } from './utils';
+import {ensurePath, getNanoId} from './utils';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { BrowserContextOptions, LaunchOptions } from 'playwright-core';
+import {BrowserContextOptions, LaunchOptions} from 'playwright-core';
 
 /**
  * 生成截屏存放的路径,如果不存在则创建
@@ -162,7 +154,7 @@ export class OpenBrowserAction implements StepAction<OpenBrowser> {
   ): Promise<StepResult<OpenBrowser>> {
     const options: Partial<OpenBrowser['options']> = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.OPEN_BROWSER],
+      STEP_CONFIG[StepType.OPEN_BROWSER].options,
       step.options
     );
     let browser$: Promise<BrowserContext>;
@@ -250,7 +242,7 @@ export class OpenPageAction implements StepAction<OpenPage> {
     const browser = context.browser as BrowserContext;
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.OPEN_PAGE],
+      STEP_CONFIG[StepType.OPEN_PAGE].options,
       step.options
     );
     const page = await browser.newPage();
@@ -279,7 +271,7 @@ export class KeyboardAction implements StepAction<Keyboard> {
     const { expression } = step;
     const options = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.KEYBOARD],
+      STEP_CONFIG[StepType.KEYBOARD].options,
       step.options
     );
     const { type, ...other } = options;
@@ -313,7 +305,7 @@ export class MouseAction implements StepAction<Mouse> {
   async run(step: Mouse, context: RunContext): Promise<StepResult<Mouse>> {
     const options = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.MOUSE],
+      STEP_CONFIG[StepType.MOUSE].options,
       step.options
     );
     const { type, x, y, mouseButton, ...other } = options;
@@ -374,7 +366,7 @@ export class InputTextAction implements StepAction<InputText> {
     const selector = step.selector;
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.INPUT_TEXT],
+      STEP_CONFIG[StepType.INPUT_TEXT].options,
       step.options
     );
 
@@ -400,7 +392,7 @@ export class ClickLinkAction implements StepAction<ClickLink> {
 
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.CLICK_LINK],
+      STEP_CONFIG[StepType.CLICK_LINK].options,
       step.options
     );
     const browser = context.browser as BrowserContext;
@@ -433,7 +425,7 @@ export class ClickElementAction implements StepAction<ClickElement> {
 
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.CLICK_ELEMENT],
+      STEP_CONFIG[StepType.CLICK_ELEMENT].options,
       step.options
     );
     await getLocator(selector, context).click(options);
@@ -457,7 +449,7 @@ export class ScreenshotAction implements StepAction<Screenshot> {
     const { selector } = step;
     const options = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.SCREENSHOT],
+      STEP_CONFIG[StepType.SCREENSHOT].options,
       step.options
     );
     const imagePath = await screenshotPath(context);
@@ -488,7 +480,7 @@ export class CheckElementExistAction implements StepAction<CheckElementExist> {
     const { selector } = step;
     const options = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.CHECK_ELEMENT_EXIST],
+      STEP_CONFIG[StepType.CHECK_ELEMENT_EXIST].options,
       step.options
     );
     const { alwaysScreenshot, timeout, element, exist, failedContinue } =
@@ -539,7 +531,7 @@ export class CheckElementTextAction implements StepAction<CheckElementText> {
     const { selector, expression } = step;
     const options = copyProperties2(
       {},
-      DEFAULT_OPTIONS[StepType.CHECK_ELEMENT_TEXT],
+      STEP_CONFIG[StepType.CHECK_ELEMENT_TEXT].options,
       step.options
     );
     const { alwaysScreenshot, pattern, element, timeout, failedContinue } =
@@ -651,7 +643,7 @@ export class PutParamsAction implements StepAction<PutParams> {
     const { selector, expression, options } = step;
     const { key, simple, attr } = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.PUT_PARAMS],
+      STEP_CONFIG[StepType.PUT_PARAMS].options,
       options
     );
     const params = [];
@@ -827,7 +819,7 @@ export class WaitAction implements StepAction<Wait> {
     const { expression, selector } = step;
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.WAIT],
+      STEP_CONFIG[StepType.WAIT].options,
       step.options
     );
 
@@ -856,7 +848,7 @@ export class RunScriptAction implements StepAction<RunScript> {
     const { expression } = step;
     const options = Object.assign(
       {},
-      DEFAULT_OPTIONS[StepType.RUN_SCRIPT],
+      STEP_CONFIG[StepType.RUN_SCRIPT].options,
       step.options
     );
 

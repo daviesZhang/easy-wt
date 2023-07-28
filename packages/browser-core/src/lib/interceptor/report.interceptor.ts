@@ -4,14 +4,14 @@ import {
   IStep,
   Report,
   RunContext,
+  STEP_CONFIG,
   StepHandler,
   StepInterceptor,
   StepResult,
   StepResultError,
-  StepType,
 } from '@easy-wt/common';
-import { defer, Observable, tap } from 'rxjs';
-import { Logger } from '@nestjs/common';
+import {defer, Observable, tap} from 'rxjs';
+import {Logger} from '@nestjs/common';
 
 /**
  * 生成报告数据
@@ -29,11 +29,6 @@ export class ReportInterceptor implements StepInterceptor {
    * @private
    */
   private readonly beginTime: number;
-
-  private CHECK_STEP = [
-    StepType.CHECK_ELEMENT_TEXT,
-    StepType.CHECK_ELEMENT_EXIST,
-  ];
 
   private context: RunContext | null = null;
 
@@ -107,11 +102,12 @@ export class ReportInterceptor implements StepInterceptor {
     const actions: Array<ActionResult<IStep>> = this.getResult();
     const enabledActions = actions.filter((action) => action.step.enable);
     const errorSteps = actions.filter((action) => action.success === false);
-    const totalCheck = enabledActions.filter((action) =>
-      this.CHECK_STEP.includes(action.step.type!)
+    const totalCheck = enabledActions.filter(
+      (action) => STEP_CONFIG[action.step.type!].operateType === 'check'
     ).length;
     const successCount = enabledActions.filter(
-      (step) => this.CHECK_STEP.includes(step.step.type!) && step.success
+      (step) =>
+        STEP_CONFIG[step.step.type!].operateType === 'check' && step.success
     ).length;
     const casePath = [...(this.context!.casePath as string[])];
     const browserType = this.context!.browserType!;

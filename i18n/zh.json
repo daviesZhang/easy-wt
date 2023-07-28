@@ -208,6 +208,12 @@
       "selector": "元素选择器",
       "type": "步骤类型"
     },
+    "type_options_group": {
+      "check": "检查",
+      "operate": "操作",
+      "helper": "辅助",
+      "other": "其他"
+    },
     "type_options": {
       "open_browser": "启动浏览器",
       "close_browser": "关闭浏览器",
