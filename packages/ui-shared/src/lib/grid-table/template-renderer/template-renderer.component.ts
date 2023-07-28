@@ -1,9 +1,4 @@
-import {
-  ChangeDetectionStrategy,
-  Component,
-  OnInit,
-  TemplateRef,
-} from '@angular/core';
+import { ChangeDetectionStrategy, Component, TemplateRef } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 
 import {
@@ -29,16 +24,10 @@ import {
     `,
   ],
 })
-export class TemplateRendererComponent
-  implements OnInit, ICellRendererAngularComp
-{
+export class TemplateRendererComponent implements ICellRendererAngularComp {
   template!: TemplateRef<any>;
 
   templateContext!: { $implicit: any; params: any };
-
-  constructor() {}
-
-  ngOnInit(): void {}
 
   afterGuiAttached(params?: IAfterGuiAttachedParams): void {}
 

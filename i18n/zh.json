@@ -102,8 +102,8 @@
     "exporting": "导出{{type}}文件中...",
     "export_complete": "导出完成~",
     "export_error": "导出失败,请检查相关配置~",
-    "disable_step": "已禁用",
-    "skip_step": "未执行",
+    "disable_step": "禁用",
+    "skip_step": "跳过",
     "delete_confirm": "将会尝试将输出目录对应文件一并删除,确定要删除报告吗?",
     "stat": {
       "title": "总计",

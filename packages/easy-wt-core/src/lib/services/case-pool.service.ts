@@ -56,11 +56,13 @@ export class CasePoolService {
         mergeMap((next) => next, concurrent),
         catchError((taskError: CaseError) => of(taskError))
       )
-      .subscribe((result) => {
-        this.eventEmitter.emit(CaseEvent.CASE_QUEUE_REMOVE, {
-          uuid: result.uuid,
-          scriptCase: result.scriptCase,
-        });
+      .subscribe({
+        next: (result) => {
+          this.eventEmitter.emit(CaseEvent.CASE_QUEUE_REMOVE, {
+            uuid: result.uuid,
+            scriptCase: result.scriptCase,
+          });
+        },
       });
   }
 

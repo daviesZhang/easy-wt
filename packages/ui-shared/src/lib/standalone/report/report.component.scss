@@ -1,9 +1,16 @@
 .body {
   overflow-x: hidden;
-  overflow-y: scroll;
+  overflow-y: auto;
   height: 100%;
 }
 
+.loading-report {
+  margin-top: 100px;
+  position: absolute;
+  display: flex;
+  justify-content: center;
+  width: 100%;
+}
 
 .menu-bar {
   position: fixed;
@@ -15,6 +22,7 @@
 
 .electron {
   padding-top: 28px;
+  padding-bottom: 20px;
 
 }
 

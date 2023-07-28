@@ -119,7 +119,7 @@ export class ReportComponent implements OnInit {
 
   localHTML = false;
   resizeId = -1;
-  disabled = false;
+
   resizeDirection: NzResizeDirection | null = null;
 
   constructor(
@@ -169,7 +169,6 @@ export class ReportComponent implements OnInit {
       });
     };
     this.domLayout = this.forPDF ? 'print' : 'autoHeight';
-
     this.options = {
       getRowId: (params) => params.data.step.id.toString(),
       columnDefs: [
@@ -291,10 +290,6 @@ export class ReportComponent implements OnInit {
     this.gridApi = $event.event.api;
     this.table = $event.gridTable;
     this.gridApi.setDomLayout(this.domLayout);
-  }
-
-  close() {
-    this.getElectron().closeWindow('report-page');
   }
 
   hasImage(action) {

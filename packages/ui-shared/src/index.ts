@@ -28,7 +28,6 @@ export { TemplateRendererComponent } from './lib/grid-table/template-renderer/te
 export * from './lib/utils/yuan';
 export * from './lib/type';
 
-export * from './lib/utils/tools';
 export * from './lib/options-component-utils';
 export * from './lib/components/abstract-options';
 

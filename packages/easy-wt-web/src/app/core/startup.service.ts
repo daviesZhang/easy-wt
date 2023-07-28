@@ -1,10 +1,11 @@
-import { Injectable } from '@angular/core';
-import { Router } from '@angular/router';
-import { NzMessageService } from 'ng-zorro-antd/message';
-import { CoreService } from './core.service';
-import { en_US, NzI18nService, zh_CN } from 'ng-zorro-antd/i18n';
-import { TranslateService } from '@ngx-translate/core';
-import { lastValueFrom } from 'rxjs';
+import {Injectable} from '@angular/core';
+import {Router} from '@angular/router';
+import {NzMessageService} from 'ng-zorro-antd/message';
+import {CoreService} from './core.service';
+import {en_US, NzI18nService, zh_CN} from 'ng-zorro-antd/i18n';
+import {TranslateService} from '@ngx-translate/core';
+import {lastValueFrom} from 'rxjs';
+import {ElectronCoreService} from './electron-core.service';
 
 /**
  * Used for application startup
@@ -32,7 +33,16 @@ export class StartupService {
         break;
     }
     await lastValueFrom(this.translate.use(lang));
+
+    const url = new URL(location.href);
+
     if (this.core.remoteServer() && !this.core.electron()) {
+      return Promise.resolve(true);
+    }
+    if (this.core instanceof ElectronCoreService) {
+      this.core.init();
+    }
+    if (url.hash.indexOf('startService=false') >= 0) {
       return Promise.resolve(true);
     }
     let config = await window.electron.getEnvironmentConfig();
@@ -60,6 +70,11 @@ export class StartupService {
 
   async load(): Promise<void> {
     await this.start();
+    if (this.core.electron()) {
+      document.body.classList.add('desktop');
+    } else {
+      document.body.classList.add('web');
+    }
     // delete loading...
     document.querySelector('.start-loading').remove();
     return Promise.resolve();

@@ -130,7 +130,11 @@ export function transformParams(params: { [key: string]: any } = {}): unknown {
       ) {
         return null;
       }
-      if (typeof value === 'object' && Object.keys(value).length >= 1) {
+      if (
+        typeof value === 'object' &&
+        Object.prototype.toString.call(value) === '[object Object]' &&
+        Object.keys(value).length >= 1
+      ) {
         return { [key]: transformParams(value) };
       }
       if (value instanceof Date) {

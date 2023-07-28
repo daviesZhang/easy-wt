@@ -12,13 +12,15 @@ import { decryptedData, encryptedData } from '../tools';
 
 import * as winston from 'winston';
 
+const MAIN_WINDOW_NAME = 'main';
+
 export default class ElectronEvents {
   static windowMap = new Map<string, BrowserWindow>();
 
   static loggers = winston.loggers.get('logger');
 
   static bootstrapElectronEvents(): Electron.IpcMain {
-    this.windowMap.set('main', App.mainWindow);
+    ElectronEvents.windowMap.set(MAIN_WINDOW_NAME, App.mainWindow);
     return ipcMain;
   }
 }
@@ -86,13 +88,15 @@ ipcMain.handle('get-main-LoadURL', (event, args) => {
  */
 ipcMain.handle('newWindow', async (event, args) => {
   const [windowName, url, parent, options] = args;
-
+  if (ElectronEvents.windowMap.has(windowName)) {
+    ElectronEvents.windowMap.get(windowName).show();
+    return;
+  }
   const newWindow = new BrowserWindow(
     Object.assign(
       {
         parent: parent ? App.mainWindow : null,
-        show: true,
-
+        show: false,
         frame: true,
         webPreferences: {
           devTools: App.isDevelopmentMode(),
@@ -113,6 +117,7 @@ ipcMain.handle('newWindow', async (event, args) => {
   });
   return new Promise((resolve, reject) => {
     newWindow.once('ready-to-show', () => {
+      newWindow.show();
       resolve(windowName);
     });
   });
@@ -138,6 +143,20 @@ ipcMain.on('closeWindow', async (event, args) => {
   if (windowName) {
     const window = ElectronEvents.windowMap.get(windowName);
     window && window.close();
+    ElectronEvents.windowMap.delete(windowName);
+  }
+});
+
+ipcMain.on('sendMessage', async (event, args) => {
+  const [windowName, channel, data] = args;
+  let window;
+  if (windowName === MAIN_WINDOW_NAME) {
+    window = App.mainWindow;
+  } else {
+    window = ElectronEvents.windowMap.get(windowName);
+  }
+  if (window) {
+    window.webContents.send(channel, data);
   }
 });
 
@@ -222,7 +241,6 @@ ipcMain.on('toggleDevTools', (event, args) => {
     App.mainWindow.webContents.toggleDevTools();
   }
 });
-
 
 // Handle App termination
 ipcMain.on('quit', (event, code) => {
