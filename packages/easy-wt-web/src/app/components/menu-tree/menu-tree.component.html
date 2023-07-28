@@ -52,7 +52,7 @@
     <ng-template #contentTpl>
         <span>
           {{"case.empty_tree"|translate}}&nbsp;&nbsp;
-          <a (click)="onCaseImport(null,false)">{{"case.button.import"|translate}}</a>
+          <a (click)="onCaseImport(null,false)" *ngIf="!isBrowser">{{"case.button.import"|translate}}</a>
         </span>
     </ng-template>
     <ng-template #footerTpl>

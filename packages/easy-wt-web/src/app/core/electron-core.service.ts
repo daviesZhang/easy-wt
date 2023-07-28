@@ -142,12 +142,15 @@ export class ElectronCoreService extends CoreService {
 
   async openReportPage(id: number): Promise<void> {
     const url = await window.electron.getMainLoadURL();
+    const windowName = `report-page-${id}`;
     await window.electron.newWindow(
       `report-page-${id}`,
-      `${url}#report?id=${id}`,
+      `${url}#report?id=${id}&startService=false`,
       false,
       { modal: false, frame: false, width: 800, height: 1000 }
     );
+    const report = await this.findReportById(id);
+    window.electron.sendMessage(windowName, 'reportData', report);
   }
 
   remoteServer() {
@@ -189,5 +192,22 @@ export class ElectronCoreService extends CoreService {
 
   getCronNextDate(cron: string): Promise<number | null> {
     return window.scheduleService.getCronNextDate(cron);
+  }
+
+  init() {
+    window.electron.onEvent('export-report', async (event, data) => {
+      const [type, id] = data;
+      let file: string;
+      if (type === 'pdf') {
+        file = await this.exportReportPDF(id);
+      } else {
+        file = await this.exportReportHTML(id);
+      }
+      window.electron.sendMessage(
+        `report-page-${id}`,
+        `export-report-${type}-${id}`,
+        file
+      );
+    });
   }
 }

@@ -12,13 +12,15 @@ import * as fs from 'fs-extra';
 import path from 'path';
 import { environment } from './environments/environment';
 import { WsAdapter } from '@nestjs/platform-ws';
+import { EnvironmentConfig } from '@easy-wt/common';
 
 async function bootstrap() {
-  const config = await fs.readJSON(
+  const config: EnvironmentConfig = await fs.readJSON(
     environment.production
       ? path.join(__dirname, 'config.json')
       : environment.environmentConfigPath
   );
+  config.output = path.resolve(config.output);
   const app = await NestFactory.create(AppModule.register(config), {
     logger: new LogService(),
   });

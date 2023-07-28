@@ -1,2 +1,9 @@
+<easy-wt-menu-bar-control
+  *ngIf="windowName"
+  [show]="{close:true}"
+  [windowName]="windowName"
+  class="menu-bar">
+
+</easy-wt-menu-bar-control>
 <easy-wt-report [exportHTML]="exportHTML" [exportPDF]="exportPDF" [windowName]="windowName"
                 [reportData]="report$"></easy-wt-report>

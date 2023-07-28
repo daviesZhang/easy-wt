@@ -11,6 +11,7 @@ import {
   CaseStepEvent,
   IScriptCase,
   IStep,
+  step,
   STEP_CONFIG,
   StepType,
 } from '@easy-wt/common';
@@ -69,7 +70,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
   gridApi: GridApi;
 
-  options: GridOptions<Omit<IStep, 'scriptCase'>>;
+  options: GridOptions<step>;
 
   getData: RequestData<IStep, unknown>;
 

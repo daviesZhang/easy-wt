@@ -217,6 +217,11 @@ try {
     minimizeWindow: (name?: string) => {
       ipcRenderer.send('minimizeWindow', [name]);
     },
+    onEvent: (event: string, callback) => ipcRenderer.on(event, callback),
+    offEvent: (event: string, callback) => ipcRenderer.off(event, callback),
+    sendMessage: (windowName: string, channel: string, ...args: any[]) => {
+      ipcRenderer.send('sendMessage', [windowName, channel, args]);
+    },
     showSaveDialog: async (
       options: { [key: string]: any },
       windowName?: string

@@ -1,8 +1,7 @@
 import { Component, Inject, OnInit } from '@angular/core';
-import { map, of, retryWhen } from 'rxjs';
+import { map, of, retry } from 'rxjs';
 
 import { DOCUMENT } from '@angular/common';
-import { rxRetryWhen } from '@easy-wt/ui-shared';
 
 @Component({
   selector: 'easy-wt-root',
@@ -35,7 +34,7 @@ export class AppComponent implements OnInit {
   ngOnInit(): void {
     this.reportData$ = of(true).pipe(
       map(() => this.getReportData()),
-      retryWhen(rxRetryWhen(10, 300))
+      retry({ count: 20, delay: 1000 })
     );
   }
 }

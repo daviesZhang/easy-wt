@@ -1,10 +1,4 @@
-<easy-wt-menu-bar-control
-  *ngIf="windowName"
-  [show]="{close:true}"
-  [windowName]="windowName"
-  class="menu-bar">
 
-</easy-wt-menu-bar-control>
 <ng-container *ngIf="report else loading">
   <div [ngClass]="{'electron':windowName,'body':!forPDF}">
 
@@ -21,7 +15,6 @@
           <nz-space>
             <button (click)="exportHTML()" *nzSpaceItem nz-button nzType="primary">导出网页</button>
             <button (click)="exportPDF()" *nzSpaceItem nz-button nzType="primary">导出PDF</button>
-
           </nz-space>
         </nz-page-header-extra>
         <nz-page-header-content>
@@ -157,7 +150,7 @@
 </ng-container>
 
 <ng-template #loading>
-  <nz-spin>
+  <nz-spin class="loading-report">
 
   </nz-spin>
 </ng-template>

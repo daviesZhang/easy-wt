@@ -46,6 +46,11 @@ export interface IElectronAPI {
     config: Partial<EnvironmentConfig>
   ) => Promise<EnvironmentConfig>;
   startService: (config: EnvironmentConfig) => Promise<void>;
+
+  onEvent: (event: string, callback) => void;
+  offEvent: (event: string, callback) => void;
+  sendMessage: (windowName: string, channel: string, ...args: any[]) => void;
+  logger: (level: string, message: string, label?: string) => void;
 }
 
 export interface BrowserCore {

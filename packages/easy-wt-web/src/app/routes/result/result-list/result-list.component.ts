@@ -198,6 +198,7 @@ export class ResultListComponent implements OnInit {
             `${((params.data.endTime - params.data.beginTime) / 1000).toFixed(
               2
             )}`,
+          suppressCellFlash: true,
           minWidth: 90,
         },
         {
