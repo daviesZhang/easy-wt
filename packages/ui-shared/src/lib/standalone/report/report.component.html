@@ -1,4 +1,3 @@
-
 <ng-container *ngIf="report else loading">
   <div [ngClass]="{'electron':windowName,'body':!forPDF}">
 
@@ -11,7 +10,7 @@
           <nz-tag *ngIf="report.success" nzColor="green">通过</nz-tag>
           <nz-tag *ngIf="!report.success" nzColor="red">未通过</nz-tag>
         </nz-page-header-tags>
-        <nz-page-header-extra *ngIf="domLayout!=='print'&&windowName">
+        <nz-page-header-extra *ngIf="domLayout!=='print'&&exportHTML&&exportPDF">
           <nz-space>
             <button (click)="exportHTML()" *nzSpaceItem nz-button nzType="primary">导出网页</button>
             <button (click)="exportPDF()" *nzSpaceItem nz-button nzType="primary">导出PDF</button>
