@@ -1,4 +1,4 @@
-import { IStep } from './step';
+import {IStep} from './step';
 
 /**
  * 支持的浏览器
@@ -9,6 +9,7 @@ export const supportBrowserType = ['chromium', 'firefox', 'webkit'] as const;
 export type SupportBrowserType = (typeof supportBrowserType)[number];
 
 export const supportDBType = ['sqlite', 'mysql'] as const;
+
 export type SupportDBType = (typeof supportDBType)[number];
 
 /**

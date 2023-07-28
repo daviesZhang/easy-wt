@@ -189,17 +189,21 @@
     },
     "export": {
       "dialog_title": "导出用例",
-      "success": "[{{fileName}}] 导出成功"
+      "success": "[{{fileName}}] 导出成功",
+      "loading": "导出中,请稍后..."
     },
     "import": {
       "file_error": "文件已损坏或格式错误,无法导入~",
-      "success": "用例导入成功"
+      "success": "用例导入成功",
+      "loading": "导入中,请稍后..."
     }
   },
   "step": {
     "default_name": "新增步骤",
     "bottom_create": "插入一行",
     "enable_tip": "启用/禁用",
+    "expression_tip": {
+    },
     "field": {
       "name": "步骤名称",
       "options": "步骤配置",
@@ -207,6 +211,12 @@
       "desc": "步骤描述",
       "selector": "元素选择器",
       "type": "步骤类型"
+    },
+    "type_options_group": {
+      "check": "检查",
+      "operate": "操作",
+      "helper": "辅助",
+      "other": "其他"
     },
     "type_options": {
       "open_browser": "启动浏览器",
@@ -223,8 +233,8 @@
       "struct_if": "IF",
       "struct_else": "ELSE",
       "struct_endif": "END IF",
-      "struct_while": "循环开始",
-      "struct_endwhile": "循环结束",
+      "struct_while": "WHILE",
+      "struct_endwhile": "END WHILE",
       "select_page": "切换页面",
       "keyboard": "键盘事件",
       "run_script": "运行脚本",

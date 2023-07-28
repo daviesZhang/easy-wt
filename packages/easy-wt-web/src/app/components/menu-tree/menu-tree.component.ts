@@ -288,7 +288,18 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     menu: NzDropdownMenuComponent
   ): void {
     this.contextNode = node;
-    this.nzContextMenuService.create($event, menu);
+    const currentTarget = $event.currentTarget;
+    let element: Element;
+    const focusClass = 'context-menu';
+    if (currentTarget instanceof Element) {
+      element = currentTarget as Element;
+      element.classList.add(focusClass);
+    }
+    this.nzContextMenuService.create($event, menu).onDestroy(() => {
+      if (element) {
+        element.classList.remove(focusClass);
+      }
+    });
   }
 
   async deleteNode(node: FlatNode) {
@@ -347,10 +358,19 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     let filePath = await window.electron.showSaveDialog({
       title: this.translate.instant('case.export.dialog_title'),
       properties: ['createDirectory'],
+      filters: [
+        {
+          name: 'Easy WT Case',
+          extensions: [CASE_FILE_SUFFIX.substring(1)],
+        },
+      ],
     });
     if (!filePath) {
       return null;
     }
+    const messageId = this.message.loading(
+      this.translate.instant('case.export.loading')
+    ).messageId;
     if (!filePath.endsWith(CASE_FILE_SUFFIX)) {
       filePath = `${filePath}${CASE_FILE_SUFFIX}`;
     }
@@ -359,6 +379,7 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
       filePath,
       parentTree
     );
+    this.message.remove(messageId);
     this.message.success(
       this.translate.instant('case.export.success', { fileName: filePath })
     );
@@ -373,11 +394,19 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     const filePath = await window.electron.showOpenDialog({
       title: this.translate.instant('common.open_file'),
       properties: ['openFile', 'treatPackageAsDirectory'],
-      filters: { extensions: [CASE_FILE_SUFFIX] },
+      filters: [
+        {
+          name: 'Easy WT Case',
+          extensions: [CASE_FILE_SUFFIX.substring(1)],
+        },
+      ],
     });
-    if (filePath && filePath.length) {
+    if (!filePath || !filePath.length) {
       return;
     }
+    const messageId = this.message.loading(
+      this.translate.instant('case.import.loading')
+    ).messageId;
     const caseFile = filePath[0];
     let parentId = null;
     if (contextNode !== null) {
@@ -409,5 +438,6 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.message.error(this.translate.instant(e.message));
     }
+    this.message.remove(messageId);
   }
 }

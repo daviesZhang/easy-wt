@@ -41,13 +41,15 @@
 
 ![模块关系](./doc/images/module.jpg)
 
+
 ```npm
-#当前版本必须加上--force,因为angular16才发布
-#jest-preset-angular还未更新,但实际不影响
 npm i --force
 ```
 
-如果安装遇到问题，参考
+_当前版本必须加上--force,因为angular16才发布
+#jest-preset-angular还未更新,但实际不影响_
+
+安装遇到问题，参考
 [ELECTRON安装文档](https://www.electronjs.org/zh/docs/latest/tutorial/installation)
 
 #### 首先启动web端

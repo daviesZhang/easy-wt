@@ -9,12 +9,10 @@ import {
   CaseBeginEvent,
   CaseEvent,
   CaseStepEvent,
-  DEFAULT_OPTIONS,
   IScriptCase,
   IStep,
-  STEP_TYPE_CONFIG,
+  STEP_CONFIG,
   StepType,
-  StepTypeConfig,
 } from '@easy-wt/common';
 import { CoreService } from '../../../core/core.service';
 import { from, map, Subject, takeUntil } from 'rxjs';
@@ -71,7 +69,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
   gridApi: GridApi;
 
-  options: GridOptions;
+  options: GridOptions<Omit<IStep, 'scriptCase'>>;
 
   getData: RequestData<IStep, unknown>;
 
@@ -146,6 +144,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
         {
           headerName: this.translate.instant('common.id'),
           field: 'id',
+
           hide: true,
         },
         {
@@ -156,7 +155,6 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
         {
           headerName: this.translate.instant('common.action'),
           pinned: true,
-          field: 'action',
           sortable: false,
           width: 118,
           suppressAutoSize: true,
@@ -191,7 +189,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
             if (params.data.type !== params.newValue) {
               const options = Object.assign(
                 {},
-                DEFAULT_OPTIONS[params.newValue]
+                STEP_CONFIG[params.newValue]['options']
               );
               params.data.options = options;
               params.node.setDataValue('selector', null);
@@ -292,7 +290,10 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
    * @param node
    * @param key
    */
-  editableCallback(node: IRowNode<IStep>, key: keyof StepTypeConfig): boolean {
+  editableCallback(
+    node: IRowNode<IStep>,
+    key: 'selector' | 'expression'
+  ): boolean {
     if (!node.data) {
       return false;
     }
@@ -300,8 +301,12 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (type === null) {
       return false;
     }
-    const config = STEP_TYPE_CONFIG[type];
-    return config && config[key].edit;
+    const config = STEP_CONFIG[type];
+    if (config) {
+      const value = config[key];
+      return value && value.edit;
+    }
+    return false;
   }
 
   onStepEnd(event: CaseStepEvent) {

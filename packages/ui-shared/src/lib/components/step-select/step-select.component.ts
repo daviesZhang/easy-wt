@@ -1,30 +1,63 @@
 import { Component, ViewChild } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
 import { GridApi, ICellEditorParams, IRowNode } from 'ag-grid-community';
-import { StepType } from '@easy-wt/common';
+import { STEP_CONFIG, stepOperateType } from '@easy-wt/common';
 import { NzSelectComponent } from 'ng-zorro-antd/select';
+import { KeyValue } from '@angular/common';
 
+const OPERATE_TYPE_ORDER = {
+  check: 2,
+  helper: 3,
+  operate: 1,
+  other: 4,
+};
 @Component({
   selector: 'easy-wt-step-select',
   templateUrl: './step-select.component.html',
   styleUrls: ['./step-select.component.less'],
 })
 export class StepSelectComponent implements ICellEditorAngularComp {
-  options = StepType;
-
   value: string;
 
   gridApi: GridApi;
 
   node: IRowNode;
+  typeMap = new Map<
+    stepOperateType,
+    Array<{ key: string; disabled: boolean }>
+  >();
 
   @ViewChild('selectComponent')
   selectComponent: NzSelectComponent;
+
+  operateTypeCompareFn(
+    a: KeyValue<stepOperateType, Array<any>>,
+    b: KeyValue<stepOperateType, Array<any>>
+  ) {
+    return OPERATE_TYPE_ORDER[a.key] > OPERATE_TYPE_ORDER[b.key] ? 1 : -1;
+  }
 
   agInit(params: ICellEditorParams): void {
     this.gridApi = params.api;
     this.node = params.node;
     this.value = params.value;
+
+    Object.entries(STEP_CONFIG)
+      .sort((a, b) => {
+        const [, aValue] = a;
+        const [, bValue] = b;
+        return aValue.order >= bValue.order ? 1 : -1;
+      })
+      .forEach(([key, value]) => {
+        const operateType = value.operateType;
+        this.typeMap.set(
+          operateType,
+          (this.typeMap.get(operateType) || []).concat({
+            key,
+            disabled: !!value.disabled,
+          })
+        );
+      });
   }
 
   getValue(): string {
@@ -33,7 +66,6 @@ export class StepSelectComponent implements ICellEditorAngularComp {
     }
     const value = this.value;
     if (this.node.data.type !== value) {
-      // this.gridApi.refreshCells({columns: ['options'], rowNodes: [this.node], force: true});
       setTimeout(() => {
         this.gridApi.refreshCells({
           columns: ['options'],

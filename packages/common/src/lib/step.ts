@@ -1,6 +1,6 @@
-import { CheckPattern, KeyboardEvent, StepType } from './common';
-import { IScriptCase } from './script-case';
-import { mouseButton, mouseEvent } from './step-options';
+import {CheckPattern, KeyboardEvent, StepType} from './common';
+import {IScriptCase} from './script-case';
+import {mouseButton, mouseEvent} from './step-options';
 
 /**
  * 步骤
@@ -29,6 +29,8 @@ export interface IStep {
   enable?: boolean;
 }
 
+
+export type step = Omit<IStep, 'scriptCase'>;
 export const SELECTOR_TYPE = [
   'Role',
   'AltText',
