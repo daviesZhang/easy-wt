@@ -45,7 +45,7 @@ import { TranslateService } from '@ngx-translate/core';
 export class ResultListComponent implements OnInit {
   gridApi: GridApi;
 
-  options: GridOptions;
+  options: GridOptions<Omit<Report, 'actions'>>;
 
   getData: RequestData<any, any>;
 
@@ -54,7 +54,8 @@ export class ResultListComponent implements OnInit {
   table!: GridTableComponent;
   @ViewChild('rowButtonTemplate', { static: true })
   rowButtonTemplate!: TemplateRef<NzSafeAny>;
-
+  @ViewChild('exportTemplate', { static: true })
+  exportTemplate: TemplateRef<NzSafeAny>;
   datePipe = new DatePipe('zh-CN');
 
   searchForm: UntypedFormGroup;
@@ -172,6 +173,7 @@ export class ResultListComponent implements OnInit {
           field: 'browserType',
           sortable: false,
           minWidth: 100,
+          maxWidth: 120,
         },
         {
           headerName: this.translate.instant('report.field.success'),
@@ -179,15 +181,18 @@ export class ResultListComponent implements OnInit {
           cellDataType: false,
           valueFormatter: (params) =>
             this.translate.instant('report.field.success_' + params.value),
-          minWidth: 50,
+          minWidth: 80,
+          maxWidth: 110,
+          cellRenderer: TemplateRendererComponent,
+          cellRendererParams: {
+            ngTemplate: this.exportTemplate,
+          },
           cellClassRules: {
-            'success-row': (params) => params.data.success,
             'failure-row': (params) => !params.data.success,
           },
         },
         {
           headerName: this.translate.instant('report.field.time'),
-          field: 'time',
           type: 'numericColumn',
           valueFormatter: (params) =>
             `${((params.data.endTime - params.data.beginTime) / 1000).toFixed(
