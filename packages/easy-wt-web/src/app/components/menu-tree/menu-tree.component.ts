@@ -368,6 +368,9 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     if (!filePath) {
       return null;
     }
+    const messageId = this.message.loading(
+      this.translate.instant('case.export.loading')
+    ).messageId;
     if (!filePath.endsWith(CASE_FILE_SUFFIX)) {
       filePath = `${filePath}${CASE_FILE_SUFFIX}`;
     }
@@ -376,6 +379,7 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
       filePath,
       parentTree
     );
+    this.message.remove(messageId);
     this.message.success(
       this.translate.instant('case.export.success', { fileName: filePath })
     );
@@ -397,9 +401,12 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
         },
       ],
     });
-    if (filePath && filePath.length) {
+    if (!filePath || !filePath.length) {
       return;
     }
+    const messageId = this.message.loading(
+      this.translate.instant('case.import.loading')
+    ).messageId;
     const caseFile = filePath[0];
     let parentId = null;
     if (contextNode !== null) {
@@ -431,5 +438,6 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     } catch (e) {
       this.message.error(this.translate.instant(e.message));
     }
+    this.message.remove(messageId);
   }
 }

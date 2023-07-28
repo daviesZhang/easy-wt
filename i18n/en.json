@@ -189,11 +189,13 @@
     },
     "export": {
       "dialog_title": "导出用例",
-      "success": "[{{fileName}}] 导出成功"
+      "success": "[{{fileName}}] 导出成功",
+      "loading": "导出中,请稍后..."
     },
     "import": {
       "file_error": "文件已损坏或格式错误,无法导入~",
-      "success": "用例导入成功"
+      "success": "用例导入成功",
+      "loading": "导入中,请稍后..."
     }
   },
   "step": {

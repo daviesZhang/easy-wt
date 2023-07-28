@@ -26,9 +26,12 @@ export class CommonInputExpressionComponent implements ICellEditorAngularComp {
     const data = params.data;
     if (data.type != null) {
       const config = STEP_CONFIG[data.type];
+      const field = params.colDef.field;
       if (config) {
-        this.tip = config[params.colDef.field]?.tip;
-        if (config[params.colDef.field].type) {
+        if (config[field]) {
+          this.tip = config[field].tip;
+        }
+        if (config[field].type) {
           this.valueType = config[params.colDef.field].type;
         }
       }
