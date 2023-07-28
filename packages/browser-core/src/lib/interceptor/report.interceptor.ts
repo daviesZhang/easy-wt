@@ -49,6 +49,12 @@ export class ReportInterceptor implements StepInterceptor {
     let stepBeginTime: number;
     return defer(() => {
       stepBeginTime = new Date().getTime();
+      // if (step.id) {
+      //   const actionResult = this.stepMap.get(step.id);
+      //   if (actionResult && actionResult.begin) {
+      //     stepBeginTime = actionResult.begin;
+      //   }
+      // }
       return handler.handle(step, context);
     }).pipe(
       tap({

@@ -307,7 +307,7 @@
       "element_true": "截图元素内容",
       "full_page_true": "整页截图",
       "full_page_false": "可视部分",
-      "path": "存储路径"
+      "path": "另存为"
     },
     "put_params": {
       "key_label": "参数名称",
