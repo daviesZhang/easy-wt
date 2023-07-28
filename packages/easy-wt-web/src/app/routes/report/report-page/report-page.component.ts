@@ -1,4 +1,4 @@
-import { Component, TemplateRef, ViewChild } from '@angular/core';
+import { Component, Inject, TemplateRef, ViewChild } from '@angular/core';
 import { CoreService } from '../../../core/core.service';
 import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom, from, fromEventPattern, map, Observable } from 'rxjs';
@@ -9,6 +9,7 @@ import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { environment } from '../../../../environments/environment';
 import { TranslateService } from '@ngx-translate/core';
+import { DOCUMENT } from '@angular/common';
 
 @Component({
   selector: 'easy-wt-report-page',
@@ -40,11 +41,15 @@ export class ReportPageComponent {
     private coreService: CoreService,
     private route: ActivatedRoute,
     private translate: TranslateService,
+    @Inject(DOCUMENT) private _doc: Document,
     private message: NzMessageService
   ) {
     const id = this.route.snapshot.queryParams['id'];
     this.isRemoteServer = this.coreService.remoteServer();
     this.windowName = this.coreService.electron() ? `report-page-${id}` : null;
+    if (this.windowName) {
+      this._doc.body.classList.add('report-page');
+    }
     if (this.isRemoteServer) {
       this.report$ = from(this.coreService.findReportById(id)).pipe(
         map((report) => {

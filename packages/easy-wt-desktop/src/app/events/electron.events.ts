@@ -96,8 +96,7 @@ ipcMain.handle('newWindow', async (event, args) => {
     Object.assign(
       {
         parent: parent ? App.mainWindow : null,
-        show: true,
-
+        show: false,
         frame: true,
         webPreferences: {
           devTools: App.isDevelopmentMode(),
@@ -118,6 +117,7 @@ ipcMain.handle('newWindow', async (event, args) => {
   });
   return new Promise((resolve, reject) => {
     newWindow.once('ready-to-show', () => {
+      newWindow.show();
       resolve(windowName);
     });
   });

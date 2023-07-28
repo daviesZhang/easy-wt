@@ -1,5 +1,5 @@
 import {Injectable} from '@angular/core';
-import {ActivatedRoute, Router} from '@angular/router';
+import {Router} from '@angular/router';
 import {NzMessageService} from 'ng-zorro-antd/message';
 import {CoreService} from './core.service';
 import {en_US, NzI18nService, zh_CN} from 'ng-zorro-antd/i18n';
@@ -18,8 +18,7 @@ export class StartupService {
     private message: NzMessageService,
     private i18n: NzI18nService,
     private translate: TranslateService,
-    private core: CoreService,
-    private activatedRoute: ActivatedRoute
+    private core: CoreService
   ) {}
 
   async start() {
@@ -50,7 +49,6 @@ export class StartupService {
     if (!config) {
       config = await window.electron.saveEnvironmentConfig({});
     }
-
     try {
       return window.electron
         .startService(config)
@@ -72,6 +70,11 @@ export class StartupService {
 
   async load(): Promise<void> {
     await this.start();
+    if (this.core.electron()) {
+      document.body.classList.add('desktop');
+    } else {
+      document.body.classList.add('web');
+    }
     // delete loading...
     document.querySelector('.start-loading').remove();
     return Promise.resolve();
