@@ -288,7 +288,18 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
     menu: NzDropdownMenuComponent
   ): void {
     this.contextNode = node;
-    this.nzContextMenuService.create($event, menu);
+    const currentTarget = $event.currentTarget;
+    let element: Element;
+    const focusClass = 'context-menu';
+    if (currentTarget instanceof Element) {
+      element = currentTarget as Element;
+      element.classList.add(focusClass);
+    }
+    this.nzContextMenuService.create($event, menu).onDestroy(() => {
+      if (element) {
+        element.classList.remove(focusClass);
+      }
+    });
   }
 
   async deleteNode(node: FlatNode) {

@@ -7,7 +7,9 @@
     <nz-tree-node
 
             (click)="nodeClick(node)"
-            (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node; when: hasChild" class="node-row"
+            (contextmenu)="contextMenu($event,node, menu)"
+            *nzTreeNodeDef="let node; when: hasChild"
+            class="node-row"
             nzTreeNodePadding>
         <nz-tree-node-toggle *ngIf="!node.loading">
             <span nz-icon nzTreeNodeToggleRotateIcon nzType="caret-down"></span>
@@ -15,8 +17,6 @@
         <nz-tree-node-toggle *ngIf="node.loading" nzTreeNodeNoopToggle>
             <span nz-icon nzTreeNodeToggleActiveIcon nzType="loading"></span>
         </nz-tree-node-toggle>
-
-
         <nz-tree-node-option
                 [nzSelected]="selectListSelection.isSelected(node)"
         >
@@ -25,7 +25,6 @@
         </nz-tree-node-option>
     </nz-tree-node>
     <nz-tree-node
-
             (click)="nodeClick(node)"
             (contextmenu)="contextMenu($event,node, menu)" *nzTreeNodeDef="let node;" class="node-row"
             nzTreeNodePadding>
