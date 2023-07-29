@@ -32,7 +32,7 @@
 * 执行进度实时展示
 * 支持步骤循环执行
 * 支持分支判断
-* 支持用例导入,导出,方便不同数据之间分享
+* 支持用例导入、导出,便于跨数据库分享用例
 
 ## 使用
 
@@ -44,11 +44,9 @@
 
 
 ```npm
-npm i --force
+npm i
 ```
 
-_当前版本必须加上--force,因为angular16才发布
-#jest-preset-angular还未更新,但实际不影响_
 
 安装遇到问题，参考
 [ELECTRON安装文档](https://www.electronjs.org/zh/docs/latest/tutorial/installation)
