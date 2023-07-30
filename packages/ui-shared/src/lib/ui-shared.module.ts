@@ -54,6 +54,7 @@ import { CaseStepOptionsComponent } from './components/case-step-options/case-st
 import { InvalidDirective } from './invalid.directive';
 
 import { TranslateModule } from '@ngx-translate/core';
+import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
 
 @NgModule({
   declarations: [
@@ -78,6 +79,7 @@ import { TranslateModule } from '@ngx-translate/core';
     ServerConfigComponent,
     InitConfigComponent,
     JsonEditorModalComponent,
+    TextSaveOptionsComponent,
     CommonInputExpressionComponent,
     CaseStepOptionsComponent,
     JsEditorExpressionComponent,
@@ -131,6 +133,7 @@ import { TranslateModule } from '@ngx-translate/core';
     CommonJsonOptionsComponent,
     WaitOptionsComponent,
     ScreenshotOptionsComponent,
+    TextSaveOptionsComponent,
     PutParamsOptionsComponent,
     InputTextOptionsComponent,
     ClickElementOptionsComponent,

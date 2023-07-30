@@ -240,8 +240,12 @@
       "run_script": "运行脚本",
       "mouse": "鼠标操作",
       "page_locator": "元素定位器",
-      "txt_save": "文本存储",
+      "text_save": "文本存储",
+      "text_save_close": "关闭文本存储",
       "image_save": "图片存储"
+    },
+    "error": {
+      "text_empty": "没有任何需要保存的文本"
     }
   },
   "schedule": {
@@ -308,6 +312,12 @@
       "full_page_true": "整页截图",
       "full_page_false": "可视部分",
       "path": "另存为"
+    },
+    "text_save": {
+      "file_path": "存储路径",
+      "attr": "文本属性",
+      "overwrite": "覆盖已存在文件",
+      "auto_close": "自动结束文件写入"
     },
     "put_params": {
       "key_label": "参数名称",

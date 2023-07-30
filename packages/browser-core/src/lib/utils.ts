@@ -1,8 +1,10 @@
-import { RunContext } from '@easy-wt/common';
+import { RunContext, Selector } from '@easy-wt/common';
 import * as path from 'path';
 import * as fs from 'fs-extra';
-import { devices } from 'playwright';
+import { Locator, Page } from 'playwright';
 import { customAlphabet } from 'nanoid/async';
+
+export type locatorRole = Parameters<Page['getByRole']>[0];
 
 const nanoid = customAlphabet(
   '_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
@@ -32,4 +34,114 @@ export async function getNanoId() {
   return await nanoid();
 }
 
-export const DAVIE_NAME_LIST = Object.keys(devices);
+/**
+ * 生成截屏存放的路径,如果不存在则创建
+ * @param context 上下文内容
+ */
+export async function screenshotPath(context: RunContext): Promise<string> {
+  const name: string = await getNanoId();
+  return await ensurePath(context, ['images', `${name}.png`]);
+}
+
+export function getLocator(
+  selector: string | Selector | null | undefined,
+  context: RunContext
+): Locator {
+  const previous = context.locator as Locator;
+  if (!selector || !Object.keys(selector).length) {
+    if (previous) {
+      return previous;
+    }
+    throw new Error('元素选择器为空,无法查找页面元素~');
+  }
+  const page = context.page as Page;
+  if (typeof selector === 'string') {
+    return page.locator(selector);
+  }
+  const { value, connect, nth, type, exact, filterValue, filter } = selector;
+  let text: string | RegExp = value;
+  let filterText: string | RegExp | undefined = filterValue;
+  if (value.startsWith('/') && value.endsWith('/') && value.length > 2) {
+    text = new RegExp(value.replace(/^\/|\/$/g, ''));
+  }
+  if (
+    filterValue &&
+    filterValue.startsWith('/') &&
+    filterValue.endsWith('/') &&
+    filterValue.length > 2
+  ) {
+    filterText = new RegExp(filterValue.replace(/^\/|\/$/g, ''));
+  }
+  let locator: Locator;
+  switch (type) {
+    case 'AltText':
+      locator = page.getByAltText(text, { exact });
+      break;
+    case 'Placeholder':
+      locator = page.getByPlaceholder(text, { exact });
+      break;
+    case 'Role':
+      locator = page.getByRole(value as locatorRole, { exact });
+      break;
+    case 'Text':
+      locator = page.getByText(text, { exact });
+      break;
+    case 'Label':
+      locator = page.getByLabel(text, { exact });
+      break;
+    case 'Title':
+      locator = page.getByTitle(text, { exact });
+      break;
+    case 'Css':
+    case 'XPath':
+    default:
+      locator = page.locator(value);
+      break;
+  }
+  if (filter && filterText) {
+    switch (filter) {
+      case 'hasText':
+        locator = locator.filter({ hasText: filterText });
+        break;
+      case 'hasNotText':
+        locator = locator.filter({ hasNotText: filterText });
+    }
+  }
+  if (nth) {
+    locator = locator.nth(nth);
+  }
+  if (previous && connect) {
+    switch (connect) {
+      case 'or':
+        locator = previous.or(locator);
+        break;
+      case 'locator':
+        locator = previous.locator(locator);
+        break;
+      case 'and':
+      default:
+        locator = previous.and(locator);
+        break;
+    }
+  }
+  context.locator = locator;
+  return locator;
+}
+
+/**
+ * 获取页面对象
+ * @param context
+ */
+export function getPage(context: RunContext): Page {
+  return context.page as Page;
+}
+
+export function getWriteStreamMap(
+  context: RunContext,
+  create = false
+): Map<string, fs.WriteStream> {
+  if (!context['writeStreamMap'] && create) {
+    context['writeStreamMap'] = new Map<string, fs.WriteStream>();
+  }
+  return context['writeStreamMap'] as Map<string, fs.WriteStream>;
+}

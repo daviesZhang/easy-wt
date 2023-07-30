@@ -29,10 +29,14 @@ import {
   StructIfAction,
   StructWhileAction,
   WaitAction,
-} from './step-action';
+} from './step-action/step-action';
 import { ReportExportService } from './report-export.service';
 import { CaseRunService } from './case-run.service';
 import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
+import {
+  TextSaveAction,
+  TextSaveCloseAction,
+} from './step-action/text-save-action';
 
 @Module({})
 export class BrowserCoreModule {
@@ -53,6 +57,8 @@ export class BrowserCoreModule {
         StructIfAction,
         StructElseAction,
         StructEndIfAction,
+        TextSaveAction,
+        TextSaveCloseAction,
         StructWhileAction,
         StructEndwhileAction,
         WaitAction,
@@ -75,6 +81,8 @@ export class BrowserCoreModule {
             CheckElementExistAction,
             CheckElementTextAction,
             PutParamsAction,
+            TextSaveAction,
+            TextSaveCloseAction,
             StructIfAction,
             StructElseAction,
             StructEndIfAction,

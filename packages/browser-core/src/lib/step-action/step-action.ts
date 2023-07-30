@@ -1,7 +1,15 @@
-import {BrowserContext, chromium, devices, firefox, Locator, Page, webkit,} from 'playwright';
-import {lastValueFrom, take, timer} from 'rxjs';
+import {
+  BrowserContext,
+  chromium,
+  devices,
+  firefox,
+  Locator,
+  Page,
+  webkit,
+} from 'playwright';
+import { lastValueFrom, take, timer } from 'rxjs';
 import * as vm from 'vm';
-import {Injectable} from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 
 import {
   CheckElementExist,
@@ -24,7 +32,6 @@ import {
   RunContext,
   RunScript,
   Screenshot,
-  Selector,
   SelectPage,
   STEP_CONFIG,
   StepAction,
@@ -37,114 +44,10 @@ import {
   StructWhile,
   Wait,
 } from '@easy-wt/common';
-import {ensurePath, getNanoId} from './utils';
+import { ensurePath, getLocator, getPage, screenshotPath } from './../utils';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import {BrowserContextOptions, LaunchOptions} from 'playwright-core';
-
-/**
- * 生成截屏存放的路径,如果不存在则创建
- * @param context 上下文内容
- */
-async function screenshotPath(context: RunContext): Promise<string> {
-  const name: string = await getNanoId();
-  return await ensurePath(context, ['images', `${name}.png`]);
-}
-
-type locatorRole = Parameters<Page['getByRole']>[0];
-
-function getLocator(
-  selector: string | Selector | null | undefined,
-  context: RunContext
-): Locator {
-  const previous = context.locator as Locator;
-  if (!selector || !Object.keys(selector).length) {
-    if (previous) {
-      return previous;
-    }
-    throw new Error('元素选择器为空,无法查找页面元素~');
-  }
-  const page = context.page as Page;
-  if (typeof selector === 'string') {
-    return page.locator(selector);
-  }
-  const { value, connect, nth, type, exact, filterValue, filter } = selector;
-  let text: string | RegExp = value;
-  let filterText: string | RegExp | undefined = filterValue;
-  if (value.startsWith('/') && value.endsWith('/') && value.length > 2) {
-    text = new RegExp(value.replace(/^\/|\/$/g, ''));
-  }
-  if (
-    filterValue &&
-    filterValue.startsWith('/') &&
-    filterValue.endsWith('/') &&
-    filterValue.length > 2
-  ) {
-    filterText = new RegExp(filterValue.replace(/^\/|\/$/g, ''));
-  }
-  let locator: Locator;
-  switch (type) {
-    case 'AltText':
-      locator = page.getByAltText(text, { exact });
-      break;
-    case 'Placeholder':
-      locator = page.getByPlaceholder(text, { exact });
-      break;
-    case 'Role':
-      locator = page.getByRole(value as locatorRole, { exact });
-      break;
-    case 'Text':
-      locator = page.getByText(text, { exact });
-      break;
-    case 'Label':
-      locator = page.getByLabel(text, { exact });
-      break;
-    case 'Title':
-      locator = page.getByTitle(text, { exact });
-      break;
-    case 'Css':
-    case 'XPath':
-    default:
-      locator = page.locator(value);
-      break;
-  }
-  if (filter && filterText) {
-    switch (filter) {
-      case 'hasText':
-        locator = locator.filter({ hasText: filterText });
-        break;
-      case 'hasNotText':
-        locator = locator.filter({ hasNotText: filterText });
-    }
-  }
-  if (nth) {
-    locator = locator.nth(nth);
-  }
-  if (previous && connect) {
-    switch (connect) {
-      case 'or':
-        locator = previous.or(locator);
-        break;
-      case 'locator':
-        locator = previous.locator(locator);
-        break;
-      case 'and':
-      default:
-        locator = previous.and(locator);
-        break;
-    }
-  }
-  context.locator = locator;
-  return locator;
-}
-
-/**
- * 获取页面对象
- * @param context
- */
-function getPage(context: RunContext): Page {
-  return context.page as Page;
-}
+import { BrowserContextOptions, LaunchOptions } from 'playwright-core';
 
 @Injectable()
 export class OpenBrowserAction implements StepAction<OpenBrowser> {
@@ -717,7 +620,7 @@ export class StructIfAction implements StepAction<StructIf> {
 
 @Injectable()
 export class StructElseAction implements StepAction<StructElse> {
-  run(step: StructElse, context: RunContext): Promise<StepResult<StructElse>> {
+  run(step: StructElse): Promise<StepResult<StructElse>> {
     return Promise.resolve(resultSuccess(true, step));
   }
 
@@ -742,17 +645,20 @@ export class StructEndIfAction implements StepAction<StructEndIf> {
 
 @Injectable()
 export class StructWhileAction implements StepAction<StructWhile> {
+  private logger = new Logger(StructWhileAction.name);
   async run(
     step: StructWhile,
     context: RunContext
   ): Promise<StepResult<StructWhile>> {
     const { expression, selector } = step;
-    let success = false;
+    let success = true;
     if (expression) {
       success = !!vm.runInNewContext(expression, {});
     }
     if (success && selector) {
-      success = !!(await getLocator(selector, context).count());
+      this.logger.debug(`While循环尝试寻找选择器,${JSON.stringify(selector)}`);
+      const count = await getLocator(selector, context).count();
+      success = count > 0;
     }
     return resultSuccess(true, step, { next: success });
   }
