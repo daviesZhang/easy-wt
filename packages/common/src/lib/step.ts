@@ -29,9 +29,8 @@ export interface IStep {
   enable?: boolean;
 }
 
-
 export type step = Omit<IStep, 'scriptCase'>;
-export const SELECTOR_TYPE = [
+export const SELECTOR_TYPE: Readonly<Array<string>> = [
   'Role',
   'AltText',
   'Placeholder',
@@ -41,6 +40,7 @@ export const SELECTOR_TYPE = [
   'Css',
   'XPath',
 ] as const;
+
 export type selectorType = (typeof SELECTOR_TYPE)[number];
 
 export interface Selector {
@@ -396,6 +396,9 @@ export class PutParams implements IStep {
   }
 }
 
+/**
+ * 页面选择器
+ */
 export class PageLocator implements IStep {
   name: string;
   type: StepType;
@@ -406,8 +409,49 @@ export class PageLocator implements IStep {
 
   constructor(name: string, selector: Selector) {
     this.name = name;
-
     this.selector = selector;
     this.type = StepType.PAGE_LOCATOR;
+  }
+}
+
+/**
+ * 保存文本
+ */
+export class TextSave implements IStep {
+  name: string;
+
+  type: StepType;
+
+  selector: Selector;
+
+  expression?: string;
+
+  options: {
+    attr?: string;
+    filePath: string;
+    overwrite: boolean;
+    autoClose: boolean;
+  };
+
+  constructor(name: string, selector: Selector, options: TextSave['options']) {
+    this.name = name;
+    this.selector = selector;
+    this.type = StepType.TEXT_SAVE;
+    this.options = options;
+  }
+}
+
+export class TextSaveClose implements IStep {
+  name: string;
+
+  type: StepType;
+
+  expression?: string;
+
+  constructor(name: string, expression: string) {
+    this.name = name;
+
+    this.type = StepType.TEXT_SAVE_CLOSE;
+    this.expression = expression;
   }
 }

@@ -13,8 +13,8 @@ import {
   StepType,
   StructEndwhile,
 } from '@easy-wt/common';
-import { Inject, Injectable, Logger } from '@nestjs/common';
-import { BrowserContext, errors, Page } from 'playwright';
+import {Inject, Injectable, Logger} from '@nestjs/common';
+import {BrowserContext, errors, Page} from 'playwright';
 import {
   catchError,
   concat,
@@ -34,9 +34,9 @@ import {
   throwError,
 } from 'rxjs';
 
-import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
-import { ReportInterceptor } from './interceptor/report.interceptor';
-import { ensurePath } from './utils';
+import {LoggerStepInterceptor} from './interceptor/logger.interceptor';
+import {ReportInterceptor} from './interceptor/report.interceptor';
+import {ensurePath, getWriteStreamMap} from './utils';
 
 /**
  * StepInterceptor 转 handler
@@ -303,6 +303,16 @@ export class CaseRunService {
     return actions$;
   }
 
+  async finalize(context: RunContext) {
+    await this.closeBrowser(context);
+    const map = getWriteStreamMap(context);
+    if (map) {
+      for (const value of map.values()) {
+        value.end();
+      }
+    }
+  }
+
   private executeActions(
     actions$: Observable<StepResult<IStep>>[],
     context: RunContext
@@ -327,7 +337,7 @@ export class CaseRunService {
           return this.closeBrowser(context).then(() => context.addRunCount());
         },
       }),
-      finalize(() => this.closeBrowser(context).then())
+      finalize(() => this.finalize(context).then())
     );
   }
 

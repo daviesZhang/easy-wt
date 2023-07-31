@@ -4,7 +4,11 @@ import {IStep} from './step';
  * 支持的浏览器
  *
  */
-export const supportBrowserType = ['chromium', 'firefox', 'webkit'] as const;
+export const supportBrowserType: Readonly<Array<string>> = [
+  'chromium',
+  'firefox',
+  'webkit',
+] as const;
 
 export type SupportBrowserType = (typeof supportBrowserType)[number];
 
@@ -107,9 +111,11 @@ export enum StepType {
   PAGE_LOCATOR = 'PAGE_LOCATOR',
 
   /**
-   * txt save
+   * TEXT save
    */
-  TXT_SAVE = 'TXT_SAVE',
+  TEXT_SAVE = 'TEXT_SAVE',
+
+  TEXT_SAVE_CLOSE = 'TEXT_SAVE_CLOSE',
   /**
    * image save
    */
@@ -119,7 +125,7 @@ export enum StepType {
 /**
  * 检查文字类的操作符
  */
-export const CHECK_PATTERN = [
+export const CHECK_PATTERN: Readonly<Array<string>> = [
   'STARTS_WITH',
   'ENDS_WITH',
   'CONTAINS',
@@ -135,7 +141,12 @@ export const CHECK_PATTERN = [
 
 export type CheckPattern = (typeof CHECK_PATTERN)[number];
 
-export const KEYBOARD_EVENT = ['type', 'press', 'down', 'up'] as const;
+export const KEYBOARD_EVENT: Readonly<Array<string>> = [
+  'type',
+  'press',
+  'down',
+  'up',
+] as const;
 export type KeyboardEvent = (typeof KEYBOARD_EVENT)[number];
 
 /**

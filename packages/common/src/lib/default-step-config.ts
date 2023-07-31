@@ -1,6 +1,10 @@
-import { StepType } from './common';
-import { IStep } from './step';
+import {StepType} from './common';
+import {IStep, OpenBrowser, OpenPage, TextSave} from './step';
 
+/**
+ * 默认的超时时间
+ * 5s
+ */
 export const DEFAULT_TIMEOUT = 5000;
 
 /**
@@ -10,7 +14,7 @@ export const DEFAULT_TIMEOUT = 5000;
  * operate 操作
  * other 其他
  */
-export const STEP_OPERATE_TYPE = [
+export const STEP_OPERATE_TYPE: Readonly<Array<string>> = [
   'check',
   'helper',
   'operate',
@@ -40,9 +44,7 @@ export interface StepTypeConfig<T extends IStep> {
   options: Partial<T['options']>;
 }
 
-export type stepConfig = Record<StepType, StepTypeConfig<IStep>>;
-
-export const STEP_CONFIG: stepConfig = {
+export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
   //operate
   OPEN_BROWSER: {
     operateType: 'operate',
@@ -53,14 +55,14 @@ export const STEP_CONFIG: stepConfig = {
       //使用无头浏览器
       headless: true,
     },
-  },
+  } as StepTypeConfig<OpenBrowser>,
   OPEN_PAGE: {
     order: 2,
     selector: { edit: false },
     expression: { edit: true, tip: '请填写需要打开的网址,必须以http开头~' },
     options: {},
     operateType: 'operate',
-  },
+  } as StepTypeConfig<OpenPage>,
   CLICK_LINK: {
     operateType: 'operate',
     order: 1,
@@ -273,12 +275,20 @@ export const STEP_CONFIG: stepConfig = {
     options: {},
     disabled: true,
   },
-  TXT_SAVE: {
+  TEXT_SAVE: {
     order: 3,
+    selector: { edit: true },
+    expression: { edit: true },
+    operateType: 'other',
+    options: { autoClose: true, overwrite: false },
+    disabled: false,
+  } as StepTypeConfig<TextSave>,
+  TEXT_SAVE_CLOSE: {
+    order: 4,
     selector: false,
-    expression: false,
+    expression: { edit: true },
     operateType: 'other',
     options: {},
-    disabled: true,
+    disabled: false,
   },
 };

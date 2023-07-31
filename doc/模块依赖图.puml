@@ -24,6 +24,7 @@ REPORT -up-> DESKTOP
 REPORT -up-> SERVER
 
 WEB -left-> SERVER
+WEB -left-> DESKTOP
 
 UI -up-> WEB
 UI -up-> REPORT
@@ -50,8 +51,10 @@ legend left
 ====
 <$aService> database-core : 数据库操作的模块
 ====
+<$aService> easy-wt-core : 整合browser-core和database-core功能
+====
 <$aService> ui-shared : easy-wt-report-web和easy-wt-web共用的UI组件
 ====
-<$aService> Common : 公用模块,定义了共用的接口、类、类型,被其他所有模块依赖
+<$aService> common : 公用模块,定义了共用的接口、类、类型,被其他所有模块依赖
 endlegend
 @enduml

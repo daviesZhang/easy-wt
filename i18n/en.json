@@ -238,8 +238,12 @@
       "run_script": "运行脚本",
       "mouse": "鼠标操作",
       "page_locator": "元素定位器",
-      "txt_save": "文本存储",
+      "text_save": "文本存储",
+      "text_save_close": "关闭文本存储",
       "image_save": "图片存储"
+    },
+    "error": {
+      "text_empty": "没有任何需要保存的文本"
     }
   },
   "schedule": {
@@ -314,6 +318,12 @@
       "simple_false": "表达式",
       "attr": "属性名称",
       "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
+    },
+    "text_save": {
+      "file_path": "存储路径",
+      "attr": "文本属性",
+      "overwrite": "覆盖已存在文件",
+      "auto_close": "自动结束文件写入"
     },
     "open_browser": {
       "devices_name_label": "设备仿真",
