@@ -36,9 +36,17 @@
 
 ## 使用
 
+### 手册
 [使用手册](./doc/wiki/catalog.adoc)
 
-下载对应平台的构建包
+### 例子
+
+* [循环,文本保存等功能演示](./example)
+* 更多案例待补充
+
+### 安装包
+
+[releases](https://gitee.com/davieszhang/easy-wt/releases)
 
 ## 开发
 
