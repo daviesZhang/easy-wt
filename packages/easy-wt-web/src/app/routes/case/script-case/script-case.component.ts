@@ -135,6 +135,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
         const steps = [];
         event.api.forEachNode((node, index) => {
           const step: IStep = node.data;
+          node.data.sort = index;
           steps.push({ id: step.id, sort: index });
         });
         this.coreService.saveStep(steps, false).then();
