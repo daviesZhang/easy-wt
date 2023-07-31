@@ -313,7 +313,7 @@ export class OpenBrowser implements IStep {
     height?: number;
     deviceScaleFactor?: number;
     recordVideo?: boolean;
-  } & Record<string, unknown>;
+  };
 
   constructor(name: string) {
     this.name = name;

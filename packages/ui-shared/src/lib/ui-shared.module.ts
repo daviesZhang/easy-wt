@@ -29,6 +29,7 @@ import { ClickLinkOptionsComponent } from './components/click-link-options/click
 import { CheckElementExistOptionsComponent } from './components/check-element-exist-options/check-element-exist-options.component';
 import { CheckElementTextOptionsComponent } from './components/check-element-text-options/check-element-text-options.component';
 import { NzResizableModule } from 'ng-zorro-antd/resizable';
+
 import { OptionsRendererComponent } from './components/options-renderer/options-renderer.component';
 import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { MenuBarControlComponent } from './components/menu-bar-control/menu-bar-control.component';
@@ -55,6 +56,7 @@ import { InvalidDirective } from './invalid.directive';
 
 import { TranslateModule } from '@ngx-translate/core';
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
+import { GridSimpleRendererComponent } from './components/grid-simple-renderer/grid-simple-renderer.component';
 
 @NgModule({
   declarations: [
@@ -84,6 +86,7 @@ import { TextSaveOptionsComponent } from './components/text-save-options/text-sa
     CaseStepOptionsComponent,
     JsEditorExpressionComponent,
     MouseOptionsComponent,
+    GridSimpleRendererComponent,
     InvalidDirective,
   ],
   imports: [
@@ -138,6 +141,7 @@ import { TextSaveOptionsComponent } from './components/text-save-options/text-sa
     InputTextOptionsComponent,
     ClickElementOptionsComponent,
     KeyboardOptionsComponent,
+    GridSimpleRendererComponent,
     ClickLinkOptionsComponent,
     CheckElementExistOptionsComponent,
     CheckElementTextOptionsComponent,

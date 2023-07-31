@@ -72,7 +72,6 @@ export const TRANSLATE_MODULE_CONFIG: TranslateModuleConfig = {
     useFactory: translateLoaderFactory,
     deps: [HttpBackend],
   },
-  //...
 };
 
 @NgModule({

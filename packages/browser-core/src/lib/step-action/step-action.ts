@@ -17,7 +17,6 @@ import {
   ClickElement,
   ClickLink,
   CloseBrowser,
-  copyProperties2,
   DEFAULT_TIMEOUT,
   InputText,
   IStep,
@@ -55,11 +54,7 @@ export class OpenBrowserAction implements StepAction<OpenBrowser> {
     step: OpenBrowser,
     context: RunContext
   ): Promise<StepResult<OpenBrowser>> {
-    const options: Partial<OpenBrowser['options']> = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.OPEN_BROWSER].options,
-      step.options
-    );
+    const options = step.options!;
     let browser$: Promise<BrowserContext>;
     const { recordVideo, ...other } = options;
     let _options: Partial<LaunchOptions & BrowserContextOptions> = other;
@@ -172,11 +167,7 @@ export class KeyboardAction implements StepAction<Keyboard> {
   ): Promise<StepResult<Keyboard>> {
     const page = context.page as Page;
     const { expression } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.KEYBOARD].options,
-      step.options
-    );
+    const options = step.options!;
     const { type, ...other } = options;
     let action: Promise<void>;
     switch (type) {
@@ -206,11 +197,7 @@ export class KeyboardAction implements StepAction<Keyboard> {
 @Injectable()
 export class MouseAction implements StepAction<Mouse> {
   async run(step: Mouse, context: RunContext): Promise<StepResult<Mouse>> {
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.MOUSE].options,
-      step.options
-    );
+    const options = step.options!;
     const { type, x, y, mouseButton, ...other } = options;
 
     switch (type) {
@@ -350,11 +337,7 @@ export class ScreenshotAction implements StepAction<Screenshot> {
     context: RunContext
   ): Promise<StepResult<Screenshot>> {
     const { selector } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.SCREENSHOT].options,
-      step.options
-    );
+    const options = step.options!;
     const imagePath = await screenshotPath(context);
     const customPath = options.path;
     options.path = imagePath;
@@ -381,11 +364,7 @@ export class CheckElementExistAction implements StepAction<CheckElementExist> {
     context: RunContext
   ): Promise<StepResult<CheckElementExist>> {
     const { selector } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.CHECK_ELEMENT_EXIST].options,
-      step.options
-    );
+    const options = step.options!;
     const { alwaysScreenshot, timeout, element, exist, failedContinue } =
       options;
     const page = context.page as Page;
@@ -432,11 +411,7 @@ export class CheckElementTextAction implements StepAction<CheckElementText> {
     context: RunContext
   ): Promise<StepResult<CheckElementText>> {
     const { selector, expression } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.CHECK_ELEMENT_TEXT].options,
-      step.options
-    );
+    const options = step.options!;
     const { alwaysScreenshot, pattern, element, timeout, failedContinue } =
       options;
     const page = context.page as Page;

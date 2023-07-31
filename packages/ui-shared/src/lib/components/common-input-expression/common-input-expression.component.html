@@ -1,10 +1,13 @@
-<nz-input-group class="input-group" [nzAddOnAfter]="suffixString" [nzAddOnBefore]="prefixTemplateInfo">
-
-
+<nz-input-group *ngIf="tip;else simple" [nzAddOnAfter]="suffixString" [nzAddOnBefore]="prefixTemplateInfo"
+                class="input-group">
     <input *ngIf="valueType==='string'" [(ngModel)]="value" nz-input type="text"/>
     <nz-input-number *ngIf="valueType==='number'" [(ngModel)]="value" [nzMin]="1" [nzStep]="1"></nz-input-number>
-
 </nz-input-group>
 <ng-template #prefixTemplateInfo>
-    <span *ngIf="tip" nz-icon nz-tooltip nzTooltipTitle="{{tip|translate}}" nzType="info-circle"></span>
+    <span nz-icon nz-tooltip nzTooltipTitle="{{tip|translate}}" nzType="info-circle"></span>
+</ng-template>
+
+<ng-template #simple>
+    <input *ngIf="valueType==='string'" [(ngModel)]="value" nz-input type="text"/>
+    <nz-input-number *ngIf="valueType==='number'" [(ngModel)]="value" [nzMin]="1" [nzStep]="1"></nz-input-number>
 </ng-template>

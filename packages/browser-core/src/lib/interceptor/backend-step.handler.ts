@@ -1,9 +1,61 @@
-import {IStep, RunContext, StepAction, StepHandler, StepResult,} from '@easy-wt/common';
-import {defer, Observable} from 'rxjs';
-import {getNanoIdSync} from '../utils';
-import {cloneDeepWith, isString, template} from 'lodash';
-import {Logger} from '@nestjs/common';
-import {format} from 'date-fns';
+import {
+  IStep,
+  RunContext,
+  STEP_CONFIG,
+  StepAction,
+  StepHandler,
+  StepResult,
+} from '@easy-wt/common';
+import { defer, Observable } from 'rxjs';
+import { getNanoIdSync } from '../utils';
+import {
+  assignInWith,
+  cloneDeepWith,
+  isNil,
+  isString,
+  partialRight,
+  template,
+} from 'lodash';
+import { Logger } from '@nestjs/common';
+import { format } from 'date-fns';
+
+function cloneDeepAndReplace(step: IStep, context: RunContext) {
+  const params = Object.assign(
+    innerFunction(context),
+    Object.fromEntries(context.runParams.entries())
+  );
+  return cloneDeepWith(step, (value: unknown) =>
+    cloneCustomizer(params, value)
+  );
+}
+
+function cloneCustomizer(
+  params: { [key: string]: unknown },
+  value: unknown
+): any {
+  if (isString(value)) {
+    const compiled = template(value);
+    return compiled(params);
+  }
+}
+
+function innerFunction(context: RunContext) {
+  return {
+    nanoid: () => getNanoIdSync(),
+    output: context.environmentConfig ? context.environmentConfig.output : '',
+    date_str: () => format(new Date(), 'yyyy-MM-dd'),
+    time_str: () => format(new Date(), 'HH:mm:ss'),
+  };
+}
+
+const defaultOptions: (...args: any[]) => any = partialRight(
+  assignInWith,
+  (a: any, b: any) => {
+    if (isNil(b) || b === '') {
+      return a;
+    }
+  }
+);
 
 /**
  *
@@ -30,39 +82,13 @@ export class BackendStepHandler implements StepHandler {
        * 拷贝一份step
        */
       const copyStep: IStep = cloneDeepAndReplace(step, context);
+      copyStep.options = defaultOptions(
+        {},
+        STEP_CONFIG[copyStep.type!].options,
+        copyStep.options || {}
+      );
       context.addStepCount(copyStep.id!);
-
       return defer(() => this.action.run(copyStep, context));
     });
   }
-}
-
-function cloneDeepAndReplace(step: IStep, context: RunContext) {
-  const params = Object.assign(
-    innerFunction(context),
-    Object.fromEntries(context.runParams.entries())
-  );
-  return cloneDeepWith(step, (value: any, key: number | string | undefined) =>
-    cloneCustomizer(params, value, key)
-  );
-}
-
-function cloneCustomizer(
-  params: { [key: string]: unknown },
-  value: any,
-  key: number | string | undefined
-): any {
-  if (isString(value)) {
-    const compiled = template(value);
-    return compiled(params);
-  }
-}
-
-function innerFunction(context: RunContext) {
-  return {
-    nanoid: () => getNanoIdSync(),
-    output: context.environmentConfig ? context.environmentConfig.output : '',
-    date_str: () => format(new Date(), 'yyyy-MM-dd'),
-    time_str: () => format(new Date(), 'HH:mm:ss'),
-  };
 }

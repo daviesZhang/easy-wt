@@ -25,7 +25,6 @@ export * from './lib/grid-table/grid-table/grid-table.component';
 export { TemplateRendererComponent } from './lib/grid-table/template-renderer/template-renderer.component';
 
 // Utils
-export * from './lib/utils/yuan';
 export * from './lib/type';
 
 export * from './lib/options-component-utils';

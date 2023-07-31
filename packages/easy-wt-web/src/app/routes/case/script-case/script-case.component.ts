@@ -14,6 +14,7 @@ import {
   step,
   STEP_CONFIG,
   StepType,
+  transformParams,
 } from '@easy-wt/common';
 import { CoreService } from '../../../core/core.service';
 import { from, map, Subject, takeUntil } from 'rxjs';
@@ -42,6 +43,7 @@ import {
 
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { TranslateService } from '@ngx-translate/core';
+import { GridSimpleRendererComponent } from '../../../../../../ui-shared/src/lib/components/grid-simple-renderer/grid-simple-renderer.component';
 
 @Component({
   selector: 'easy-wt-script-case',
@@ -172,6 +174,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           field: 'name',
           editable: true,
           rowDrag: true,
+          cellRenderer: GridSimpleRendererComponent,
           cellEditor: 'agTextCellEditor',
         },
         {
@@ -225,6 +228,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           headerName: this.translate.instant('step.field.expression'),
           field: 'expression',
           cellDataType: false,
+          cellRenderer: GridSimpleRendererComponent,
           cellClassRules: {
             'disable-cell': (e) => !e.column.isCellEditable(e.node),
           },
@@ -260,6 +264,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           headerName: this.translate.instant('step.field.desc'),
           field: 'desc',
           editable: true,
+          cellRenderer: GridSimpleRendererComponent,
           cellEditor: 'agTextCellEditor',
         },
       ],
@@ -335,7 +340,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       return;
     }
     await this.coreService.updateStep(event.data.id, {
-      [event.colDef.field]: event.newValue,
+      [event.colDef.field]: transformParams(event.newValue),
     });
   }
 

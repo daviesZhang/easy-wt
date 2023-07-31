@@ -201,9 +201,10 @@ export class CaseEditorComponent implements OnInit {
       { runParams, id: this.scriptCase.runConfig.id },
       other
     );
-
     scriptCase.runConfig = runConfig;
-    const updated = await this.coreService.saveCase(scriptCase);
+    const updated = await this.coreService.saveCase(
+      transformParams(scriptCase)
+    );
     return Object.assign(updated, { directory: this.scriptCase.directory });
   }
 
@@ -227,7 +228,7 @@ export class CaseEditorComponent implements OnInit {
     const runParams = this.flatRunParams({ params });
     const runConfig = Object.assign({ runParams }, other);
     scriptCase.runConfig = transformParams(runConfig);
-    return await this.coreService.saveCase(scriptCase);
+    return await this.coreService.saveCase(transformParams(scriptCase));
   }
 
   flatRunParams(runConfig: { params?: Array<any> }): Record<string, unknown> {
