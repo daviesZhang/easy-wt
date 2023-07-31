@@ -52,6 +52,7 @@ export class CaseProgressComponent implements OnInit {
 
     merge(caseEnd, caseErr).subscribe((caseId) => {
       delete this.running[caseId];
+      this.cdr.detectChanges();
     });
 
     this.core
@@ -63,6 +64,7 @@ export class CaseProgressComponent implements OnInit {
       .eventObservable(CaseEvent.CASE_QUEUE_REMOVE)
       .subscribe((next: CaseQueue) => {
         this.queue = this.queue.filter((item) => item.uuid !== next.uuid);
+        this.cdr.detectChanges();
       });
   }
 }

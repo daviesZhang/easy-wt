@@ -327,6 +327,9 @@
       "attr": "属性名称",
       "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
     },
+    "open_page": {
+      "timeout_tip": "打开页面等待加载完成的超时时间"
+    },
     "open_browser": {
       "devices_name_label": "设备仿真",
       "devices_name_tip": "内置支持的设备列表",

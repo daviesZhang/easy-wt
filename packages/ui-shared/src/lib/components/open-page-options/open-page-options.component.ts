@@ -7,7 +7,7 @@ import { ICellEditorParams, ICellRendererParams } from 'ag-grid-community';
 import { OpenPage } from '@easy-wt/common';
 import { AbstractOptions } from '../abstract-options';
 import { DOCUMENT } from '@angular/common';
-import { FormBuilder } from '@angular/forms';
+import { FormBuilder, FormControl, Validators } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 type Options = OpenPage['options'];
@@ -21,7 +21,11 @@ export class OpenPageOptionsComponent
   extends AbstractOptions<Options>
   implements ICellEditorAngularComp, ICellRendererAngularComp
 {
-  formGroup = this.fb.group({});
+  formGroup = this.fb.group({
+    timeout: new FormControl<number>(null, {
+      validators: [Validators.required],
+    }),
+  });
 
   constructor(
     private translate: TranslateService,
@@ -37,10 +41,16 @@ export class OpenPageOptionsComponent
 
   refresh(params: ICellRendererParams | ICellEditorParams): boolean {
     this.options = params.value || {};
+    this.api = params.api;
     this.renderer = !!params['renderer'];
-    this.items = [
-      // {label: '检查存在', value: this.options.exist},
-    ];
+    this.items = [];
+    if (this.options.timeout) {
+      this.items.push({
+        value: this.translate.instant('step_options.timeout', {
+          timeout: this.options.timeout,
+        }),
+      });
+    }
     return true;
   }
 }

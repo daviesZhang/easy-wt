@@ -369,7 +369,7 @@ export class OpenPage implements IStep {
   name: string;
   type: StepType;
   expression: string;
-  options?: Record<string, unknown>;
+  options?: { timeout: number };
 
   constructor(name: string, expression: string) {
     this.name = name;

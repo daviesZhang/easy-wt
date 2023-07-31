@@ -15,6 +15,7 @@ import { JsEditorExpressionComponent } from './components/js-editor-expression/j
 import { CommonInputExpressionComponent } from './components/common-input-expression/common-input-expression.component';
 import { MouseOptionsComponent } from './components/mouse-options/mouse-options.component';
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
+import { OpenPageOptionsComponent } from './components/open-page-options/open-page-options.component';
 
 export function optionsComponentSelector(
   type: StepType
@@ -46,6 +47,8 @@ export function optionsComponentSelector(
       return { component: KeyboardOptionsComponent };
     case StepType.TEXT_SAVE:
       return { component: TextSaveOptionsComponent };
+    case StepType.OPEN_PAGE:
+      return { component: OpenPageOptionsComponent };
     default:
       return { component: CommonJsonOptionsComponent };
   }
