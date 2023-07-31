@@ -36,7 +36,7 @@
 
 ## 使用
 
-[使用手册](./doc/wiki/home.md)
+[使用手册](./doc/wiki/catalog.adoc)
 
 下载对应平台的构建包
 

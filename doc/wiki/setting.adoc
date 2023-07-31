@@ -1,4 +1,8 @@
-image::images/setting_1.png[]
+= 初始化配置
+
+include::catalog.adoc[leveloffset=1]
+
+==== 字段含义
 
 |===
 |字段 |必填|含义 |默认值
@@ -75,8 +79,10 @@ image::images/setting_1.png[]
 
 |数据库密码
 |否
-|当填写了数据库密码后,应用程序会加密存储,避免简单扫描泄露
+|当填写了数据库密码后,应用程序会加密存储,避免简单扫描泄露(服务端部署时未加密)
 |
 
 |===
 
+image::images/setting_1.png[]
+image::images/setting_2.png[]
