@@ -197,7 +197,6 @@ export class CaseRunService {
       const step = steps[index];
       if (step.type === StepType.STRUCT_ELSE) {
         next = true;
-        continue;
       }
       const action = this.getAction(step, index, steps, context);
       index = action.index;

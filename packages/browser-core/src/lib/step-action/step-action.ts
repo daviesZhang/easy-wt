@@ -559,15 +559,19 @@ export class StructIfAction implements StepAction<StructIf> {
     context: RunContext
   ): Promise<StepResult<StructIf>> {
     const { selector, expression } = step;
-    let success = false;
+
+    let selectorResult = true;
+    let expressionResult = true;
     if (selector) {
       const count = await getLocator(selector, context).count();
-      success = !!count;
+      selectorResult = !!count;
     }
     if (expression) {
-      success = !!vm.runInNewContext(expression, { context });
+      expressionResult = !!vm.runInNewContext(expression, { context });
     }
-    return resultSuccess(true, step, { success: success });
+    return resultSuccess(true, step, {
+      success: expressionResult && selectorResult,
+    });
   }
 
   support(step: StructIf): boolean {
