@@ -2,6 +2,7 @@ import {IStep} from './step';
 import {StepResult, StepResultData} from './common';
 import {IScriptCase, RunConfig} from './script-case';
 
+
 /**
  * 返回成功
  * @param next
@@ -29,6 +30,7 @@ export function resultError<R extends IStep>(
 ): StepResult<R> {
   return { step: step, data, success: false, next };
 }
+
 
 /**
  * 拷贝对象

@@ -1,5 +1,8 @@
 = 初始化配置
 
+[.lead]
+其他文档链接🔽
+
 include::catalog.adoc[leveloffset=1]
 
 ==== 字段含义

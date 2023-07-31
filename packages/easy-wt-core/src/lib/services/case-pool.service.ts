@@ -189,7 +189,6 @@ export class CasePoolService {
     // 获取用例配置数据,从用例树从下往上找,下层的配置具有优先级
     const casePath = this.getCasePath(scriptCase);
     const runParams = new Map<string, unknown>();
-    runParams.set('output', this.envConfig.output);
     if (runConfig.runParams) {
       Object.keys(runConfig.runParams).forEach((key) => {
         runParams.set(key, runConfig.runParams[key]);

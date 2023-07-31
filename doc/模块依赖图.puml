@@ -1,6 +1,6 @@
 @startuml
 skinparam rectangle<<behavior>> {
-	roundCorner 25
+	roundCorner 10
 }
 sprite $bProcess jar:archimate/business-process
 sprite $aService jar:archimate/application-service
@@ -17,14 +17,15 @@ rectangle "database-core" as DATABASE <<$aService>><<behavior>> #Application
 rectangle "ui-shared" as UI <<$aService>><<behavior>> #Application
 rectangle "browser-core" as BROWSER <<$aService>><<behavior>> #Application
 rectangle "easy-wt-core" as CORE <<$aService>><<behavior>> #Application
+rectangle "common" as COMMON <<$aService>><<behavior>> #Application
 
 
 REPORT -up-> DESKTOP
 
 REPORT -up-> SERVER
 
-WEB -left-> SERVER
-WEB -left-> DESKTOP
+WEB -up-> SERVER
+WEB -up-> DESKTOP
 
 UI -up-> WEB
 UI -up-> REPORT
@@ -36,6 +37,9 @@ CORE -up-> SERVER
 BROWSER -up-> CORE
 DATABASE -up-> CORE
 
+COMMON -up-> BROWSER
+COMMON -up-> DATABASE
+COMMON -up-> UI
 legend left
 模块解释
 ====

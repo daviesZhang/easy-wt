@@ -6,22 +6,18 @@ import {
   Report,
   RunContext,
   StepAction,
-  StepHandler,
   StepInterceptor,
   StepResult,
-  StepResultError,
   StepType,
   StructEndwhile,
 } from '@easy-wt/common';
-import {Inject, Injectable, Logger} from '@nestjs/common';
-import {BrowserContext, errors, Page} from 'playwright';
+import { Inject, Injectable, Logger } from '@nestjs/common';
+import { BrowserContext } from 'playwright';
 import {
   catchError,
   concat,
-  defer,
   exhaustMap,
   finalize,
-  from,
   interval,
   last,
   map,
@@ -34,206 +30,12 @@ import {
   throwError,
 } from 'rxjs';
 
-import {LoggerStepInterceptor} from './interceptor/logger.interceptor';
-import {ReportInterceptor} from './interceptor/report.interceptor';
-import {ensurePath, getWriteStreamMap} from './utils';
-
-/**
- * StepInterceptor 转 handler
- */
-class InterceptorHandler implements StepHandler {
-  next: StepHandler;
-  interceptor: StepInterceptor;
-
-  constructor(next: StepHandler, interceptor: StepInterceptor) {
-    this.next = next;
-    this.interceptor = interceptor;
-  }
-
-  handle(step: IStep, context: RunContext) {
-    return this.interceptor.intercept(step, context, this.next);
-  }
-}
-
-/**
- * handler执行
- */
-class InterceptingHandler implements StepHandler {
-  interceptors: StepInterceptor[];
-
-  backend: StepHandler;
-
-  constructor(backend: StepHandler, interceptors: StepInterceptor[]) {
-    this.backend = backend;
-    this.interceptors = interceptors;
-  }
-
-  handle(step: IStep, context: RunContext): Observable<StepResult<IStep>> {
-    const chain = this.interceptors.reduceRight(
-      (next, interceptor) => new InterceptorHandler(next, interceptor),
-      this.backend
-    );
-    return chain.handle(step, context);
-  }
-}
-
-/**
- *
- * 最后兜底实际执行对应逻辑的拦截器
- */
-class BackendStepHandler implements StepHandler {
-  action: StepAction<IStep>;
-
-  // 提取变量
-  regx = new RegExp('(?<!\\$)(\\$\\{(\\w+)})', 'g');
-
-  constructor(action: StepAction<IStep>) {
-    this.action = action;
-  }
-
-  /**
-   * 替换占位符作为变量
-   * @param value
-   * @param params
-   */
-  private paramsReplace(value: string, params: Map<string, unknown>): string {
-    let rest = this.regx.exec(value);
-    let newString = value;
-    while (rest != null) {
-      const [str, , key] = rest;
-      const newValue = params.get(key);
-      if (typeof newValue === 'number') {
-        newString = newString.replace(str, newValue.toString());
-      } else if (typeof newValue === 'string') {
-        newString = newString.replace(str, newValue);
-      } else {
-        newString = newString.replace(str, '');
-      }
-      rest = this.regx.exec(value);
-    }
-    return newString;
-  }
-
-  /**
-   * 步骤执行
-   * 首先把全部参数,配置里面的占位符${}变量找出来替换成实际的值,然后执行对应步骤的run方法
-   * @param step
-   * @param context
-   */
-  handle(step: IStep, context: RunContext): Observable<StepResult<IStep>> {
-    return defer(() => {
-      /**
-       * 简单拷贝一份step
-       */
-      const copyStep = JSON.parse(JSON.stringify(step));
-      const keys = Object.keys(step) as Array<keyof IStep>;
-      keys.forEach((key) => {
-        const value = step[key];
-        if (typeof value === 'string') {
-          copyStep[key] = this.paramsReplace(value, context.runParams);
-        }
-      });
-      const options = copyStep.options;
-      if (options) {
-        Object.keys(options).forEach((key) => {
-          const value = options[key];
-          if (typeof value === 'string') {
-            options[key] = this.paramsReplace(value, context.runParams);
-          }
-        });
-      }
-      const selector = copyStep.selector;
-      if (selector) {
-        Object.keys(selector).forEach((key) => {
-          const value = selector[key];
-          if (typeof value === 'string') {
-            selector[key] = this.paramsReplace(value, context.runParams);
-          }
-        });
-      }
-      context.addStepCount(step.id!);
-      return defer(() => this.action.run(copyStep, context));
-    });
-  }
-}
-
-/**
- * 异常逻辑统一处理
- */
-class ErrorInterceptor implements StepInterceptor {
-  private logger = new Logger('ErrorInterceptor');
-
-  intercept(
-    step: IStep,
-    context: RunContext,
-    handler: StepHandler
-  ): Observable<StepResult<IStep>> {
-    const retryCount =
-      context.runConfig && context.runConfig.stepRetry
-        ? context.runConfig.stepRetry
-        : 0;
-    let next$ = handler.handle(step, context);
-    if (retryCount > 0) {
-      next$ = handler.handle(step, context).pipe(
-        retry({
-          delay: (err, count) => {
-            if (retryCount >= count) {
-              this.logger.log(`准备开始第${count}次重试步骤${step.name}~`);
-              return of(true);
-            }
-            return throwError(() => err);
-          },
-        })
-      );
-    }
-    return next$.pipe(
-      catchError((err) => {
-        let message = err.message || err;
-        if (err instanceof errors.TimeoutError) {
-          message = '查找元素或者操作等待超时~';
-        }
-
-        const page = context.page as Page;
-        if (page && !page.isClosed() && context.environmentConfig.output) {
-          const runId = context.uuid;
-          return from(
-            ensurePath(context, ['images', `${runId}_error_${step.id}.png`])
-          ).pipe(
-            switchMap((imagePath) =>
-              page
-                .screenshot({ path: imagePath, fullPage: true })
-                .then(() => imagePath)
-            ),
-            switchMap((imagePath) => {
-              return throwError(
-                () =>
-                  new StepResultError({
-                    name: step.name,
-                    message: message,
-                    step: step,
-                    success: false,
-                    next: false,
-                    data: { screenshot: imagePath, message },
-                  })
-              );
-            })
-          );
-        }
-        return throwError(
-          () =>
-            new StepResultError({
-              name: step.name,
-              step: step,
-              message: message,
-              success: false,
-              next: false,
-              data: { message: message },
-            })
-        );
-      })
-    );
-  }
-}
+import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
+import { ReportInterceptor } from './interceptor/report.interceptor';
+import { getWriteStreamMap } from './utils';
+import { ErrorInterceptor } from './interceptor/error.interceptor';
+import { InterceptingHandler } from './interceptor/intercepting.handler';
+import { BackendStepHandler } from './interceptor/backend-step.handler';
 
 const errorInterceptor = new ErrorInterceptor();
 
@@ -250,9 +52,6 @@ export class CaseRunService {
 
   /**
    * 运行用例
-   * 1.把传入的运行时配置和用例中的运行时配置组合,优先级:传入>用例
-   * 2.组装用例执行,处理好IF和WHILE
-   * 3.执行
    */
   run(context: RunContext): Observable<StepResult<IStep>> {
     const actions = this.prepareActions(context);
@@ -262,6 +61,7 @@ export class CaseRunService {
   /**
    * 运行用例并生成报告
    * 通过添加报告拦截器的方式收集用例结果,然后生成报告
+   * @see Report
    * @param context
    */
   runAndReport(context: RunContext): Observable<Report> {
@@ -303,6 +103,12 @@ export class CaseRunService {
     return actions$;
   }
 
+  /**
+   * 用例执行完成的收尾工作
+   * 关闭浏览器
+   * 关闭任何存在的写入流
+   * @param context
+   */
   async finalize(context: RunContext) {
     await this.closeBrowser(context);
     const map = getWriteStreamMap(context);
@@ -331,7 +137,7 @@ export class CaseRunService {
           ) {
             return throwError(() => error);
           }
-          this.logger.log(
+          this.logger.debug(
             `准备开始第${count}次重试用例[${context.scriptCase.name}]~`
           );
           return this.closeBrowser(context).then(() => context.addRunCount());
@@ -339,19 +145,6 @@ export class CaseRunService {
       }),
       finalize(() => this.finalize(context).then())
     );
-  }
-
-  private async closeBrowser(context: RunContext) {
-    const browserContext = context.browser as BrowserContext;
-    if (browserContext) {
-      try {
-        const browser = browserContext.browser();
-        await browserContext.close();
-        browser && browser.isConnected() && (await browser.close());
-      } catch (err) {
-        this.logger.error('执行结束后自动关闭浏览器时出现异常~', err);
-      }
-    }
   }
 
   /**
@@ -508,6 +301,24 @@ export class CaseRunService {
     return { action$, index };
   }
 
+  private async closeBrowser(context: RunContext) {
+    const browserContext = context.browser as BrowserContext;
+    if (browserContext) {
+      try {
+        const browser = browserContext.browser();
+        await browserContext.close();
+        browser && browser.isConnected() && (await browser.close());
+      } catch (err) {
+        this.logger.error('执行结束后自动关闭浏览器时出现异常~', err);
+      }
+    }
+  }
+
+  /**
+   * 根据用例步骤匹配对应的执行类
+   * @param step
+   * @private
+   */
   private matchAction<T extends IStep>(step: T): StepAction<T> {
     try {
       return this.actions.find((action) =>
