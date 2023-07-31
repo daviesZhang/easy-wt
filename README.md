@@ -46,7 +46,7 @@
 
 ### 安装包
 
-[releases](/releases)
+[releases](https://gitee.com/davieszhang/easy-wt/releases)
 
 ## 开发
 
