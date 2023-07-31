@@ -3,6 +3,7 @@ import * as path from 'path';
 import * as fs from 'fs-extra';
 import { Locator, Page } from 'playwright';
 import { customAlphabet } from 'nanoid/async';
+import { customAlphabet as customAlphabetSync } from 'nanoid';
 
 export type locatorRole = Parameters<Page['getByRole']>[0];
 
@@ -10,6 +11,12 @@ const nanoid = customAlphabet(
   '_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
   12
 );
+
+const nanoidSync = customAlphabetSync(
+  '_0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz',
+  12
+);
+
 
 /**
  * 确保路径存在
@@ -33,6 +40,11 @@ export async function ensurePath(
 export async function getNanoId() {
   return await nanoid();
 }
+
+export function getNanoIdSync() {
+  return nanoidSync();
+}
+
 
 /**
  * 生成截屏存放的路径,如果不存在则创建
