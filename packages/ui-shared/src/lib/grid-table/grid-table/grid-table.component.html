@@ -25,14 +25,8 @@
 </div>
 <div *ngIf="showFooter" class="footer flex flex-grow-0 flex-shrink-1 space-between  flex-wrap flex-middle">
   <div *ngIf="showFooterAction" class="action">
-    <!--            导出-->
-    <button (nzOnConfirm)="exportAllPageData()" *ngIf="showFooterAction.export"
-            [disabled]="(!!total)&&dataLoading"
-            [nzLoading]="progressPercent>0&&progressPercent<100"
-            [nzPopconfirmTitle]="'export'|gridTableI18n"
-            nz-button nz-popconfirm nzSize="small" nzType="primary">
-      <i nz-icon nzTheme="outline" nzType="file-excel"></i>{{'export'|gridTableI18n}}</button>
-    <!--            自动刷新-->
+
+  <!--            自动刷新-->
     <easy-wt-refresh-button *ngIf="showFooterAction.autoRefresh" [refreshFunc]="autoRefresh"
                             [time]="refreshInterval"></easy-wt-refresh-button>
   </div>

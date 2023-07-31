@@ -23,7 +23,7 @@ export class PutParamsOptionsComponent
 {
   formGroup = this.fb.group({
     key: ['', [Validators.required]],
-    simple: [false],
+    simple: [true],
     attr: [''],
   });
 

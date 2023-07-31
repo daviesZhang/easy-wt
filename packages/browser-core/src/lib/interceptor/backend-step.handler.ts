@@ -8,14 +8,14 @@ import {
 } from '@easy-wt/common';
 import { defer, Observable } from 'rxjs';
 import { getNanoIdSync } from '../utils';
-import {
-  assignInWith,
-  cloneDeepWith,
-  isNil,
-  isString,
-  partialRight,
-  template,
-} from 'lodash';
+
+import isString from 'lodash/isString';
+import template from 'lodash/template';
+import partialRight from 'lodash/partialRight';
+import isNil from 'lodash/isNil';
+import assignInWith from 'lodash/assignInWith';
+import cloneDeepWith from 'lodash/cloneDeepWith';
+import omitBy from 'lodash/omitBy';
 import { Logger } from '@nestjs/common';
 import { format } from 'date-fns';
 
@@ -82,10 +82,13 @@ export class BackendStepHandler implements StepHandler {
        * 拷贝一份step
        */
       const copyStep: IStep = cloneDeepAndReplace(step, context);
-      copyStep.options = defaultOptions(
-        {},
-        STEP_CONFIG[copyStep.type!].options,
-        copyStep.options || {}
+      copyStep.options = omitBy(
+        defaultOptions(
+          {},
+          STEP_CONFIG[copyStep.type!].options,
+          copyStep.options || {}
+        ),
+        isNil
       );
       context.addStepCount(copyStep.id!);
       return defer(() => this.action.run(copyStep, context));

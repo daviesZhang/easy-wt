@@ -1,7 +1,11 @@
 import {IStep} from './step';
 import {StepResult, StepResultData} from './common';
 import {IScriptCase, RunConfig} from './script-case';
-import {cloneDeepWith, isArray, isDate, isString} from 'lodash';
+
+import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
+import isDate from 'lodash/isDate';
+import cloneDeepWith from 'lodash/cloneDeepWith';
 import {format} from 'date-fns';
 
 /**

@@ -11,24 +11,29 @@ import {
   TemplateRef,
   ViewChild,
 } from '@angular/core';
-import { concat, merge, Observable, of, Subject } from 'rxjs';
+import { debounceTime, fromEventPattern, Observable, of, Subject } from 'rxjs';
 import { NzProgressStatusType } from 'ng-zorro-antd/progress';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import { NzModalService } from 'ng-zorro-antd/modal';
-import { Page, RequestDelete, RowButton, Statistics } from '../api';
+import {
+  GridColumnDef,
+  Page,
+  RequestDelete,
+  RowButton,
+  Statistics,
+} from '../api';
 import { LoadingOverlayComponent } from '../loading-overlay/loading-overlay.component';
 import { EmptyOverlayComponent } from '../empty-overlay/empty-overlay.component';
-import { catchError, take, takeUntil, tap } from 'rxjs/operators';
+import { catchError, take, takeUntil } from 'rxjs/operators';
 
 import {
   ColDef,
   ColumnApi,
-  ExcelCell,
+  ColumnMovedEvent,
+  ColumnResizedEvent,
   FirstDataRenderedEvent,
   GridApi,
   GridOptions,
   GridReadyEvent,
-  IServerSideGetRowsParams,
   RowNode,
   SortChangedEvent,
   ValueFormatterParams,
@@ -65,17 +70,14 @@ export type RequestData<T, V> = (
 export class GridTableComponent implements OnInit, OnDestroy {
   gridOptions!: GridOptions;
   /**
-   * 表格名称
-   * 导出时作为文件名
+   * 填入一个唯一KEY
+   * 开启保存当前设置的列宽和列排序
    */
-  @Input() gridName = '';
+  @Input() saveColumnDefKey: string;
   /**
    * 表格唯一主键
    */
-  @Input() key: string | number =
-    Math.floor(Math.random() * 1000000) +
-    '_' +
-    (new Date().getTime() - 1564366251225);
+
   /**
    * 当网格准备就绪时是否立即请求数据
    */
@@ -192,7 +194,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
 
   constructor(
     private msg: NzMessageService,
-    private modal: NzModalService,
     @Inject(GRID_TABLE_CONFIG) gridTableConfig: DefaultNgxGridTableConfig,
     private gridService: NgxGridTableTranslateService,
     private clipboard: Clipboard,
@@ -303,6 +304,32 @@ export class GridTableComponent implements OnInit, OnDestroy {
         if (this.initLoadData) {
           this.searchRowsData();
         }
+        if (this.saveColumnDefKey) {
+          const def = this.getGridColumnDef(this.saveColumnDefKey);
+          if (def) {
+            if (def.width) {
+              const widths = Object.entries(def.width).map(([key, value]) => ({
+                key,
+                newWidth: value,
+              }));
+              this.columnApi.setColumnWidths(widths);
+            }
+            if (def.columnSort) {
+              setTimeout(() => {
+                this.columnApi.moveColumns(def.columnSort, 0);
+              }, 300);
+            }
+          }
+          this.fromEvent('columnResized')
+            .pipe(debounceTime(100))
+            .subscribe((event: ColumnResizedEvent) =>
+              this.onColumnResized(event)
+            );
+          this.fromEvent('columnMoved').subscribe((event: ColumnMovedEvent) =>
+            this.onColumnMovedEvent(event)
+          );
+        }
+
         if (onGridReady) {
           onGridReady(event);
         }
@@ -310,6 +337,59 @@ export class GridTableComponent implements OnInit, OnDestroy {
       },
       defaultColDef,
     };
+  }
+
+  fromEvent(eventType: string) {
+    return fromEventPattern(
+      (handler) => this.api.addEventListener(eventType, handler),
+      (handler) => this.api.removeEventListener(eventType, handler)
+    ).pipe(takeUntil(this.destroy$));
+  }
+
+  onColumnMovedEvent(event: ColumnMovedEvent<any>) {
+    if (event.finished) {
+      const sort = event.columnApi.getAllGridColumns().map((c) => c.getId());
+      this.saveGridColumnDef(this.saveColumnDefKey, { columnSort: sort });
+    }
+  }
+
+  onColumnResized(event: ColumnResizedEvent<any>) {
+    const width: { [key: string]: number } = {};
+    event.columns.forEach((column) => {
+      width[column.getId()] = column.getActualWidth();
+    });
+    this.saveGridColumnDef(this.saveColumnDefKey, { width: width });
+  }
+
+  saveGridColumnDef(
+    key: string,
+    data: {
+      columnSort?: GridColumnDef['columnSort'];
+      width?: GridColumnDef['width'];
+    }
+  ) {
+    const old = this.getGridColumnDef(key) || {};
+    const { width, columnSort } = data;
+    if (columnSort) {
+      Object.assign(old, { columnSort });
+    }
+    if (width) {
+      Object.assign(old, { width: Object.assign({}, old['width'], width) });
+    }
+    localStorage.setItem(key, JSON.stringify(old));
+  }
+
+  getGridColumnDef(key: string): GridColumnDef | null {
+    try {
+      return JSON.parse(localStorage.getItem(key)) as GridColumnDef;
+    } catch (e) {
+      return null;
+    }
+  }
+
+  cleanGridColumnDef() {
+    localStorage.removeItem(this.saveColumnDefKey);
+    this.columnApi.resetColumnState();
   }
 
   statisticsDataToRowData(statistics: Statistics[]): Array<any> {
@@ -345,11 +425,7 @@ export class GridTableComponent implements OnInit, OnDestroy {
 
   refreshRowsData(): Observable<Page<unknown> | null> {
     this.api.deselectAll();
-    if (this.gridOptions.rowModelType === 'clientSide') {
-      return this.serverSideData(this.queryParams);
-    } else {
-      return this.serverClientData(this.queryParams);
-    }
+    return this.serverClientData(this.queryParams);
   }
 
   onPageSizeChange(event: number) {
@@ -362,128 +438,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
     this.pageSizeChange.emit(event);
     this.currentPage = event;
     this.refreshRowsData();
-  }
-
-  /**
-   * 客户端模式导出全部数据
-   * 分页请求数据，然后前端组装导出
-   * @param pageSize 页大小，默认100
-   * @param maxRequestCount 并发请求数 默认3
-   */
-  exportAllPageData(pageSize = 100, maxRequestCount = 3) {
-    let allData: Array<any> = [];
-    this.showProgress = true;
-    this.initProgress();
-    let currentPage = 1;
-    const currentPageSize = pageSize;
-    const totalPage = parseInt(
-      this.total / currentPageSize +
-        (this.total % currentPageSize ? 1 : 0) +
-        '',
-      10
-    );
-    /*if (this.currentPage === currentPage && this.currentPageSize === currentPageSize && this.rowData.length) {
-      allData = allData.concat(this.rowData);
-      currentPage = currentPage + 1;
-    }*/
-    const sorts = this.getSorts();
-
-    const params = { size: currentPageSize };
-    if (sorts) {
-      Object.assign(params, { orderBys: sorts });
-    }
-    const request$: Array<
-      Observable<{ total: number; items: any[]; footerItems?: Array<any> }>
-    > = [];
-    for (; currentPage <= totalPage; currentPage++) {
-      const queryParams = this.gridTableConfig.dataParams
-        ? this.gridTableConfig.dataParams({
-            ...params,
-            current: currentPage,
-          })
-        : { ...params, current: currentPage };
-      request$.push(this.getData(queryParams));
-    }
-
-    const _percent = 100 / request$.length;
-    const requestArray$ = this.arrayPartition(request$, maxRequestCount).map(
-      (requests$) => {
-        return merge(...requests$);
-      }
-    );
-    concat(...requestArray$)
-      .pipe(
-        tap((next) => {
-          const percent = parseFloat(
-            (this.progressPercent + _percent).toFixed(2)
-          );
-          if (percent < 100) {
-            this.progressPercent = percent;
-          }
-        })
-      )
-      .subscribe({
-        next: (response) => {
-          allData = allData.concat(response.items);
-        },
-        error: (error) => {
-          console.error(error);
-          this.msg.error('导出时出现异常,请稍后重试~');
-          this.showProgress = false;
-        },
-        complete: () => {
-          this.api.setRowData(allData);
-          this.progressPercent = 100;
-          this.exportDataAsExcel();
-          this.showProgress = false;
-          this.refreshRowsData();
-        },
-      });
-  }
-
-  exportDataAsExcel() {
-    const columns = this.columnApi.getAllDisplayedColumns().filter((column) => {
-      return !column.getColId().startsWith('_');
-    });
-    this.api.exportDataAsExcel({
-      columnKeys: columns,
-      fileName: this.gridName ? this.gridName : 'data',
-      sheetName: this.gridName ? this.gridName : 'data',
-    });
-  }
-
-  exportGridStatisticsFooter(): ExcelCell[][] {
-    const footer: Array<Array<any>> = [[]];
-    if (
-      !this.suppressGridStatisticsBar &&
-      this.statistics &&
-      this.statistics.length
-    ) {
-      const statistics = this.statistics
-        .filter((items) => items.skipExport !== true)
-        .map((items) => {
-          const rows = [];
-          rows.push({
-            styleId: 'bigHeader',
-            data: {
-              type: 'String',
-              value: items.label,
-            },
-          });
-          items.data.forEach((item) => {
-            rows.push({
-              styleId: 'bigHeader',
-              data: {
-                type: 'String',
-                value: `${item.label}:${item.value}`,
-              },
-            });
-          });
-          return rows;
-        });
-      footer.push(...statistics);
-    }
-    return footer;
   }
 
   /**
@@ -532,18 +486,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  private buildStatusBar() {
-    const statusPanels = [];
-    if (this.showDefaultStatusBar) {
-      statusPanels.push(...this.defaultStatusPanels);
-    }
-    if (this.options.statusBar && this.options.statusBar.statusPanels.length) {
-      this.options.statusBar.statusPanels.push(...statusPanels);
-    } else {
-      this.options.statusBar = { statusPanels };
-    }
-  }
-
   /**
    * 获取当前排序字段
    * @private
@@ -568,69 +510,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
   }
 
   /**
-   * 服务端模式从服务端获取数据
-   * @param queryParams
-   */
-  private serverSideData(queryParams: {
-    [key: string]: any;
-  }): Observable<Page<any> | null> {
-    const complete$ = new Subject<Page<any> | null>();
-    const getRows = (params: IServerSideGetRowsParams): void => {
-      const sort = params.request.sortModel;
-      if (sort.length) {
-        const orderBys = {};
-        sort.forEach((item) => {
-          Object.assign(orderBys, { [item.colId]: item.sort });
-        });
-        Object.assign(queryParams, orderBys);
-      }
-      const startRow = params.request.startRow || 0;
-      const endRow = params.request.endRow || 1;
-      const pageSize = endRow - startRow;
-      const page = startRow / pageSize + 1;
-      Object.assign(queryParams, { size: pageSize, current: page });
-
-      this.dataLoading = true;
-      this.api.showLoadingOverlay();
-      const requestData = this.gridTableConfig.dataParams
-        ? this.gridTableConfig.dataParams({ ...queryParams })
-        : { ...queryParams };
-      this.getData(requestData)
-        .pipe(
-          takeUntil(this.destroy$),
-          catchError((err) => {
-            return of({ total: 0, items: [], statistics: [] });
-          })
-        )
-        .subscribe({
-          next: (response) => {
-            complete$.next(response);
-            this.refreshData.emit(response);
-            params.success({
-              rowData: response.items,
-              rowCount: response.total,
-            });
-            this.statistics = response.statistics || [];
-            this.total = response.total;
-
-            if (!response.items.length) {
-              this.api.showNoRowsOverlay();
-            } else {
-              this.api.hideOverlay();
-            }
-            this.dataLoading = false;
-            this.cdr.detectChanges();
-          },
-          error: (err) => complete$.error(err),
-        });
-    };
-    this.api.showLoadingOverlay();
-    this.api.setServerSideDatasource({ getRows });
-
-    return complete$.asObservable().pipe(take(1));
-  }
-
-  /**
    * 客户端模式从服务端获取数据
    * @param queryParams
    */
@@ -639,7 +518,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
   }): Observable<Page<any> | null> {
     const complete$ = new Subject<Page<any> | null>();
     const sorts = this.getSorts();
-
     if (sorts) {
       Object.assign(queryParams, {
         orderBys: sorts,
@@ -651,13 +529,11 @@ export class GridTableComponent implements OnInit, OnDestroy {
         current: this.currentPage,
       });
     }
-
     this.api.showLoadingOverlay();
     if (!this.suppressGridStatisticsRow) {
       this.api.setPinnedBottomRowData([]);
     }
     this.dataLoading = true;
-
     this.getData(
       this.gridTableConfig.dataParams
         ? this.gridTableConfig.dataParams({ ...queryParams })
@@ -695,30 +571,5 @@ export class GridTableComponent implements OnInit, OnDestroy {
         error: (error) => complete$.error(error),
       });
     return complete$.asObservable().pipe(take(1));
-  }
-
-  /**
-   * 数组分片
-   * @param items 数组列表
-   * @param size 拆分大小
-   */
-  private arrayPartition<T>(items: Array<T>, size = 3): Array<Array<T>> {
-    const init: Array<Array<T>> = [[]];
-    return items.reduce((previousValue, currentValue) => {
-      !Array.isArray(previousValue) ||
-      previousValue[previousValue.length - 1].length === size
-        ? previousValue.push([currentValue])
-        : previousValue[previousValue.length - 1].push(currentValue);
-      return previousValue;
-    }, init);
-  }
-
-  /**
-   * 初始化进度条
-   * 导出|批量删除共用变量
-   */
-  private initProgress() {
-    this.progressPercent = 0;
-    this.progressStatus = 'normal';
   }
 }

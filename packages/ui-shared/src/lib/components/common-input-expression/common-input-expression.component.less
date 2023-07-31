@@ -2,17 +2,18 @@
 
 .input-group {
   height: @input-height;
+}
 
-  input {
+input {
+  height: @input-height;
+}
+
+nz-input-number {
+  width: 100%;
+  height: @input-height;
+
+  ::ng-deep input {
     height: @input-height;
-  }
-
-  nz-input-number {
-    width: 100%;
-    height: @input-height;
-
-    ::ng-deep input {
-      height: @input-height;
-    }
   }
 }
+

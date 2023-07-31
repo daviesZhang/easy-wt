@@ -323,7 +323,7 @@
       "key_label": "参数名称",
       "simple_label": "值模式",
       "simple_true": "简单模式",
-      "simple_false": "表达式",
+      "simple_false": "使用运算表达式",
       "attr": "属性名称",
       "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
     },
@@ -482,6 +482,7 @@
     "fillOpacity": "内容透明度",
     "strokeOpacity": "边框透明度",
     "noDataToChart": "没有可以生成图表的数据",
-    "enable": "启用"
+    "enable": "启用",
+    "cleanGridColumnDef": "还原表格"
   }
 }

@@ -1,8 +1,10 @@
 /**
- * 转化成RMB元字符串
- * @param digits 当数字类型时，允许指定小数点后数字的个数，默认2位小数
+ * 找到字符串中的变量占位符,加上<sapn style="color: #663399">$1</span>
+ * @param value
  */
-
 export function paramsHtml(value: string): string {
-  return value.replace(/(\$\{.+?})/g, `<sapn style="color: #663399">$1</sapn>`);
+  return value.replace(
+    /(\$\{.+?})/g,
+    `<sapn style="color: #663399;font-weight: bold;font-style: oblique;">$1</sapn>`
+  );
 }

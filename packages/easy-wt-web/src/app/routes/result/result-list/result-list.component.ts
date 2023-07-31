@@ -156,13 +156,14 @@ export class ResultListComponent implements OnInit {
           sortable: true,
           checkboxSelection: true,
           headerCheckboxSelection: true,
+          minWidth: 100,
         },
         {
           headerName: this.translate.instant('report.field.name'),
           field: 'name',
           sortable: true,
           minWidth: 100,
-          flex: 1,
+
           cellRenderer: TemplateRendererComponent,
           cellRendererParams: {
             ngTemplate: this.rowButtonTemplate,

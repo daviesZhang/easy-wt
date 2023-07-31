@@ -5,6 +5,9 @@ import {
   ICellEditorParams,
   ICellRendererParams,
 } from 'ag-grid-community';
+import { transformParams } from '@easy-wt/common';
+import omitBy from 'lodash/omitBy';
+import isNull from 'lodash/isNull';
 
 @Injectable()
 export class OptionParams<T> {
@@ -55,7 +58,7 @@ export abstract class AbstractOptions<T> implements OnInit {
 
   getValue(value?: unknown): T {
     if (value !== undefined) {
-      this.options = value as T;
+      this.options = omitBy(transformParams(value), isNull) as T;
     }
     return this.options;
   }

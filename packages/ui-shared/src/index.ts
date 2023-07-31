@@ -14,6 +14,7 @@ export { OpenBrowserOptionsComponent } from './lib/components/open-browser-optio
 export { CloseBrowserOptionsComponent } from './lib/components/close-browser-options/close-browser-options.component';
 export { OpenPageOptionsComponent } from './lib/components/open-page-options/open-page-options.component';
 export { CommonJsonOptionsComponent } from './lib/components/common-json-options/common-json-options.component';
+export { GridSimpleRendererComponent } from './lib/components/grid-simple-renderer/grid-simple-renderer.component';
 
 export { StepSelectComponent } from './lib/components/step-select/step-select.component';
 export { KeyboardOptionsComponent } from './lib/components/keyboard-options/keyboard-options.component';

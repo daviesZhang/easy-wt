@@ -28,7 +28,7 @@ export class OptionsRendererComponent implements OnInit, OnChanges {
 
       this.items = cur.map((item) => {
         const { label, value } = item;
-        if (typeof value === 'string') {
+        if (typeof value === 'string' && value !== '') {
           const newValue = paramsHtml(value);
           const safe = this.domSanitizer.bypassSecurityTrustHtml(newValue);
           return { label, value: safe };

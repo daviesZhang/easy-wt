@@ -12,6 +12,9 @@
         "{options.outputPath}"
       ],
       "options": {
+        "allowedCommonJsDependencies": [
+          "lodash"
+        ],
         "outputPath": "dist/packages/easy-wt-web",
         "index": "packages/easy-wt-web/src/index.html",
         "main": "packages/easy-wt-web/src/main.ts",

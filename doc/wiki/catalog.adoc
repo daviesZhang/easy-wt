@@ -6,6 +6,8 @@
 
 == 用例步骤
 
+=== link:./step-page.adoc[页面基本功能]
+
 === link:./run-params.adoc[运行时参数]
 
 === 选择器的使用

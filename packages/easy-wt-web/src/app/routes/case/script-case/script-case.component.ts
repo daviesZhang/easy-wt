@@ -14,7 +14,6 @@ import {
   step,
   STEP_CONFIG,
   StepType,
-  transformParams,
 } from '@easy-wt/common';
 import { CoreService } from '../../../core/core.service';
 import { from, map, Subject, takeUntil } from 'rxjs';
@@ -32,6 +31,7 @@ import {
 
 import {
   expressionComponentSelector,
+  GridSimpleRendererComponent,
   GridTableComponent,
   GridTableReadyEvent,
   optionsComponentSelector,
@@ -43,7 +43,6 @@ import {
 
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { TranslateService } from '@ngx-translate/core';
-import { GridSimpleRendererComponent } from '../../../../../../ui-shared/src/lib/components/grid-simple-renderer/grid-simple-renderer.component';
 
 @Component({
   selector: 'easy-wt-script-case',
@@ -160,6 +159,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           pinned: true,
           sortable: false,
           width: 118,
+          colId: 'action',
           suppressAutoSize: true,
           suppressCellFlash: true,
           suppressSizeToFit: true,
@@ -339,8 +339,9 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (event.newValue === undefined) {
       return;
     }
+
     await this.coreService.updateStep(event.data.id, {
-      [event.colDef.field]: transformParams(event.newValue),
+      [event.colDef.field]: event.newValue,
     });
   }
 
