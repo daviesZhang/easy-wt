@@ -21,7 +21,9 @@ export class AppModule {
       imports: [
         ServeStaticModule.forRoot({
           exclude: ['/api*'],
-          rootPath: join(__dirname, 'assets', 'easy-wt-web'),
+          rootPath: environment.production
+            ? join(__dirname, 'assets', 'easy-wt-web')
+            : environment.staticRoot,
         }),
         EasyWtCoreModule.register(config, environment.production),
       ],

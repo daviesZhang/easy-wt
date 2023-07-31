@@ -98,6 +98,12 @@ npm run desktop:production
 npm run server:production
 ```
 
+默认情况下 启动server
+通过 `http://host:port` 即可访问到客户端
+
+如需部署到nginx web客户端构建文件在`dist/easy-wt-server/assets`
+
+
 ## 联系我
 
 ![douyin](./doc/images/douyin.png)
