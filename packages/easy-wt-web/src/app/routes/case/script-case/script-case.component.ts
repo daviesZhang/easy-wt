@@ -31,6 +31,7 @@ import {
 
 import {
   expressionComponentSelector,
+  GridSimpleRendererComponent,
   GridTableComponent,
   GridTableReadyEvent,
   optionsComponentSelector,
@@ -158,6 +159,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           pinned: true,
           sortable: false,
           width: 118,
+          colId: 'action',
           suppressAutoSize: true,
           suppressCellFlash: true,
           suppressSizeToFit: true,
@@ -172,6 +174,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           field: 'name',
           editable: true,
           rowDrag: true,
+          cellRenderer: GridSimpleRendererComponent,
           cellEditor: 'agTextCellEditor',
         },
         {
@@ -225,6 +228,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           headerName: this.translate.instant('step.field.expression'),
           field: 'expression',
           cellDataType: false,
+          cellRenderer: GridSimpleRendererComponent,
           cellClassRules: {
             'disable-cell': (e) => !e.column.isCellEditable(e.node),
           },
@@ -260,6 +264,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           headerName: this.translate.instant('step.field.desc'),
           field: 'desc',
           editable: true,
+          cellRenderer: GridSimpleRendererComponent,
           cellEditor: 'agTextCellEditor',
         },
       ],
@@ -334,6 +339,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (event.newValue === undefined) {
       return;
     }
+
     await this.coreService.updateStep(event.data.id, {
       [event.colDef.field]: event.newValue,
     });

@@ -2,6 +2,11 @@ import {IStep} from './step';
 import {StepResult, StepResultData} from './common';
 import {IScriptCase, RunConfig} from './script-case';
 
+import isString from 'lodash/isString';
+import isArray from 'lodash/isArray';
+import isDate from 'lodash/isDate';
+import cloneDeepWith from 'lodash/cloneDeepWith';
+import {format} from 'date-fns';
 
 /**
  * 返回成功
@@ -29,37 +34,6 @@ export function resultError<R extends IStep>(
   data?: StepResultData
 ): StepResult<R> {
   return { step: step, data, success: false, next };
-}
-
-
-/**
- * 拷贝对象
- * @param target
- * @param source
- */
-export function copyProperties(target: object, ...source: Array<any>): any {
-  target = target || {};
-  for (const object of source) {
-    if (!object) {
-      continue;
-    }
-    Object.keys(object).forEach((key) => {
-      const newValue = object[key];
-      if (newValue !== undefined && newValue !== null && newValue !== '') {
-        // @ts-ignore
-        target[key] = newValue;
-      }
-    });
-  }
-  return target;
-}
-
-export function copyProperties2<T extends object, U, V>(
-  t: T,
-  u: U,
-  v: V
-): Partial<T & U & V> {
-  return copyProperties(t, u, v);
 }
 
 /**
@@ -113,42 +87,45 @@ export function margeRunConfig(
 }
 
 /**
- * 转换查询参数
+ * 转换类型
  * 去掉空参数,转换时间格式,去掉字符串前后空格
  * @param params
- * @param timestamp 对于时间是否转换为时间戳,或根据传入时间格式转换
- * @param removeEmpty 是否移除空参数
+ * @param config
+ * emptyStringToNull 把空字符串转换为null
+ * dateFormat 日期转换为字符串,不填默认getTime
  */
-export function transformParams(params: { [key: string]: any } = {}): unknown {
-  params = { ...params };
-  return Object.keys(params)
-    .map((key) => {
-      let value = params[key];
-      if (
-        value === null ||
-        value === undefined ||
-        (typeof value === 'string' && !value.trim()) ||
-        (Array.isArray(value) && !value.length)
-      ) {
-        return null;
+export function transformParams(
+    params: { [key: string]: any } = {},
+    config?: {
+      emptyStringToNull?: boolean;
+      dateFormat?: string;
+      emptyArrayToNull?: boolean;
+    }
+): any {
+  const {emptyStringToNull, emptyArrayToNull, dateFormat} =
+      Object.assign(
+          {},
+          {emptyArrayToNull: true, emptyStringToNull: true,}, config
+      );
+  return cloneDeepWith(params, (value): any => {
+    if (isDate(value)) {
+      if (dateFormat) {
+        return format(value, dateFormat);
+      } else {
+        return value.getTime();
       }
-      if (
-        typeof value === 'object' &&
-        Object.prototype.toString.call(value) === '[object Object]' &&
-        Object.keys(value).length >= 1
-      ) {
-        return { [key]: transformParams(value) };
+    }
+    if (isArray(value) && !value.length && emptyArrayToNull) {
+      return null;
+    }
+    if (isString(value)) {
+      if ('' === value) {
+        if (emptyStringToNull) {
+          return null;
+        }
+      } else {
+        return value.trim();
       }
-      if (value instanceof Date) {
-        value = value.getTime();
-      } else if (typeof value === 'string') {
-        value = value.trim();
-      }
-      return { [key]: value };
-    })
-    .filter((v) => !!v)
-    .reduce(
-      (previousValue, currentValue) => ({ ...previousValue, ...currentValue }),
-      {}
-    );
+    }
+  });
 }

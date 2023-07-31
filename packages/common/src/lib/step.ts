@@ -234,12 +234,13 @@ export class ClickLink implements IStep {
   name: string;
   selector: Selector;
   type: StepType;
-  options?: { timeout?: number; switchPage?: boolean };
+  options: { timeout?: number; switchPage?: boolean };
 
-  constructor(name: string, selector: Selector) {
+  constructor(name: string, selector: Selector, options: ClickLink['options']) {
     this.name = name;
     this.selector = selector;
     this.type = StepType.CLICK_LINK;
+    this.options = options;
   }
 }
 
@@ -313,7 +314,7 @@ export class OpenBrowser implements IStep {
     height?: number;
     deviceScaleFactor?: number;
     recordVideo?: boolean;
-  } & Record<string, unknown>;
+  };
 
   constructor(name: string) {
     this.name = name;
@@ -325,12 +326,14 @@ export class SelectPage implements IStep {
   name: string;
 
   type: StepType;
+  expression: string;
 
   options?: Record<string, unknown>;
 
-  constructor(name: string) {
+  constructor(name: string, expression: string) {
     this.name = name;
     this.type = StepType.SELECT_PAGE;
+    this.expression = expression;
   }
 }
 

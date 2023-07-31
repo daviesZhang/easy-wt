@@ -48,11 +48,13 @@ export class ScreenshotOptionsComponent
           'step_options.screenshot_options.full_page_' + this.options.fullPage
         ),
       },
-      {
+    ];
+    if (this.options.path) {
+      this.items.push({
         label: this.translate.instant('step_options.screenshot_options.path'),
         value: this.options.path,
-      },
-    ];
+      });
+    }
     return true;
   }
 }

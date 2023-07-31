@@ -4,7 +4,7 @@ import {
   ICellEditorAngularComp,
   ICellRendererAngularComp,
 } from 'ag-grid-angular';
-import { Selector, SELECTOR_TYPE } from '@easy-wt/common';
+import { Selector, SELECTOR_TYPE, transformParams } from '@easy-wt/common';
 import { ICellEditorParams } from 'ag-grid-community';
 import { ICellRendererParams } from 'ag-grid-community/dist/lib/rendering/cellRenderers/iCellRenderer';
 import {
@@ -13,6 +13,8 @@ import {
   Validators,
 } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
+import omitBy from 'lodash/omitBy';
+import isNull from 'lodash/isNull';
 
 @Component({
   selector: 'easy-wt-selector-locator',
@@ -61,7 +63,7 @@ export class SelectorLocatorComponent
 
   override getValue(): Partial<Selector> {
     if (this.options && Object.keys(this.options).length) {
-      return this.options;
+      return omitBy(transformParams(this.options), isNull);
     }
     return null;
   }

@@ -60,7 +60,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     order: 2,
     selector: { edit: false },
     expression: { edit: true, tip: '请填写需要打开的网址,必须以http开头~' },
-    options: {},
+    options: { timeout: DEFAULT_TIMEOUT },
     operateType: 'operate',
   } as StepTypeConfig<OpenPage>,
   CLICK_LINK: {

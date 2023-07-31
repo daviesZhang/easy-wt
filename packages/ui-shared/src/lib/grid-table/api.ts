@@ -92,13 +92,7 @@ export class QueryPage {
   }
 }
 
-export class ParamsTransform {
-  [key: string]: (
-    value: any
-  ) =>
-    | QueryField
-    | Array<QueryField | string | number | boolean>
-    | string
-    | number
-    | boolean;
+export interface GridColumnDef {
+  columnSort: string[];
+  width: { [key: string]: number };
 }

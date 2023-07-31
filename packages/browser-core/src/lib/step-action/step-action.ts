@@ -17,7 +17,6 @@ import {
   ClickElement,
   ClickLink,
   CloseBrowser,
-  copyProperties2,
   DEFAULT_TIMEOUT,
   InputText,
   IStep,
@@ -33,7 +32,6 @@ import {
   RunScript,
   Screenshot,
   SelectPage,
-  STEP_CONFIG,
   StepAction,
   StepResult,
   StepType,
@@ -55,11 +53,7 @@ export class OpenBrowserAction implements StepAction<OpenBrowser> {
     step: OpenBrowser,
     context: RunContext
   ): Promise<StepResult<OpenBrowser>> {
-    const options: Partial<OpenBrowser['options']> = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.OPEN_BROWSER].options,
-      step.options
-    );
+    const options = step.options!;
     let browser$: Promise<BrowserContext>;
     const { recordVideo, ...other } = options;
     let _options: Partial<LaunchOptions & BrowserContextOptions> = other;
@@ -143,11 +137,8 @@ export class OpenPageAction implements StepAction<OpenPage> {
     context: RunContext
   ): Promise<StepResult<OpenPage>> {
     const browser = context.browser as BrowserContext;
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.OPEN_PAGE].options,
-      step.options
-    );
+    const options = step.options;
+
     const page = await browser.newPage();
     context.page = page;
     await page.goto(step.expression, options);
@@ -172,11 +163,7 @@ export class KeyboardAction implements StepAction<Keyboard> {
   ): Promise<StepResult<Keyboard>> {
     const page = context.page as Page;
     const { expression } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.KEYBOARD].options,
-      step.options
-    );
+    const options = step.options!;
     const { type, ...other } = options;
     let action: Promise<void>;
     switch (type) {
@@ -206,11 +193,7 @@ export class KeyboardAction implements StepAction<Keyboard> {
 @Injectable()
 export class MouseAction implements StepAction<Mouse> {
   async run(step: Mouse, context: RunContext): Promise<StepResult<Mouse>> {
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.MOUSE].options,
-      step.options
-    );
+    const options = step.options!;
     const { type, x, y, mouseButton, ...other } = options;
 
     switch (type) {
@@ -267,11 +250,7 @@ export class InputTextAction implements StepAction<InputText> {
     context: RunContext
   ): Promise<StepResult<InputText>> {
     const selector = step.selector;
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.INPUT_TEXT].options,
-      step.options
-    );
+    const options = step.options;
 
     await getLocator(selector, context).fill(
       step.expression,
@@ -293,11 +272,7 @@ export class ClickLinkAction implements StepAction<ClickLink> {
   ): Promise<StepResult<ClickLink>> {
     const selector = step.selector;
 
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.CLICK_LINK].options,
-      step.options
-    );
+    const options = step.options;
     const browser = context.browser as BrowserContext;
     const { timeout, switchPage } = options;
     const pagePromise = browser.waitForEvent('page', { timeout });
@@ -326,11 +301,7 @@ export class ClickElementAction implements StepAction<ClickElement> {
   ): Promise<StepResult<ClickElement>> {
     const selector = step.selector;
 
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.CLICK_ELEMENT].options,
-      step.options
-    );
+    const options = step.options;
     await getLocator(selector, context).click(options);
     return resultSuccess(true, step);
   }
@@ -350,18 +321,14 @@ export class ScreenshotAction implements StepAction<Screenshot> {
     context: RunContext
   ): Promise<StepResult<Screenshot>> {
     const { selector } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.SCREENSHOT].options,
-      step.options
-    );
+    const options = step.options;
     const imagePath = await screenshotPath(context);
     const customPath = options.path;
-    options.path = imagePath;
+    const _options = Object.assign({}, options, { path: imagePath });
     if (selector) {
-      await getLocator(selector, context).screenshot(options);
+      await getLocator(selector, context).screenshot(_options);
     } else {
-      await getPage(context).screenshot(options);
+      await getPage(context).screenshot(_options);
     }
     if (customPath && customPath !== imagePath) {
       await fs.copy(imagePath, customPath);
@@ -381,15 +348,12 @@ export class CheckElementExistAction implements StepAction<CheckElementExist> {
     context: RunContext
   ): Promise<StepResult<CheckElementExist>> {
     const { selector } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.CHECK_ELEMENT_EXIST].options,
-      step.options
-    );
+    const options = step.options!;
     const { alwaysScreenshot, timeout, element, exist, failedContinue } =
       options;
     const page = context.page as Page;
-    options.path = await screenshotPath(context);
+    const imagesPath = await screenshotPath(context);
+    const _options = Object.assign({}, options, { path: imagesPath });
     const locator = getLocator(selector, context);
     let count = await locator.count();
     if (!count) {
@@ -403,17 +367,17 @@ export class CheckElementExistAction implements StepAction<CheckElementExist> {
     if ((exist && count) || (!exist && !count)) {
       if (alwaysScreenshot) {
         if (element) {
-          await locator.screenshot(options);
+          await locator.screenshot(_options);
         } else {
-          await page.screenshot(options);
+          await page.screenshot(_options);
         }
-        return resultSuccess(true, step, { screenshot: options.path });
+        return resultSuccess(true, step, { screenshot: imagesPath });
       }
       return resultSuccess(true, step);
     }
-    await page.screenshot(options);
+    await page.screenshot(_options);
     return resultError(failedContinue || false, step, {
-      screenshot: options.path,
+      screenshot: imagesPath,
     });
   }
 
@@ -432,16 +396,13 @@ export class CheckElementTextAction implements StepAction<CheckElementText> {
     context: RunContext
   ): Promise<StepResult<CheckElementText>> {
     const { selector, expression } = step;
-    const options = copyProperties2(
-      {},
-      STEP_CONFIG[StepType.CHECK_ELEMENT_TEXT].options,
-      step.options
-    );
+    let options = step.options;
     const { alwaysScreenshot, pattern, element, timeout, failedContinue } =
       options;
     const page = context.page as Page;
     let message = '';
-    options.path = await screenshotPath(context);
+    const imagePath = await screenshotPath(context);
+    options = Object.assign({}, options, { path: imagePath });
     const locator = getLocator(selector, context);
 
     const text = await getText(locator, { timeout });
@@ -491,7 +452,7 @@ export class CheckElementTextAction implements StepAction<CheckElementText> {
           await page.screenshot(options);
         }
         return Promise.resolve(
-          resultSuccess(true, step, { screenshot: options.path })
+          resultSuccess(true, step, { screenshot: imagePath })
         );
       }
       return Promise.resolve(resultSuccess(true, step));
@@ -504,7 +465,7 @@ export class CheckElementTextAction implements StepAction<CheckElementText> {
       await page.screenshot(options);
     }
     return resultError(failedContinue || false, step, {
-      screenshot: options.path,
+      screenshot: imagePath,
       message,
     });
   }
@@ -544,11 +505,7 @@ export class PutParamsAction implements StepAction<PutParams> {
     context: RunContext
   ): Promise<StepResult<PutParams>> {
     const { selector, expression, options } = step;
-    const { key, simple, attr } = Object.assign(
-      {},
-      STEP_CONFIG[StepType.PUT_PARAMS].options,
-      options
-    );
+    const { key, simple, attr } = options;
     const params = [];
     if (expression) {
       let _value;
@@ -646,6 +603,7 @@ export class StructEndIfAction implements StepAction<StructEndIf> {
 @Injectable()
 export class StructWhileAction implements StepAction<StructWhile> {
   private logger = new Logger(StructWhileAction.name);
+
   async run(
     step: StructWhile,
     context: RunContext
@@ -683,7 +641,7 @@ export class StructEndwhileAction implements StepAction<StructEndwhile> {
 }
 
 export class SelectPageAction implements StepAction<SelectPage> {
-  run(step: OpenPage, context: RunContext): Promise<StepResult<SelectPage>> {
+  run(step: SelectPage, context: RunContext): Promise<StepResult<SelectPage>> {
     const browser = context.browser as BrowserContext;
     let pages = browser.pages();
     const { expression } = step;
@@ -723,11 +681,7 @@ export class SelectPageAction implements StepAction<SelectPage> {
 export class WaitAction implements StepAction<Wait> {
   async run(step: Wait, context: RunContext): Promise<StepResult<Wait>> {
     const { expression, selector } = step;
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.WAIT].options,
-      step.options
-    );
+    const options = step.options;
 
     const promises = [];
     if (selector && Object.keys(selector).length) {
@@ -752,11 +706,7 @@ export class WaitAction implements StepAction<Wait> {
 export class RunScriptAction implements StepAction<RunScript> {
   run(step: RunScript, context: RunContext): Promise<StepResult<RunScript>> {
     const { expression } = step;
-    const options = Object.assign(
-      {},
-      STEP_CONFIG[StepType.RUN_SCRIPT].options,
-      step.options
-    );
+    const options = step.options;
 
     return vm.runInNewContext(
       expression,

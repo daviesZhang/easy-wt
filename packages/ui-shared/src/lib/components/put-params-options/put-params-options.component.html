@@ -9,16 +9,6 @@
       <input formControlName="key" nz-input nzSize="small"/>
     </nz-input-group>
   </div>
-  <div class="list-item">
-
-    <nz-input-group class="group-switch" nzAddOnBefore="{{'step_options.put_params.simple_label'|translate}}"
-                    nzCompact nzSize="small">
-      <nz-switch style="margin-left: 10px" nzSize="small"
-                 formControlName="simple"
-                 nzCheckedChildren="{{'step_options.put_params.simple_true'|translate}}"
-                 nzUnCheckedChildren="{{'step_options.put_params.simple_false'|translate}}"></nz-switch>
-    </nz-input-group>
-  </div>
 
 
   <div class="list-item">
@@ -37,6 +27,9 @@
     </nz-input-group>
   </div>
 
+  <div class="list-item">
+    <label formControlName="simple" nz-checkbox>{{'step_options.put_params.simple_true'|translate}}</label>
 
+  </div>
 </easy-wt-case-step-options>
 

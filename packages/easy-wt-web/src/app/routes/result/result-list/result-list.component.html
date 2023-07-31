@@ -62,6 +62,7 @@
 </div>
 <easy-wt-grid-table [autoRefresh]="this.autoRefresh"
                     [suppressGridStatisticsBar]="false"
+                    saveColumnDefKey="case-result-grid"
                     (gridReady)="onGridReady($event)" [getData]="getData" [initLoadData]="false"
                     class="grid-table result-page"
                     [options]="options" [showFooterAction]="{autoRefresh:true}" [showFooter]="true"

@@ -5,8 +5,9 @@
     <ng-container *ngIf="item.label">
       {{item.label}}:
     </ng-container>
-    <span class="value">{{item.value}}</span>
+    <span [innerHTML]="item.value" class="value"></span>
   </nz-tag>
+
 
 </ng-container>
 
