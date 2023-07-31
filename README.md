@@ -2,7 +2,7 @@
 
 基于[playwright](https://playwright.dev/)的一个WEB自动化测试工具
 
-
+**如果这个小工具在任何地方帮助到你,请帮忙点个Star,这对我很重要,将激励我继续学习❤️**
 
 ![home](./doc/images/home.jpg)
 ![report](./doc/images/report.jpg)
@@ -35,6 +35,8 @@
 * 支持用例导入、导出,便于跨数据库分享用例
 
 ## 使用
+
+[使用手册](./doc/wiki/home.md)
 
 下载对应平台的构建包
 
@@ -87,7 +89,12 @@ npm run desktop:production
 npm run server:production
 ```
 
+## 联系我
 
+![douyin](./doc/images/douyin.png)
+如果喜欢这个工具可以关注我
+
+不定期分享一些使用技巧、源码解释、开发计划等等
 
 
 
