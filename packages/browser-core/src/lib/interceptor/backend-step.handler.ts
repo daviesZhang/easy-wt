@@ -45,6 +45,10 @@ function innerFunction(context: RunContext) {
   return {
     nanoid: () => getNanoIdSync(),
     output: context.environmentConfig ? context.environmentConfig.output : '',
+    report_path: path.join(
+      context.environmentConfig ? context.environmentConfig.output : '',
+      context.uuid
+    ),
     date_str: () => format(new Date(), 'yyyy-MM-dd'),
     time_str: () => format(new Date(), 'HH:mm:ss'),
     path_sep: path.sep,
@@ -55,6 +59,8 @@ function innerFunction(context: RunContext) {
       }
       return '';
     },
+    random_number: (max: number, min = 0) =>
+      Math.floor(Math.random() * (max - min + 1) + min),
   };
 }
 
