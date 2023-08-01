@@ -28,5 +28,14 @@
 </easy-wt-json-editor-modal>
 
 <ng-container *ngIf="renderer">
-  <easy-wt-options-renderer [items]="items"></easy-wt-options-renderer>
+  <ng-template #popover>
+    <easy-wt-options-renderer
+      [items]="items"></easy-wt-options-renderer>
+  </ng-template>
+
+  <easy-wt-options-renderer [items]="items"
+                            [nzPopoverContent]="popover"
+                            nz-popover
+                            nzPopoverOverlayClassName="case-step-options-popover"
+                            nzPopoverTrigger="click"></easy-wt-options-renderer>
 </ng-container>

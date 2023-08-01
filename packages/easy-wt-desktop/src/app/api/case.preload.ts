@@ -9,10 +9,15 @@ import {
   switchMap,
   takeUntil,
 } from 'rxjs';
-import { Expose, sendLogger } from './expose';
+import { Expose, sendLogger } from './helper';
+import { INestApplicationContext } from '@nestjs/common';
 
-export class ExposeCaseService implements Expose {
-  constructor(private caseService: ScriptCaseService) {}
+export class CaseExposeService implements Expose {
+  private caseService: ScriptCaseService;
+
+  constructor(applicationContext: INestApplicationContext) {
+    this.caseService = applicationContext.get(ScriptCaseService);
+  }
 
   expose() {
     return {

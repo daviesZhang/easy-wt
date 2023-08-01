@@ -30,7 +30,7 @@ export class ReportService {
       params['browserType'] = In([].concat(params['browserType']));
     }
     let reports: Report[] = [];
-    const statis: StatReport = await this.reportRepository
+    const statReport: StatReport = await this.reportRepository
       .createQueryBuilder('report')
       .select('SUM(report.totalCheck)', 'totalCheck')
       .addSelect('SUM(report.successCount)', 'totalSuccessCheck')
@@ -41,14 +41,20 @@ export class ReportService {
       .addSelect('count(1)', 'count')
       .where(params)
       .getRawOne();
-    if (typeof statis.count === 'string') {
+    if (typeof statReport.count === 'string') {
       //fix mysql
-      Object.keys(statis).forEach((key) => {
-        const value = statis[key as keyof StatReport].toString();
-        Object.assign(statis, { [key]: parseInt(value) });
+      Object.keys(statReport).forEach((key) => {
+        let value = statReport[key as keyof StatReport] as
+          | string
+          | number
+          | null;
+        if (value !== null) {
+          value = value.toString();
+          Object.assign(statReport, { [key]: parseInt(value) });
+        }
       });
     }
-    if (statis.count) {
+    if (statReport.count) {
       reports = await this.reportRepository.find({
         where: params,
         order: query.orderBys,
@@ -56,7 +62,7 @@ export class ReportService {
         skip: query.size * (query.current - 1),
       });
     }
-    return [reports, statis];
+    return [reports, statReport];
   }
 
   getCols<T>(repository: Repository<T>): (keyof T)[] {

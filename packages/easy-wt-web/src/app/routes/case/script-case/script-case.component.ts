@@ -355,7 +355,13 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (event.newValue === undefined) {
       return;
     }
-
+    try {
+      if (JSON.stringify(event.newValue) === JSON.stringify(event.oldValue)) {
+        return;
+      }
+    } catch (e) {
+      //
+    }
     await this.coreService.updateStep(event.data.id, {
       [event.colDef.field]: event.newValue,
     });

@@ -11,6 +11,7 @@ import * as fs from 'fs-extra';
 import { decryptedData, encryptedData } from '../tools';
 
 import * as winston from 'winston';
+import { getWindowViewport, saveWindowViewport } from '../store';
 
 export default class ElectronEvents {
   static windowMap = new Map<string, BrowserWindow>();
@@ -90,6 +91,8 @@ ipcMain.handle('newWindow', async (event, args) => {
     ElectronEvents.windowMap.get(windowName).show();
     return;
   }
+  const windowKey = windowName.replace(/-\w+$/, '');
+  const viewport = await getWindowViewport(windowKey);
   const newWindow = new BrowserWindow(
     Object.assign(
       {
@@ -105,7 +108,8 @@ ipcMain.handle('newWindow', async (event, args) => {
           preload: join(__dirname, 'main.preload.js'),
         },
       },
-      options || {}
+      options || {},
+      viewport
     )
   );
   newWindow.loadURL(url).then();
@@ -113,6 +117,12 @@ ipcMain.handle('newWindow', async (event, args) => {
   newWindow.once('close', () => {
     ElectronEvents.windowMap.delete(windowName);
   });
+
+  newWindow.on('resized', () => {
+    const [width, height] = newWindow.getSize();
+    saveWindowViewport(windowKey, { width, height });
+  });
+
   return new Promise((resolve, reject) => {
     newWindow.once('ready-to-show', () => {
       newWindow.show();

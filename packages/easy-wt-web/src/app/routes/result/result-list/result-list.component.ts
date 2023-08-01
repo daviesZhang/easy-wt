@@ -131,10 +131,11 @@ export class ResultListComponent implements OnInit {
     this.getData = (params: QueryParams) => {
       return from(this.coreService.findReportPage(params)).pipe(
         map((next) => {
-          const [items, statisReport] = next;
+          const [items, statReport] = next;
+
           return {
-            total: statisReport.count,
-            statistics: [this.transformer(statisReport)],
+            total: statReport.count,
+            statistics: [this.transformer(statReport)],
             items,
           };
         })
@@ -267,6 +268,7 @@ export class ResultListComponent implements OnInit {
     if (query.beginTime && query.beginTime.length) {
       query.beginTime = query.beginTime.map((item) => item.getTime());
     }
+
     this.table.searchRowsData(query);
   }
 
