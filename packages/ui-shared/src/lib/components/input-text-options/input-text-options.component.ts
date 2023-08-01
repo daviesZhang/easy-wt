@@ -6,7 +6,7 @@ import {
 } from 'ag-grid-angular';
 import { InputText } from '@easy-wt/common';
 import { AbstractOptions } from '../abstract-options';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -23,9 +23,7 @@ export class InputTextOptionsComponent
 {
   formGroup = this.fb.group({
     force: [true],
-    timeout: new FormControl<number>(null, {
-      validators: [Validators.required, Validators.min(1)],
-    }),
+    timeout: new FormControl<number>(null),
   });
 
   constructor(

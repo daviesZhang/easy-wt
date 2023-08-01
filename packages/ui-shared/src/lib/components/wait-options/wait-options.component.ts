@@ -7,7 +7,7 @@ import {
 import { Wait } from '@easy-wt/common';
 import { AbstractOptions } from '../abstract-options';
 import { DOCUMENT } from '@angular/common';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
 type Options = Wait['options'];
@@ -22,9 +22,7 @@ export class WaitOptionsComponent
   implements ICellEditorAngularComp, ICellRendererAngularComp
 {
   formGroup = this.fb.group({
-    timeout: new FormControl<number>(null, {
-      validators: [Validators.required],
-    }),
+    timeout: new FormControl<number>(null),
   });
 
   constructor(

@@ -8,15 +8,12 @@ import {
   StepAction,
 } from '@easy-wt/common';
 import {
-  CheckElementExistAction,
-  CheckElementTextAction,
   ClickElementAction,
   ClickLinkAction,
   CloseBrowserAction,
   InputTextAction,
   KeyboardAction,
   MouseAction,
-  OpenBrowserAction,
   OpenPageAction,
   PageLocatorAction,
   PutParamsAction,
@@ -29,14 +26,17 @@ import {
   StructIfAction,
   StructWhileAction,
   WaitAction,
-} from './step-action/step-action';
+} from './step-action/step.action';
 import { ReportExportService } from './report-export.service';
 import { CaseRunService } from './case-run.service';
 import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
 import {
   TextSaveAction,
   TextSaveCloseAction,
-} from './step-action/text-save-action';
+} from './step-action/text-save.action';
+import { OpenBrowserAction } from './step-action/open-browser.action';
+import { CheckElementTextAction } from './step-action/check-element-text.action';
+import { CheckElementExistAction } from './step-action/check-element-exist.action';
 
 @Module({})
 export class BrowserCoreModule {

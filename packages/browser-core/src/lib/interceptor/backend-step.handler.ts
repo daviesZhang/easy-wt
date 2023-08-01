@@ -18,6 +18,7 @@ import cloneDeepWith from 'lodash/cloneDeepWith';
 import omitBy from 'lodash/omitBy';
 import { Logger } from '@nestjs/common';
 import { format } from 'date-fns';
+import { Page } from 'playwright';
 
 function cloneDeepAndReplace(step: IStep, context: RunContext) {
   const params = Object.assign(
@@ -45,6 +46,13 @@ function innerFunction(context: RunContext) {
     output: context.environmentConfig ? context.environmentConfig.output : '',
     date_str: () => format(new Date(), 'yyyy-MM-dd'),
     time_str: () => format(new Date(), 'HH:mm:ss'),
+    page_url: () => {
+      if (context.page) {
+        const page = context.page as Page;
+        return page.url();
+      }
+      return '';
+    },
   };
 }
 

@@ -43,10 +43,20 @@ export class SelectorLocatorComponent
       value: [null, [Validators.required]],
       nth: [null, []],
       name: [null, []],
-      exact: [false, []],
+      exact: [null, []],
       filter: [null, []],
       filterValue: [null, []],
       connect: [null, []],
+    });
+    this.formGroup.get('type').valueChanges.subscribe((type) => {
+      if (type === 'Css' || type === 'XPath' || type === 'Role') {
+        this.formGroup.get('exact').clearValidators();
+        this.formGroup.get('exact').reset();
+        this.formGroup.get('exact').markAsPristine();
+      } else {
+        this.formGroup.get('exact').setValue(false);
+        this.formGroup.get('exact').markAsDirty();
+      }
     });
     this.formGroup.get('filter').valueChanges.subscribe((filter) => {
       if (filter) {
@@ -97,7 +107,9 @@ export class SelectorLocatorComponent
     if (this.options.filter) {
       this.items.push({
         value: this.translate.instant(
-          'step_selector.filter_' + this.options.filter
+          this.options.filter === 'hasText'
+            ? 'step_selector.filter_has_text'
+            : 'step_selector.filter_has_not_text'
         ),
       });
     }
@@ -135,6 +147,10 @@ export class SelectorLocatorComponent
       return;
     }
     this.options = this.formGroup.value as Selector;
+    this.api.stopEditing();
+  }
+
+  closeOptions() {
     this.api.stopEditing();
   }
 }

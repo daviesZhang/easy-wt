@@ -28,9 +28,7 @@ export class CheckElementTextOptionsComponent
   formGroup = this.fb.group({
     fullPage: [false],
     element: [true],
-    timeout: new FormControl<number>(null, {
-      validators: [Validators.required],
-    }),
+    timeout: new FormControl<number>(null),
     screenshotOption: new FormControl<number>(null),
     pattern: new FormControl<string>('', { validators: [Validators.required] }),
     alwaysScreenshot: [true, [Validators.required]],

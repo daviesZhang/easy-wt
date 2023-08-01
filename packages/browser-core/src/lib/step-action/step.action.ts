@@ -1,28 +1,16 @@
-import {
-  BrowserContext,
-  chromium,
-  devices,
-  firefox,
-  Locator,
-  Page,
-  webkit,
-} from 'playwright';
+import { BrowserContext, Page } from 'playwright';
 import { lastValueFrom, take, timer } from 'rxjs';
 import * as vm from 'vm';
 import { Injectable, Logger } from '@nestjs/common';
 
 import {
-  CheckElementExist,
-  CheckElementText,
   ClickElement,
   ClickLink,
   CloseBrowser,
-  DEFAULT_TIMEOUT,
   InputText,
   IStep,
   Keyboard,
   Mouse,
-  OpenBrowser,
   OpenPage,
   PageLocator,
   PutParams,
@@ -42,93 +30,15 @@ import {
   StructWhile,
   Wait,
 } from '@easy-wt/common';
-import { ensurePath, getLocator, getPage, screenshotPath } from './../utils';
+import {
+  convertNumber,
+  getLocator,
+  getPage,
+  getText,
+  screenshotPath,
+} from './../utils';
 import * as fs from 'fs-extra';
 import * as path from 'path';
-import { BrowserContextOptions, LaunchOptions } from 'playwright-core';
-
-@Injectable()
-export class OpenBrowserAction implements StepAction<OpenBrowser> {
-  async run(
-    step: OpenBrowser,
-    context: RunContext
-  ): Promise<StepResult<OpenBrowser>> {
-    const options = step.options!;
-    let browser$: Promise<BrowserContext>;
-    const { recordVideo, ...other } = options;
-    let _options: Partial<LaunchOptions & BrowserContextOptions> = other;
-    if (recordVideo) {
-      const videos = await ensurePath(context, [
-        'videos',
-        context.runConfig.uuid!,
-      ]);
-      _options = Object.assign(other, { recordVideo: { dir: videos } });
-    }
-    switch (context.browserType) {
-      case 'webkit':
-        if (context.environmentConfig.webkit) {
-          _options.executablePath = context.environmentConfig.webkit;
-        }
-        if (context.environmentConfig.webkitUserData) {
-          browser$ = webkit.launchPersistentContext(
-            context.environmentConfig.webkitUserData,
-            _options
-          );
-        } else {
-          browser$ = webkit
-            .launch(_options)
-            .then((b) => b.newContext(_options));
-        }
-        break;
-      case 'firefox':
-        if (context.environmentConfig.firefox) {
-          _options.executablePath = context.environmentConfig.firefox;
-        }
-
-        if (context.environmentConfig.firefoxUserData) {
-          browser$ = firefox.launchPersistentContext(
-            context.environmentConfig.firefoxUserData,
-            _options
-          );
-        } else {
-          browser$ = firefox
-            .launch(_options)
-            .then((b) => b.newContext(_options));
-        }
-        break;
-      case 'chromium':
-      default:
-        if (options.devicesName) {
-          Object.assign(_options, devices[options.devicesName]);
-        }
-        if (options.height && options.width) {
-          Object.assign(_options, {
-            viewport: { width: options.width, height: options.height },
-          });
-        }
-        if (context.environmentConfig.chromium) {
-          _options.executablePath = context.environmentConfig.chromium;
-        }
-        if (context.environmentConfig.chromiumUserData) {
-          browser$ = chromium.launchPersistentContext(
-            context.environmentConfig.chromiumUserData,
-            _options
-          );
-        } else {
-          browser$ = chromium
-            .launch(_options)
-            .then((b) => b.newContext(_options));
-        }
-        break;
-    }
-    context.browser = await browser$;
-    return resultSuccess(true, step);
-  }
-
-  support(step: OpenBrowser): boolean {
-    return step.type === StepType.OPEN_BROWSER;
-  }
-}
 
 @Injectable()
 export class OpenPageAction implements StepAction<OpenPage> {
@@ -137,11 +47,15 @@ export class OpenPageAction implements StepAction<OpenPage> {
     context: RunContext
   ): Promise<StepResult<OpenPage>> {
     const browser = context.browser as BrowserContext;
-    const options = step.options;
+    const { timeout, defaultTimeout } = step.options || {};
 
     const page = await browser.newPage();
+    const _defaultTimeout = convertNumber(defaultTimeout);
+    if (_defaultTimeout) {
+      page.setDefaultTimeout(_defaultTimeout);
+    }
     context.page = page;
-    await page.goto(step.expression, options);
+    await page.goto(step.expression, { timeout });
     const video = page.video();
     if (video) {
       const path = await video.path();
@@ -341,159 +255,11 @@ export class ScreenshotAction implements StepAction<Screenshot> {
   }
 }
 
-@Injectable()
-export class CheckElementExistAction implements StepAction<CheckElementExist> {
-  async run(
-    step: CheckElementExist,
-    context: RunContext
-  ): Promise<StepResult<CheckElementExist>> {
-    const { selector } = step;
-    const options = step.options!;
-    const { alwaysScreenshot, timeout, element, exist, failedContinue } =
-      options;
-    const page = context.page as Page;
-    const imagesPath = await screenshotPath(context);
-    const _options = Object.assign({}, options, { path: imagesPath });
-    const locator = getLocator(selector, context);
-    let count = await locator.count();
-    if (!count) {
-      try {
-        await locator.waitFor({ timeout: timeout || DEFAULT_TIMEOUT });
-        count = await locator.count();
-      } catch (e) {
-        //
-      }
-    }
-    if ((exist && count) || (!exist && !count)) {
-      if (alwaysScreenshot) {
-        if (element) {
-          await locator.screenshot(_options);
-        } else {
-          await page.screenshot(_options);
-        }
-        return resultSuccess(true, step, { screenshot: imagesPath });
-      }
-      return resultSuccess(true, step);
-    }
-    await page.screenshot(_options);
-    return resultError(failedContinue || false, step, {
-      screenshot: imagesPath,
-    });
-  }
 
-  support(step: IStep): boolean {
-    return step.type == StepType.CHECK_ELEMENT_EXIST;
-  }
-}
 
-/**
- * 检查元素文本是否匹配的步骤
- */
-@Injectable()
-export class CheckElementTextAction implements StepAction<CheckElementText> {
-  async run(
-    step: CheckElementText,
-    context: RunContext
-  ): Promise<StepResult<CheckElementText>> {
-    const { selector, expression } = step;
-    let options = step.options;
-    const { alwaysScreenshot, pattern, element, timeout, failedContinue } =
-      options;
-    const page = context.page as Page;
-    let message = '';
-    const imagePath = await screenshotPath(context);
-    options = Object.assign({}, options, { path: imagePath });
-    const locator = getLocator(selector, context);
 
-    const text = await getText(locator, { timeout });
-    const value = text || '';
-    let checkResult;
-    switch (pattern) {
-      case 'EXP':
-        checkResult = vm.runInNewContext(expression, { value: value });
-        break;
-      case 'STARTS_WITH':
-        checkResult = value.startsWith(expression);
-        break;
-      case 'ENDS_WITH':
-        checkResult = value.endsWith(expression);
-        break;
-      case 'CONTAINS':
-        checkResult = value.indexOf(expression) >= 0;
-        break;
-      case 'NOT_CONTAINS':
-        checkResult = value.indexOf(expression) < 0;
-        break;
-      case 'LE':
-        checkResult = expression <= value;
-        break;
-      case 'LT':
-        checkResult = expression < value;
-        break;
-      case 'GT':
-        checkResult = expression > value;
-        break;
-      case 'GE':
-        checkResult = expression >= value;
-        break;
-      case 'NOT_EQUALS':
-        checkResult = expression !== value;
-        break;
-      case 'EQUALS':
-      default:
-        checkResult = expression == value;
-        break;
-    }
-    if (checkResult) {
-      if (alwaysScreenshot) {
-        if (element) {
-          await locator.screenshot(options);
-        } else {
-          await page.screenshot(options);
-        }
-        return Promise.resolve(
-          resultSuccess(true, step, { screenshot: imagePath })
-        );
-      }
-      return Promise.resolve(resultSuccess(true, step));
-    }
-    message = `检查内容不符合,存在内容:${value}`;
-    const count = await locator.count();
-    if (count === 1) {
-      await locator.screenshot(options);
-    } else {
-      await page.screenshot(options);
-    }
-    return resultError(failedContinue || false, step, {
-      screenshot: imagePath,
-      message,
-    });
-  }
 
-  support(step: IStep): boolean {
-    return step.type == StepType.CHECK_ELEMENT_TEXT;
-  }
-}
 
-/**
- * 获取定位器定位的元素文本,优先级先找content>input>innerText
- * @param locator
- * @param options
- */
-async function getText(
-  locator: Locator,
-  options?: { innerText?: boolean; timeout?: number }
-): Promise<string> {
-  const { innerText, timeout } = options || {};
-  let text = await locator.textContent({ timeout });
-  if (!text) {
-    text = await locator.inputValue();
-  }
-  if (!text && innerText) {
-    text = await locator.innerText();
-  }
-  return text;
-}
 
 /**
  * 设置变量,以便于后续步骤使用
@@ -645,7 +411,10 @@ export class StructEndwhileAction implements StepAction<StructEndwhile> {
 }
 
 export class SelectPageAction implements StepAction<SelectPage> {
-  run(step: SelectPage, context: RunContext): Promise<StepResult<SelectPage>> {
+  async run(
+    step: SelectPage,
+    context: RunContext
+  ): Promise<StepResult<SelectPage>> {
     const browser = context.browser as BrowserContext;
     let pages = browser.pages();
     const { expression } = step;
@@ -664,7 +433,9 @@ export class SelectPageAction implements StepAction<SelectPage> {
       const regx = new RegExp(expression);
       pages = pages.filter((page) => regx.test(page.url()));
       if (pages.length) {
-        context.page = pages[0];
+        const page = pages[0];
+        context.page = page;
+        await page.bringToFront();
       } else {
         return Promise.resolve(
           resultError(false, step, {

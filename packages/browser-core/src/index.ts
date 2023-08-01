@@ -3,8 +3,6 @@ import { BrowserCoreModule } from './lib/browser-core.module';
 import { EnvironmentConfig } from '@easy-wt/common';
 
 export * from './lib/browser-core.module';
-export * from './lib/step-action/step-action';
-export * from './lib/step-action/text-save-action';
 export * from './lib/case-run.service';
 export * from './lib/report-export.service';
 export * from './lib/utils';

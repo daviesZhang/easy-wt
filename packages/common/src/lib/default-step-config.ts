@@ -54,13 +54,14 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     options: {
       //使用无头浏览器
       headless: true,
+      defaultTimeout: DEFAULT_TIMEOUT,
     },
   } as StepTypeConfig<OpenBrowser>,
   OPEN_PAGE: {
     order: 2,
     selector: { edit: false },
     expression: { edit: true, tip: '请填写需要打开的网址,必须以http开头~' },
-    options: { timeout: DEFAULT_TIMEOUT },
+    options: {},
     operateType: 'operate',
   } as StepTypeConfig<OpenPage>,
   CLICK_LINK: {
@@ -68,9 +69,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     order: 1,
     selector: { edit: true },
     expression: { edit: false },
-    options: {
-      timeout: DEFAULT_TIMEOUT,
-    },
+    options: {},
   },
   KEYBOARD: {
     operateType: 'operate',
@@ -111,10 +110,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
       tip: '如果不为空,等待特定时间(毫秒)~',
       type: 'number',
     },
-    options: {
-      //超时时间
-      timeout: DEFAULT_TIMEOUT,
-    },
+    options: {},
   },
   INPUT_TEXT: {
     operateType: 'operate',
@@ -124,9 +120,6 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     options: {
       //是否绕过可操作性检查
       force: false,
-      timeout: DEFAULT_TIMEOUT,
-      //超时
-      //delay: ,
     },
   },
   MOUSE: {
@@ -170,7 +163,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
       alwaysScreenshot: true,
       //仅截图检查元素
       element: false,
-      timeout: DEFAULT_TIMEOUT,
+
       //是否全页面截图
       fullPage: false,
       //base64|binary
@@ -190,7 +183,6 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
       //总是截图,无论失败,成功
       alwaysScreenshot: true,
 
-      timeout: DEFAULT_TIMEOUT,
       //进截图检查元素
       element: false,
       //是否全页面截图

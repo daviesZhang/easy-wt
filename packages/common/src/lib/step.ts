@@ -307,6 +307,7 @@ export class OpenBrowser implements IStep {
 
   options?: {
     executablePath?: string;
+    defaultTimeout: number | string;
     headless?: boolean;
     devicesName?: string;
     userAgent?: string;
@@ -369,7 +370,7 @@ export class OpenPage implements IStep {
   name: string;
   type: StepType;
   expression: string;
-  options?: { timeout: number };
+  options?: { timeout?: number; defaultTimeout?: number | string };
 
   constructor(name: string, expression: string) {
     this.name = name;

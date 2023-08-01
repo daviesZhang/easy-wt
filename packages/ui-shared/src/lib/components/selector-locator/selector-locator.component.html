@@ -33,22 +33,9 @@
     </nz-input-group>
   </nz-list-item>
 
-  <nz-list-item>
-    <ng-template #nthTemplate>
-      <nz-form-label class="tooltip-title-wrapper"
-                     nzNoColon
-                     nzTooltipTitle="{{'step_selector.nth_tip'|translate}}">
-        <span>{{'step_selector.nth_label'|translate}}</span>
-      </nz-form-label>
-    </ng-template>
-    <nz-input-group [nzAddOnBefore]="nthTemplate" nzCompact nzSize="small">
-      <nz-form-control>
-        <nz-input-number [nzMin]="0" [nzStep]="1" formControlName="nth" nzSize="small"/>
-      </nz-form-control>
-    </nz-input-group>
-  </nz-list-item>
-
-  <nz-list-item>
+  <nz-list-item *ngIf="formGroup.value.type!=='Css'&&
+                       formGroup.value.type!=='XPath'&&
+                       formGroup.value.type!=='Role'">
     <ng-template #exactTemplate>
       <nz-form-label class="tooltip-title-wrapper" nzFor="mouseButton" nzLabelAlign="right"
                      nzNoColon
@@ -66,6 +53,22 @@
       </nz-form-control>
     </nz-input-group>
   </nz-list-item>
+
+  <nz-list-item>
+    <ng-template #nthTemplate>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzTooltipTitle="{{'step_selector.nth_tip'|translate}}">
+        <span>{{'step_selector.nth_label'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="nthTemplate" nzCompact nzSize="small">
+      <nz-form-control>
+        <nz-input-number [nzMin]="0" [nzStep]="1" formControlName="nth" nzSize="small"/>
+      </nz-form-control>
+    </nz-input-group>
+  </nz-list-item>
+
 
   <nz-list-item>
     <ng-template #filterTemplate>
@@ -125,14 +128,25 @@
     </nz-input-group>
   </nz-list-item>
   <nz-list-footer class="list-footer">
-    <button (click)="changeMode()" [nzSize]="'small'"
-            nz-button nzDanger>{{'step_options.change_json'|translate}}
-    </button>
     <div>
+      <button (click)="changeMode()" [nzSize]="'small'"
+              nz-button nzDanger>{{'step_options.change_json'|translate}}
+      </button>
       <button (click)="clearOptions()" [nzSize]="'small'" nz-button
               nzGhost
-              nzType="primary" style="margin-right: 4px">{{'common.clear'|translate}}
+              nzDanger
+              nzType="primary" style="margin-left: 4px">{{'common.clear'|translate}}
       </button>
+    </div>
+
+    <div>
+
+
+      <button (click)="closeOptions()" [nzSize]="'small'" nz-button
+              nzGhost
+              nzType="primary" style="margin-right: 4px">{{'common.close'|translate}}
+      </button>
+
       <button (click)="saveOptions()" [nzSize]="'small'"
               nz-button nzType="primary">{{'common.save'|translate}}
       </button>

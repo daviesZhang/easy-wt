@@ -45,7 +45,15 @@ export function getNanoIdSync() {
   return nanoidSync();
 }
 
-
+export function convertNumber(value: unknown): number | undefined {
+  if (typeof value === 'number') {
+    return value;
+  }
+  if (typeof value === 'string' && /^\d+$/.test(value.trim())) {
+    return parseInt(value.trim(), 10);
+  }
+  return undefined;
+}
 /**
  * 生成截屏存放的路径,如果不存在则创建
  * @param context 上下文内容
@@ -148,6 +156,26 @@ export function getPage(context: RunContext): Page {
   return context.page as Page;
 }
 
+
+/**
+ * 获取定位器定位的元素文本,优先级先找content>input>innerText
+ * @param locator
+ * @param options
+ */
+export async function getText(
+  locator: Locator,
+  options?: { innerText?: boolean; timeout?: number }
+): Promise<string> {
+  const {innerText, timeout} = options || {};
+  let text = await locator.textContent({timeout});
+  if (!text) {
+    text = await locator.inputValue();
+  }
+  if (!text && innerText) {
+    text = await locator.innerText();
+  }
+  return text;
+}
 export function getWriteStreamMap(
   context: RunContext,
   create = false

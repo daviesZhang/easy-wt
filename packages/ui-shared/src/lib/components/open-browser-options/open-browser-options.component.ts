@@ -13,6 +13,7 @@ import {
   FormControl,
   FormGroup,
   ValidationErrors,
+  Validators,
 } from '@angular/forms';
 
 type Options = OpenBrowser['options'];
@@ -34,6 +35,9 @@ export class OpenBrowserOptionsComponent
       recordVideo: [false],
       devicesName: [''],
       userAgent: [''],
+      defaultTimeout: new FormControl<number>(null, {
+        validators: [Validators.required],
+      }),
       width: new FormControl<number>(null, { validators: [] }),
       height: new FormControl<number>(null),
       deviceScaleFactor: new FormControl<number>(null),
@@ -98,6 +102,17 @@ export class OpenBrowserOptionsComponent
       { value: this.options.devicesName },
       { value: this.options.userAgent },
     ];
+    if (this.options.defaultTimeout) {
+      this.items.push({
+        label: this.translate.instant(
+          'step_options.open_browser.default_timeout_label'
+        ),
+        value: this.translate.instant(
+          'step_options.open_browser.default_timeout_value',
+          { timeout: this.options.defaultTimeout }
+        ),
+      });
+    }
     if (this.options.width && this.options.height) {
       this.items.push({
         value: this.translate.instant('step_options.open_browser.viewport', {

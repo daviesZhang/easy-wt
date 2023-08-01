@@ -331,9 +331,15 @@
       "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
     },
     "open_page": {
-      "timeout_tip": "打开页面等待加载完成的超时时间"
+      "timeout_tip": "打开页面等待加载完成的超时时间",
+      "default_timeout_tip": "本页面的操作默认超时时间,比如查找元素等",
+      "default_timeout_label": "页面默认超时",
+      "default_timeout_value": "{{timeout}}ms"
     },
     "open_browser": {
+      "default_timeout_tip": "浏览器的其他操作默认超时时间,比如打开页面、查找元素等",
+      "default_timeout_label": "全局超时",
+      "default_timeout_value": "{{timeout}}ms",
       "devices_name_label": "设备仿真",
       "devices_name_tip": "内置支持的设备列表",
       "user_agent_tip": "用户代理字符串",

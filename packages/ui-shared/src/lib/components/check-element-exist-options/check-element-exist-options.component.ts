@@ -26,9 +26,7 @@ export class CheckElementExistOptionsComponent
   formGroup = this.fb.group({
     fullPage: [false],
     element: [true],
-    timeout: new FormControl<number>(null, {
-      validators: [Validators.required],
-    }),
+    timeout: new FormControl<number>(null),
     exist: [true, [Validators.required]],
     alwaysScreenshot: [true, [Validators.required]],
     screenshotOption: new FormControl<number>(null),

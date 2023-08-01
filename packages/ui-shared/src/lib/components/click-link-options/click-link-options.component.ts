@@ -6,7 +6,7 @@ import {
 import { ICellEditorParams, ICellRendererParams } from 'ag-grid-community';
 import { ClickLink } from '@easy-wt/common';
 import { AbstractOptions } from '../abstract-options';
-import { FormBuilder, FormControl, Validators } from '@angular/forms';
+import { FormBuilder, FormControl } from '@angular/forms';
 import { DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -23,9 +23,7 @@ export class ClickLinkOptionsComponent
 {
   formGroup = this.fb.group({
     switchPage: [true],
-    timeout: new FormControl<number>(null, {
-      validators: [Validators.required],
-    }),
+    timeout: new FormControl<number>(null),
   });
 
   constructor(

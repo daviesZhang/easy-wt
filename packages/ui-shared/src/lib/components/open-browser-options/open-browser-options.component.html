@@ -3,7 +3,21 @@
                            [items]="items"
                            [options]="options"
                            [renderer]="renderer" nz-form>
+  <div class="list-item">
+    <ng-template #defaultTimeout>
+      <nz-form-label class="tooltip-title-wrapper"
+                     nzNoColon
+                     nzRequired
+                     nzTooltipTitle="{{'step_options.open_browser.default_timeout_tip'|translate}}"
+      >
+        <span>{{'step_options.open_browser.default_timeout_label'|translate}}</span>
+      </nz-form-label>
 
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]="defaultTimeout" nzAddOnAfter="ms" nzCompact nzSize="small">
+      <input formControlName="defaultTimeout" nz-input/>
+    </nz-input-group>
+  </div>
   <div class="list-item">
     <ng-template #devicesName>
       <nz-form-label class="tooltip-title-wrapper"
