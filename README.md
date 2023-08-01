@@ -2,11 +2,10 @@
 
 基于[playwright](https://playwright.dev/)的一个WEB自动化测试工具
 
-**如果这个小工具在任何地方帮助到你,请帮忙点个Star,这对我很重要,将激励我继续学习❤️**
+**如果这个小工具在任何地方帮助到你,请给个Star⭐️,这将激励我继续学习❤️**
 
 ![home](./doc/images/home.jpg)
 ![report](./doc/images/report.jpg)
-![example](./doc/images/example.gif)
 
 ## 特性和亮点
 

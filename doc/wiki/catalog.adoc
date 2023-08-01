@@ -1,5 +1,7 @@
 = 文档目录
 
+:data-uri:
+
 == link:./setting.adoc[初始化设置]
 
 == link:./case-create.adoc[用例创建]
