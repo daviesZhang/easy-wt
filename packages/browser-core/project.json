@@ -16,7 +16,8 @@
         "main": "packages/browser-core/src/index.ts",
         "assets": [
           "packages/browser-core/*.md"
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

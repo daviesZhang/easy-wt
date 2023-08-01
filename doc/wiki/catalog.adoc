@@ -10,7 +10,7 @@
 
 === link:./run-params.adoc[运行时参数]
 
-=== 选择器的使用
+=== link:./selector.adoc[选择器的使用]
 
 === 启动浏览器
 

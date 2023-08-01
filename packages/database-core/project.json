@@ -16,7 +16,8 @@
         "main": "packages/database-core/src/index.ts",
         "assets": [
           "packages/database-core/*.md"
-        ]
+        ],
+        "updateBuildableProjectDepsInPackageJson": true
       }
     },
     "lint": {

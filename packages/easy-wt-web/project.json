@@ -41,8 +41,7 @@
           "packages/easy-wt-web/src/styles.less",
           "node_modules/@videogular/ngx-videogular/fonts/videogular.css"
         ],
-        "scripts": [
-        ]
+        "scripts": []
       },
       "configurations": {
         "production": {
