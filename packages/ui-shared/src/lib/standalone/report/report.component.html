@@ -134,7 +134,7 @@
             *ngComponentOutlet="img.component;injector:createInjector(img.params)"></ng-container>
           <pre *ngIf="img.data.message">信息:{{img.data.message}}</pre>
           <div (click)="showImages(img.src)" class="image">
-            <img [alt]="img.step.name" [src]="img.src" height="200px"/>
+            <img [alt]="img.step.name" [src]="img.src" height="200px" style="max-width: 100%"/>
           </div>
         </nz-collapse-panel>
       </nz-collapse>
