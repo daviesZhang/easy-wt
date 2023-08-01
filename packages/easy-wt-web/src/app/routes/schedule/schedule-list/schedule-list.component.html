@@ -27,10 +27,10 @@
   (gridReady)="onGridReady($event)"
   [getData]="getData" [initLoadData]="true" [options]="options"
   [showFooterAction]="false"
-  [showFooter]="true" [suppressGridStatisticsBar]="false" [topButton]="{left:left,center}"
+  [showFooter]="true" [suppressGridStatisticsBar]="false"
   class="grid-table schedule-page">
-
-  <ng-template #left>
+  <div class="grid-top">
+    <div class="left">
 
 
     <button (click)="onDelete()" class="control-button" nz-button nzDanger nzSize="small" nzType="primary">
@@ -38,16 +38,17 @@
       {{'common.delete_row'|translate}}
     </button>
 
-  </ng-template>
+    </div>
 
 
-  <ng-template #center>
+    <div class="center">
     <button (click)="onSearch()" class="control-button" nz-button nzSize="small" nzType="primary">
       <span nz-icon nzTheme="outline" nzType="search"></span>
       {{'common.search'|translate}}
     </button>
-  </ng-template>
-
+    </div>
+    <div></div>
+  </div>
 </easy-wt-grid-table>
 <ng-template #rowButtonTemplate let-node let-params='params'>
 

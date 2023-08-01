@@ -11,8 +11,6 @@ import {
 } from 'rxjs';
 import { Expose, sendLogger } from './expose';
 
-const RELATIVE_PATH = 'scriptCase.json';
-
 export class ExposeCaseService implements Expose {
   constructor(private caseService: ScriptCaseService) {}
 

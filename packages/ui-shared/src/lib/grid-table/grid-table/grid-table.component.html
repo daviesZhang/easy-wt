@@ -1,14 +1,5 @@
-<div class="grid-table grid-buttons" *ngIf="topButton">
-  <div class="left">
-    <ng-container *ngIf="topButton.left" [ngTemplateOutlet]="topButton.left"></ng-container>
-  </div>
-  <div class="center">
-    <ng-container *ngIf="topButton.center" [ngTemplateOutlet]="topButton.center"></ng-container>
-  </div>
-  <div class="right">
-    <ng-container *ngIf="topButton.right" [ngTemplateOutlet]="topButton.right"></ng-container>
-  </div>
-</div>
+<ng-content select=".grid-top"></ng-content>
+
 <ag-grid-angular
   [class]="gridTheme"
   [gridOptions]="gridOptions"
@@ -23,6 +14,8 @@
   <easy-wt-statistics-bar [api]="api" [columnApi]="columnApi"
                           [statistics]="statistics"></easy-wt-statistics-bar>
 </div>
+
+<ng-content select=".grid-bottom"></ng-content>
 <div *ngIf="showFooter" class="footer flex flex-grow-0 flex-shrink-1 space-between  flex-wrap flex-middle">
   <div *ngIf="showFooterAction" class="action">
 

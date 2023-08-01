@@ -1,4 +1,3 @@
-import { TemplateRef } from '@angular/core';
 import { RowNode } from 'ag-grid-community';
 import { Observable } from 'rxjs';
 
@@ -35,11 +34,6 @@ export interface Statistics {
   }>;
 }
 
-export interface RowButton {
-  template: TemplateRef<any>;
-  headerName?: string;
-  first?: boolean;
-}
 
 export const QueryFieldTypeArray = [
   'STARTS_WITH',

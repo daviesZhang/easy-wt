@@ -124,6 +124,8 @@ export class RunContext implements IContext {
 
   private runCount = 1;
 
+  private _interrupted = false;
+
   constructor(params: IContext) {
     this.casePath = params.casePath;
     this.environmentConfig = params.environmentConfig;
@@ -162,6 +164,17 @@ export class RunContext implements IContext {
   addInterceptors(interceptors: StepInterceptor[]) {
     this.interceptors = [...(this.interceptors || []), ...interceptors];
     return this.interceptors;
+  }
+
+  /**
+   * 尝试打断用例
+   */
+  interrupt() {
+    this._interrupted = true;
+  }
+
+  interrupted() {
+    return this._interrupted;
   }
 }
 

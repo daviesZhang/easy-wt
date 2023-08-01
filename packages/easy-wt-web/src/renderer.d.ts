@@ -15,7 +15,6 @@ export interface IElectronAPI {
   getAppVersion: () => string;
   fs: () => fs;
   path: () => path;
-  uuid: () => string;
   getPath: (name: string) => Promise<string>;
   isDevelopmentMode: () => Promise<boolean>;
   maximizeWindow: (name: string) => void;

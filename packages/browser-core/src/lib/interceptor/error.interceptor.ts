@@ -16,7 +16,7 @@ export class ErrorInterceptor implements StepInterceptor {
     handler: StepHandler
   ): Observable<StepResult<IStep>> {
     const retryCount =
-      context.runConfig && context.runConfig.stepRetry
+      !context.interrupted() && context.runConfig && context.runConfig.stepRetry
         ? context.runConfig.stepRetry
         : 0;
     let next$ = handler.handle(step, context);
@@ -37,9 +37,8 @@ export class ErrorInterceptor implements StepInterceptor {
       catchError((err) => {
         let message = err.message || err;
         if (err instanceof errors.TimeoutError) {
-          message = '查找元素或者操作等待超时~';
+          message = 'step.error.selector_timeout';
         }
-
         const page = context.page as Page;
         if (page && !page.isClosed() && context.environmentConfig.output) {
           const runId = context.uuid;

@@ -245,7 +245,9 @@
       "image_save": "图片存储"
     },
     "error": {
-      "text_empty": "没有任何需要保存的文本"
+      "text_empty": "没有任何需要保存的文本",
+      "interrupted": "用例被手动中断",
+      "selector_timeout": "查找元素或者操作等待超时~"
     }
   },
   "schedule": {

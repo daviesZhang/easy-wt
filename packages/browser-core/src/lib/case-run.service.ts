@@ -36,8 +36,10 @@ import { getWriteStreamMap } from './utils';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { InterceptingHandler } from './interceptor/intercepting.handler';
 import { BackendStepHandler } from './interceptor/backend-step.handler';
+import { InterruptInterceptor } from './interceptor/interrupt.interceptor';
 
 const errorInterceptor = new ErrorInterceptor();
+const interruptInterceptor = new InterruptInterceptor();
 
 @Injectable()
 export class CaseRunService {
@@ -131,6 +133,7 @@ export class CaseRunService {
       retry({
         delay: (error, count) => {
           if (
+            context.interrupted() ||
             !context.runConfig ||
             typeof context.runConfig.retry !== 'number' ||
             count > context.runConfig.retry
@@ -165,6 +168,7 @@ export class CaseRunService {
         ([] as StepInterceptor[]).concat(
           context.interceptors,
           errorInterceptor,
+          interruptInterceptor,
           this.loggerStepInterceptor
         )
       ).handle(step, context);

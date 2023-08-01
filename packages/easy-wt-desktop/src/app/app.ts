@@ -12,7 +12,9 @@ import { environment } from '../environments/environment';
 import { join } from 'path';
 import { format } from 'url';
 import * as winston from 'winston';
+import { getWindowViewport, saveWindowViewport } from './store';
 
+export const MAIN_WINDOW_NAME = 'main';
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.
@@ -50,7 +52,6 @@ export default class App {
 
     App.BrowserWindow = browserWindow;
     App.application = app;
-
     App.setMenu();
     App.application.on('window-all-closed', App.onWindowAllClosed); // Quit when all windows are closed.
     App.application.on('ready', App.onReady); // App is ready to load data
@@ -78,13 +79,12 @@ export default class App {
     }
   }
 
-  private static onReady() {
+  private static async onReady() {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-    App.initMainWindow();
-    App.loadMainWindow();
-
+    await App.initMainWindow();
+    await App.loadMainWindow();
     App.createTray();
   }
 
@@ -92,7 +92,7 @@ export default class App {
     // On macOS it's common to re-create a window in the app when the
     // dock icon is clicked and there are no other windows open.
     if (App.mainWindow === null) {
-      App.onReady();
+      App.onReady().then();
     }
   }
 
@@ -162,7 +162,7 @@ export default class App {
     });
   }
 
-  private static loadMainWindow() {
+  private static async loadMainWindow() {
     // load the index.html of the app.
     if (!App.application.isPackaged) {
       this.loadURL = `http://localhost:${rendererAppPort}`;
@@ -173,13 +173,21 @@ export default class App {
         slashes: true,
       });
     }
-    App.mainWindow.loadURL(this.loadURL);
+    await App.mainWindow.loadURL(this.loadURL);
   }
 
-  private static initMainWindow() {
+  private static async initMainWindow() {
+    const windowViewport = await getWindowViewport(MAIN_WINDOW_NAME);
+
     const workAreaSize = screen.getPrimaryDisplay().workAreaSize;
-    const width = Math.min(1320, workAreaSize.width || 1320);
-    const height = Math.min(720, workAreaSize.height || 720);
+    const width = windowViewport
+      ? windowViewport.width
+      : Math.min(1320, workAreaSize.width || 1320);
+    const height = windowViewport
+      ? windowViewport.height
+      : Math.min(720, workAreaSize.height || 720);
+    const x = windowViewport ? windowViewport.x : undefined;
+    const y = windowViewport ? windowViewport.y : undefined;
     this.windowWidth = width;
     this.windowHeight = height;
     // Create the browser window.
@@ -188,6 +196,8 @@ export default class App {
       height: height,
       minWidth: 900,
       minHeight: 700,
+      x,
+      y,
       show: false,
       frame: false,
       autoHideMenuBar: true,
@@ -201,12 +211,20 @@ export default class App {
       },
     });
     App.mainWindow.setMenu(null);
-
-    App.mainWindow.center();
-
+    if (!x || !y) {
+      App.mainWindow.center();
+    }
     // if main window is ready to show, close the splash window and show the main window
     App.mainWindow.once('ready-to-show', () => {
       App.mainWindow.show();
+    });
+    App.mainWindow.on('resized', (event) => {
+      const bounds = App.mainWindow.getBounds();
+      saveWindowViewport(MAIN_WINDOW_NAME, bounds).then();
+    });
+    App.mainWindow.on('moved', () => {
+      const bounds = App.mainWindow.getBounds();
+      saveWindowViewport(MAIN_WINDOW_NAME, bounds).then();
     });
 
     // handle all external redirects in a new browser window

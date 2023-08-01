@@ -11,7 +11,7 @@ import { paramsHtml } from '../../utils/utils';
   styleUrls: ['./grid-simple-renderer.component.less'],
 })
 export class GridSimpleRendererComponent implements ICellRendererAngularComp {
-  value: string | SafeHtml;
+  value: string | number | SafeHtml;
 
   constructor(private domSanitizer: DomSanitizer) {}
 
@@ -23,7 +23,7 @@ export class GridSimpleRendererComponent implements ICellRendererAngularComp {
     const value = params.valueFormatted || params.value;
 
     this.value = value;
-    if (value) {
+    if (typeof value === 'string') {
       const newValue = paramsHtml(value);
       this.value = this.domSanitizer.bypassSecurityTrustHtml(newValue);
     }

@@ -55,19 +55,15 @@
       <easy-wt-grid-table (gridReady)="onGridReady($event)"
                           [getData]="getData"
                           [initLoadData]="true"
-                          [options]="options" [showFooter]="false" [topButton]="{left,right}"
+                          [options]="options" [showFooter]="false"
                           class="report-grid-table">
-
-        <ng-template #left>
+        <div class="grid-top">
+          <div class="left">
           <nz-tag nzColor="#55acee">用例尝试执行了 {{report.runCount}} 次</nz-tag>
+          </div>
 
 
-        </ng-template>
-        <
-        <ng-template #right>
-
-
-        </ng-template>
+        </div>
       </easy-wt-grid-table>
 
 

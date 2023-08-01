@@ -14,19 +14,12 @@ import {
 import { debounceTime, fromEventPattern, Observable, of, Subject } from 'rxjs';
 import { NzProgressStatusType } from 'ng-zorro-antd/progress';
 import { NzMessageService } from 'ng-zorro-antd/message';
-import {
-  GridColumnDef,
-  Page,
-  RequestDelete,
-  RowButton,
-  Statistics,
-} from '../api';
+import { GridColumnDef, Page, RequestDelete, Statistics } from '../api';
 import { LoadingOverlayComponent } from '../loading-overlay/loading-overlay.component';
 import { EmptyOverlayComponent } from '../empty-overlay/empty-overlay.component';
 import { catchError, take, takeUntil } from 'rxjs/operators';
 
 import {
-  ColDef,
   ColumnApi,
   ColumnMovedEvent,
   ColumnResizedEvent,
@@ -39,7 +32,6 @@ import {
   ValueFormatterParams,
 } from 'ag-grid-community';
 
-import { TemplateRendererComponent } from '../template-renderer/template-renderer.component';
 import {
   DefaultNgxGridTableConfig,
   GRID_TABLE_CONFIG,
@@ -140,12 +132,7 @@ export class GridTableComponent implements OnInit, OnDestroy {
    */
   @Input() serverSort = true;
   @Input() options!: GridOptions;
-  @Input() rowButton?: RowButton | null;
-  @Input() topButton?: {
-    left?: TemplateRef<any>;
-    center?: TemplateRef<any>;
-    right?: TemplateRef<any>;
-  };
+
   @Input() config?: Partial<GridTableConfig>;
   @Output()
   pageIndexChange = new EventEmitter<number>();
@@ -255,25 +242,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
       onFirstDataRendered = this.options.onFirstDataRendered;
     }
 
-    if (this.rowButton) {
-      const cell = {
-        colId: this.rowButtonColId,
-        chartDataType: 'excluded',
-        headerName: this.rowButton.headerName || '',
-        cellRenderer: TemplateRendererComponent,
-        cellRendererParams: { ngTemplate: this.rowButton.template },
-        sortable: false,
-        suppressCellFlash: true,
-        suppressSizeToFit: true,
-        editable: false,
-      } as ColDef;
-      if (this.rowButton.first) {
-        this.options.columnDefs = [cell].concat(this.options.columnDefs || []);
-      } else {
-        this.options.columnDefs && this.options.columnDefs.push(cell);
-      }
-    }
-
     this.gridOptions = {
       enableCellChangeFlash: true,
       getRowId: (params) => params.data.id,
@@ -293,9 +261,6 @@ export class GridTableComponent implements OnInit, OnDestroy {
       onFirstDataRendered: (event: FirstDataRenderedEvent) => {
         if (onFirstDataRendered) {
           onFirstDataRendered(event);
-        }
-        if (this.rowButton) {
-          event.columnApi.autoSizeColumn(this.rowButtonColId);
         }
       },
       onGridReady: (event: GridReadyEvent) => {

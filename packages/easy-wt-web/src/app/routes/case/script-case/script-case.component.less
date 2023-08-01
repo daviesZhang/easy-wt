@@ -1,14 +1,36 @@
+@border-color: #babfc7;
+@border-color-var: var(--ag-border-color, #babfc7);
+
 .empty-case {
   margin: auto;
 }
 
+.script-case-grid .grid-bottom {
+  border: solid 1px @border-color;
+  border-top: none;
+  border-right: none;
+  padding: 4px 10px;
+  height: 32px;
+  display: flex;
+  justify-content: flex-end;
+  align-content: center;
+  align-items: center;
+
+  button.stop {
+    height: 22px;
+    line-height: 1;
+  }
+
+  .spin {
+    margin: 5px 10px 0 0;
+  }
+}
+
 .box {
   display: flex;
-
-  //background: rgba(12, 232, 157, 0.49);
   border: solid 1px;
-  border-color: #babfc7;
-  border-color: var(--ag-border-color, #babfc7);
+  border-color: @border-color;
+  border-color: @border-color-var;
 
   height: 100%;
   order: 0;

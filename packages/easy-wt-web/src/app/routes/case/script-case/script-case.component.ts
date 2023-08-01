@@ -1,4 +1,5 @@
 import {
+  ChangeDetectorRef,
   Component,
   OnDestroy,
   OnInit,
@@ -11,12 +12,13 @@ import {
   CaseStepEvent,
   IScriptCase,
   IStep,
+  Report,
   step,
   STEP_CONFIG,
   StepType,
 } from '@easy-wt/common';
 import { CoreService } from '../../../core/core.service';
-import { from, map, Subject, takeUntil } from 'rxjs';
+import { from, map, merge, Subject, takeUntil } from 'rxjs';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
@@ -89,11 +91,14 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
   stepStatusChangeLoading: { [key: number]: boolean } = {};
 
-  runCount = 0;
+  caseRunCount = 0;
+
+  runningStep: CaseStepEvent | null = null;
 
   constructor(
     private coreService: CoreService,
     private translate: TranslateService,
+    private cdr: ChangeDetectorRef,
     private modal: NzModalService
   ) {}
 
@@ -101,6 +106,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (this.caseId !== null && this.caseId !== id) {
       this.caseId = id;
       this.table.searchRowsData();
+      this.runningStep = null;
     } else {
       this.caseId = id;
     }
@@ -128,7 +134,6 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       rowClassRules: {
         'disable-row': (params) => !params.data.enable,
       },
-
       getRowId: (params) => params.data.id.toString(),
       rowDragManaged: true,
       onRowDragEnd: (event: RowDragEvent) => {
@@ -140,9 +145,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
         });
         this.coreService.saveStep(steps, false).then();
       },
-
       onCellEditingStopped: this.onCellEditRequest.bind(this),
-
       columnDefs: [
         {
           headerName: this.translate.instant('common.id'),
@@ -286,10 +289,19 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       .pipe(takeUntil(this.destroy$))
       .subscribe(this.onCaseStart.bind(this));
 
-    this.coreService
-      .eventObservable(CaseEvent.CASE_END)
+    const caseEnd = this.coreService.eventObservable<Report>(
+      CaseEvent.CASE_END
+    );
+    const caseErr = this.coreService.eventObservable<{ uuid: string }>(
+      CaseEvent.CASE_ERROR
+    );
+
+    merge(caseEnd, caseErr)
       .pipe(takeUntil(this.destroy$))
-      .subscribe(() => (this.runCount = 0));
+      .subscribe((next) => {
+        this.caseRunCount = 0;
+        this.runningStep = null;
+      });
   }
 
   /**
@@ -317,13 +329,16 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   }
 
   onStepEnd(event: CaseStepEvent) {
-    //todo 步骤结束的动画或通知
+    if (this.caseId === event.step.caseId) {
+      this.runningStep = null;
+    }
   }
 
   onStepStart(event: CaseStepEvent) {
     if (this.caseId === event.step.caseId) {
-      this.runCount = event.caseRunCount || 0;
-
+      this.caseRunCount = event.caseRunCount || 0;
+      this.runningStep = event;
+      this.cdr.detectChanges();
       this.gridApi.flashCells({
         rowNodes: [this.gridApi.getRowNode(event.step.id.toString())],
       });

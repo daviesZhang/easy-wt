@@ -1,48 +1,61 @@
 <easy-wt-grid-table (gridReady)="onGridReady($event)" *ngIf="caseId!==null"
                     saveColumnDefKey="script-case-grid"
                     [getData]="getData" [initLoadData]="true"
-                    [options]="options" [showFooter]="false" [topButton]="{left:left,right:right}"
-                    class="grid-table script-case">
+                    [options]="options" [showFooter]="false"
+                    class="grid-table script-case-grid script-case">
 
-  <ng-template #left>
+    <div class="grid-top">
+        <div class="grid-top-left">
+            <button (click)="refresh()" class="control-button" nz-button nzSize="small" nzType="primary">
+                <span nz-icon nzTheme="outline" nzType="reload"></span>
+                {{"case.button.refresh"|translate}}
+            </button>
+            <button (click)="addSteps()" class="control-button" nz-button nzSize="small" nzType="primary">
+                <span nz-icon nzTheme="outline" nzType="plus"></span>
+                {{"case.button.add_step"|translate}}
+            </button>
+            <nz-button-group>
+                <button (click)="run()" [nzLoading]="running" nz-button nzSize="small" nzType="primary">
+                    <span nz-icon nzTheme="outline" nzType="play-circle"></span>
+                    {{"case.button.run"|translate}}
+                </button>
+                <button (click)="toggleScheduleModal(caseId)" nz-button nzSize="small" nzType="primary">
+                    {{"case.button.schedule"|translate}}<span nz-icon nzTheme="outline" nzType="field-time"></span>
+                </button>
+            </nz-button-group>
+        </div>
 
-    <button (click)="refresh()" class="control-button" nz-button nzSize="small" nzType="primary">
-      <span nz-icon nzTheme="outline" nzType="reload"></span>
-      {{"case.button.refresh"|translate}}
-    </button>
-    <button (click)="addSteps()" class="control-button" nz-button nzSize="small" nzType="primary">
-      <span nz-icon nzTheme="outline" nzType="plus"></span>
-      {{"case.button.add_step"|translate}}
-    </button>
+        <div class="grid-top-right">
+            <nz-badge [nzCount]="caseRunCount" nzStandalone style="margin-right: 10px;"></nz-badge>
+
+            <nz-tag *ngIf="running&&runBrowserType" nzColor="#55acee">
+                <span nz-icon nzSpin nzTheme="outline" nzType="sync"></span>
+                <span>{{runBrowserType}}</span></nz-tag>
+
+            <nz-input-number-group nzAddOnAfter="ms" nzAddOnBeforeIcon="bug" nzSize="small">
+                <nz-input-number [(ngModel)]="runConfig.delay"
+                                 [nzMin]="0"
+                                 nzPlaceHolder="{{'case.delay_placeHolder'|translate}}"
+                                 nzSize="small"></nz-input-number>
+            </nz-input-number-group>
+        </div>
+    </div>
+
+    <!--  <div class="grid-bottom">
+        <ng-container *ngIf="runningStep">
+          <nz-tag nzColor="processing">
+            <span nz-icon nzType="sync" nzSpin></span>
+            <span>{{runningStep.runCount+1}}</span>
+           {{'step.type_options.'+runningStep.step.type|lowercase|translate}}
+           {{runningStep.step.name}}
+          </nz-tag>
+          <button class="stop" nz-button nzDanger nzGhost nzType="primary" nzSize="small" >停止</button>
 
 
-    <nz-button-group>
-      <button (click)="run()" [nzLoading]="running" nz-button nzSize="small" nzType="primary">
-        <span nz-icon nzTheme="outline" nzType="play-circle"></span>
-        {{"case.button.run"|translate}}
-      </button>
-      <button (click)="toggleScheduleModal(caseId)" nz-button nzSize="small" nzType="primary">
-        {{"case.button.schedule"|translate}}<span nz-icon nzTheme="outline" nzType="field-time"></span>
-      </button>
-    </nz-button-group>
+        </ng-container>
+      </div>-->
 
 
-  </ng-template>
-  <ng-template #right>
-    <nz-badge nzStandalone style="margin-right: 10px;" [nzCount]="runCount"></nz-badge>
-
-    <nz-tag nzColor="#55acee" *ngIf="running&&runBrowserType">
-
-      <span nzSpin nz-icon nzType="sync" nzTheme="outline"></span>
-      <span>{{runBrowserType}}</span></nz-tag>
-
-    <nz-input-number-group nzAddOnAfter="ms" nzAddOnBeforeIcon="bug" nzSize="small">
-      <nz-input-number [(ngModel)]="runConfig.delay"
-                       nzPlaceHolder="{{'case.delay_placeHolder'|translate}}"
-                       nzSize="small"
-                       [nzMin]="0"></nz-input-number>
-    </nz-input-number-group>
-  </ng-template>
 </easy-wt-grid-table>
 <div class="box"
      nz-resizable

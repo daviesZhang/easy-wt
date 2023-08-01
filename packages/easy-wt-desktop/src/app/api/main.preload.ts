@@ -15,7 +15,6 @@ import * as path from 'path';
 import {ReportService, ScriptCaseService, StepService,} from '@easy-wt/database-core';
 import {ReportExportService} from '@easy-wt/browser-core';
 
-import {v4 as uuidv4} from 'uuid';
 import {environment} from '../../environments/environment';
 import {CasePoolService, easyWTCore, ReportHelpService, ScheduleTaskService,} from '@easy-wt/easy-wt-core';
 import {LoggerService} from '@nestjs/common/services/logger.service';
@@ -175,7 +174,7 @@ try {
     platform: process.platform,
     fs: () => fs,
     path: () => path,
-    uuid: () => uuidv4(),
+
     isDevelopmentMode: async () => {
       const environment = await ipcRenderer.invoke('get-app-environment');
       return environment === 'development';

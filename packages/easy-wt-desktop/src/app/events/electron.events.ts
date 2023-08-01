@@ -5,14 +5,12 @@
 
 import { app, BrowserWindow, dialog, ipcMain } from 'electron';
 import { environment } from '../../environments/environment';
-import App from '../app';
+import App, { MAIN_WINDOW_NAME } from '../app';
 import { join } from 'path';
 import * as fs from 'fs-extra';
 import { decryptedData, encryptedData } from '../tools';
 
 import * as winston from 'winston';
-
-const MAIN_WINDOW_NAME = 'main';
 
 export default class ElectronEvents {
   static windowMap = new Map<string, BrowserWindow>();
