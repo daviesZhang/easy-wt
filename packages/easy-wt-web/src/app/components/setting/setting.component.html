@@ -1,5 +1,6 @@
 <span [nzDropdownMenu]="menu"
       class="icon-button" nz-dropdown
+
       nzPlacement="bottomRight"
       nz-icon>
      <svg class="icon" height="50" p-id="2690" t="1688517897335" version="1.1"
@@ -13,7 +14,7 @@
 
 
 <nz-dropdown-menu #menu="nzDropdownMenu">
-  <ul class="menu-buttons" nz-menu nzSelectable>
+  <ul [nzSelectable]="false" class="menu-buttons" nz-menu nzSelectable>
 
 
     <li (click)="toggleInitConfig()" nz-menu-item>
@@ -30,6 +31,11 @@
     <li (click)="refresh()" nz-menu-item>
       <span nz-icon nzTheme="outline" nzType="reload"></span>
       {{"app.reload"|translate}}
+    </li>
+    <li nz-menu-divider></li>
+    <li (click)="about()" [nzSelected]="false" nz-menu-item>
+
+      {{"app.about"|translate}}
     </li>
     <li nz-menu-divider></li>
     <li (click)="closeApp()" nz-menu-item nzDanger><span nz-icon>

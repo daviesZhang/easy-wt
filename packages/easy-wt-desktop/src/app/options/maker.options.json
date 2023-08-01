@@ -1,7 +1,7 @@
 {
   "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
   "asar": true,
-  "artifactName": "EasyWebTest_${os}_${arch}",
+  "artifactName": "EasyWebTest_${os}_${arch}_${version}",
   "productName": "EasyWebTest",
   "extraResources": [
     {
@@ -19,7 +19,7 @@
     "target": "dmg"
   },
   "dmg": {
-    "artifactName": "EasyWebTest_${os}_${arch}.dmg",
+    "artifactName": "EasyWebTest_${os}_${arch}_${version}.dmg",
     "sign": false,
     "iconSize": 100,
     "backgroundColor": "#9ca6a0",
@@ -42,7 +42,7 @@
     }
   },
   "nsis": {
-    "artifactName": "EasyWebTest_${os}_${arch}_Install.${ext}",
+    "artifactName": "EasyWebTest_${os}_${arch}_${version}_Install.${ext}",
     "oneClick": false,
     "installerIcon": "./icon/icon.ico",
     "installerHeaderIcon": "./icon/icon.ico",

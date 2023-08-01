@@ -53,7 +53,10 @@
       "retry_success_title": "重连成功",
       "retry_success_content": "与服务器连接已恢复~"
     },
+    "about": "关于 EASY-WT",
     "setting": "应用设置",
+    "version": "版本号:{{version}}",
+    "license": "本软件基于GPL-2.0协议开源",
     "minus": "最小化",
     "reload": "重新载入",
     "close": "退出应用",

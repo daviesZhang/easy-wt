@@ -1,0 +1,30 @@
+::ng-deep .about-modal {
+
+  .ant-modal-body {
+    //background: #607D8B;
+  }
+
+}
+
+:host {
+  display: flex;
+  justify-content: center;
+  flex-direction: column;
+  align-items: center;
+
+  button {
+    width: 120px;
+  }
+
+  .info {
+    display: flex;
+    justify-content: center;
+    flex-direction: column;
+    align-items: center;
+    margin-bottom: 20px;
+  }
+
+  .tag > * {
+    cursor: pointer;
+  }
+}

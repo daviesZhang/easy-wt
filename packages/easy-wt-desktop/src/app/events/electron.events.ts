@@ -3,7 +3,7 @@
  * between the frontend to the electron backend.
  */
 
-import { app, BrowserWindow, dialog, ipcMain } from 'electron';
+import { app, BrowserWindow, dialog, ipcMain, shell } from 'electron';
 import { environment } from '../../environments/environment';
 import App, { MAIN_WINDOW_NAME } from '../app';
 import { join } from 'path';
@@ -153,6 +153,12 @@ ipcMain.on('closeWindow', async (event, args) => {
     window && window.close();
     ElectronEvents.windowMap.delete(windowName);
   }
+});
+
+ipcMain.handle('openExternal', async (event, args) => {
+  const [url] = args;
+  console.log(url);
+  await shell.openExternal(url);
 });
 
 ipcMain.on('sendMessage', async (event, args) => {

@@ -12,7 +12,7 @@ import {
 import { ScriptCaseService } from '@easy-wt/database';
 
 export interface IElectronAPI {
-  getAppVersion: () => string;
+  getAppVersion: () => Promise<string>;
   fs: () => fs;
   path: () => path;
   getPath: (name: string) => Promise<string>;
@@ -49,6 +49,7 @@ export interface IElectronAPI {
   onEvent: (event: string, callback) => void;
   offEvent: (event: string, callback) => void;
   sendMessage: (windowName: string, channel: string, ...args: any[]) => void;
+  invokeEvent: (channel: string, ...args: any[]) => Promise<any>;
   logger: (level: string, message: string, label?: string) => void;
 }
 

@@ -121,6 +121,9 @@ try {
     sendMessage: (windowName: string, channel: string, ...args: any[]) => {
       ipcRenderer.send('sendMessage', [windowName, channel, args]);
     },
+    invokeEvent: (channel: string, ...args: any[]) => {
+      return ipcRenderer.invoke(channel, args);
+    },
     showSaveDialog: async (
       options: { [key: string]: any },
       windowName?: string

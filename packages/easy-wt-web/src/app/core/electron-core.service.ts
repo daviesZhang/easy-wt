@@ -13,12 +13,16 @@ import {
 import { CoreService } from './core.service';
 import { fromEventPattern, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
+import { NzModalService } from 'ng-zorro-antd/modal';
 
 @Injectable({
   providedIn: 'root',
 })
 export class ElectronCoreService extends CoreService {
-  constructor(private translate: TranslateService) {
+  constructor(
+    private translate: TranslateService,
+    private modalService: NzModalService
+  ) {
     super();
   }
 

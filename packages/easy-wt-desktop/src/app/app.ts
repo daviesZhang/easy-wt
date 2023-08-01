@@ -157,6 +157,23 @@ export default class App {
     const icon = nativeImage.createFromPath(iconPath);
 
     const tray = new Tray(icon.resize({ height: 20, width: 20 }));
+    const contextMenu = Menu.buildFromTemplate([
+      {
+        label: 'About EASY-WT',
+        click: () => {
+          App.mainWindow.show();
+          App.mainWindow.webContents.send('open-about');
+        },
+      },
+      {
+        label: 'Quit',
+        click: () => {
+          App.application.exit();
+        },
+      },
+    ]);
+
+    tray.setContextMenu(contextMenu);
     tray.on('double-click', () => {
       App.mainWindow.show();
     });
