@@ -171,6 +171,7 @@
       "directory_false": "用例"
     },
     "button": {
+      "search_case": "搜索用例(暂未完成~)",
       "add_case": "Add Case",
       "add_siblings_case": "Add Sibling Node",
       "add_children_case": "添加下级节点",

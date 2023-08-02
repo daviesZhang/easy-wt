@@ -55,7 +55,7 @@
     },
     "about": "关于 EASY-WT",
     "setting": "应用设置",
-    "version": "版本号:{{version}}",
+    "version": "版本:{{version}}",
     "license": "本软件基于GPL-2.0协议开源",
     "minus": "最小化",
     "reload": "重新载入",
@@ -174,6 +174,7 @@
       "directory_false": "用例"
     },
     "button": {
+      "search_case": "搜索用例(暂未完成~)",
       "add_case": "添加用例",
       "add_siblings_case": "添加同级节点",
       "add_children_case": "添加下级节点",

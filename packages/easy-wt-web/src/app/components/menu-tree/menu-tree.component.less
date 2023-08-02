@@ -1,10 +1,22 @@
-
+:host {
+  display: flex;
+  flex-direction: column;
+}
 .init-loading {
   display: flex;
   justify-content: center;
   margin-top: 50px;
 }
 
+.tree-top {
+  display: flex;
+  justify-content: space-between;
+  background: #faebd7;
+  padding: 5px 10px;
+  border: 1px solid #babfc7;
+
+  border-right: none;
+}
 .empty {
   margin: 30px auto auto;
 }
@@ -19,8 +31,15 @@
   }
 }
 
+
 .tree {
-  height: 100%;
+  min-height: 200px;
+  flex-grow: 1;
+
+  ::ng-deep cdk-virtual-scroll-viewport {
+    overflow-x: hidden;
+  }
+
 }
 
 .case-buttons span {

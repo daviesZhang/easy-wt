@@ -21,7 +21,7 @@ import { NzTreeViewModule } from 'ng-zorro-antd/tree-view';
 import { SelectionModel } from '@angular/cdk/collections';
 import { FlatTreeControl } from '@angular/cdk/tree';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { map, merge, Subject, takeUntil } from 'rxjs';
+import { map, merge, Subject, take, takeUntil, timer } from 'rxjs';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import {
   FormArray,
@@ -173,6 +173,7 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
   async refreshTree(): Promise<IScriptCase[]> {
     this.loading = true;
     const nodes = await this.coreService.findRoots();
+    await timer(5000).pipe(take(1)).toPromise();
     this.dataSource = new DynamicDatasource<IScriptCase>(
       this.treeControl,
       this.getChildren.bind(this),

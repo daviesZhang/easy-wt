@@ -1,4 +1,21 @@
-<nz-spin *ngIf="loading" class="init-loading" nzSimple></nz-spin>
+<div class="tree-top">
+    <nz-input-group [nzAddOnAfter]="suffixIconSearch" nzSearch nzSize="small">
+        <input #searchValue disabled nz-input placeholder="{{'case.button.search_case'|translate}}" type="text"/>
+    </nz-input-group>
+    <ng-template #suffixIconSearch>
+        <button [nzLoading]="loading" disabled nz-button nzSearch nzSize="small"
+                nzType="primary"><span nz-icon nzType="search"></span></button>
+    </ng-template>
+    <button (click)="refreshTree()" nz-button nzSize="small" nzType="primary" style="margin-left: 5px">
+        <span nz-icon
+              nzType="sync">
+        </span>
+    </button>
+    <button (click)="createNode()" nz-button nzSize="small" nzType="primary" style="margin-left: 5px"><span nz-icon
+                                                                                                            nzType="plus"></span>
+    </button>
+</div>
+<nz-spin *ngIf="loading" [nzDelay]="500" class="init-loading" nzSimple></nz-spin>
 
 <nz-tree-virtual-scroll-view *ngIf="!loading&&dataSource.getData().length" [nzDataSource]="dataSource"
                              [nzDirectoryTree]="true"
@@ -19,6 +36,7 @@
         </nz-tree-node-toggle>
         <nz-tree-node-option
                 [nzSelected]="selectListSelection.isSelected(node)"
+                class="tree-node-option"
         >
             <span [nzType]="treeControl.isExpanded(node) ? 'folder-open' : 'folder'" nz-icon nzTheme="outline"></span>
             {{ node.label }}
