@@ -4,8 +4,10 @@ import { GridApi, IHeaderParams } from 'ag-grid-community';
 import { CoreService } from '../../../core/core.service';
 import {
   CONSOLE_VIEW_NAME,
+  CONSOLE_WINDOW_NAME,
   ELECTRON_IPC_EVENT,
   MAIN_WINDOW_NAME,
+  ViewPlacement,
 } from '@easy-wt/common';
 import { DOCUMENT } from '@angular/common';
 import { debounceTime, Subject } from 'rxjs';
@@ -56,6 +58,8 @@ export class GridHeaderComponent implements IHeaderAngularComp {
 
   toggleTheme: () => void;
 
+  soleWindow = false;
+
   refresh(params: IHeaderParams & { changeTheme: () => void }): boolean {
     this.toggleTheme = params.changeTheme;
     if (this.electron) {
@@ -68,11 +72,15 @@ export class GridHeaderComponent implements IHeaderAngularComp {
   }
 
   async closeView() {
-    await window.electron.invokeEvent(
-      ELECTRON_IPC_EVENT.CLOSE_WINDOW_VIEW,
-      MAIN_WINDOW_NAME,
-      CONSOLE_VIEW_NAME
-    );
+    if (this.soleWindow) {
+      window.electron.closeWindow(CONSOLE_WINDOW_NAME);
+    } else {
+      await window.electron.invokeEvent(
+        ELECTRON_IPC_EVENT.CLOSE_WINDOW_VIEW,
+        MAIN_WINDOW_NAME,
+        CONSOLE_VIEW_NAME
+      );
+    }
   }
 
   toggleDevTools() {
@@ -93,5 +101,28 @@ export class GridHeaderComponent implements IHeaderAngularComp {
         remove: rowData,
       });
     }
+  }
+
+  async separate() {
+    if (this.soleWindow) {
+      //附加到主窗口去
+      await window.electron.invokeEvent(
+        ELECTRON_IPC_EVENT.SEPARATE_VIEW,
+        CONSOLE_WINDOW_NAME,
+        CONSOLE_VIEW_NAME,
+        MAIN_WINDOW_NAME,
+        { height: 300, placement: 'bottom' } as ViewPlacement
+      );
+      window.electron.closeWindow(CONSOLE_WINDOW_NAME);
+    } else {
+      await window.electron.invokeEvent(
+        ELECTRON_IPC_EVENT.SEPARATE_VIEW,
+        MAIN_WINDOW_NAME,
+        CONSOLE_VIEW_NAME,
+        CONSOLE_WINDOW_NAME,
+        null
+      );
+    }
+    this.soleWindow = !this.soleWindow;
   }
 }

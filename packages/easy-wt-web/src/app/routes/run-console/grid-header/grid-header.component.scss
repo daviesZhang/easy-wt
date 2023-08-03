@@ -1,15 +1,31 @@
 :host {
+  display: block;
+  width: 100%;
+
+  .grid-header {
+
   display: flex;
   width: 100%;
   justify-content: space-between;
   align-items: center;
 
+
   .quick-filter {
     min-width: 300px;
+
   }
 
   :host-context(.ag-theme-balham-dark) .quick-filter {
     background: #655872;
     color: white;
+  }
+}
+}
+
+.grid-header.solo {
+  -webkit-app-region: drag;
+
+  * {
+    -webkit-app-region: no-drag;
   }
 }

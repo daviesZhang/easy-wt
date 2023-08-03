@@ -21,7 +21,10 @@ import {
   BROWSER_VIEW_NAME_PREFIX,
   ELECTRON_IPC_EVENT,
   MAIN_WINDOW_NAME,
+  ViewPlacement,
 } from '@easy-wt/common';
+import { fromEvent, takeWhile } from 'rxjs';
+import Rectangle = Electron.Rectangle;
 
 export default class ElectronEvents {
   static windowMap = new Map<string, BrowserWindow>();
@@ -33,7 +36,7 @@ export default class ElectronEvents {
   }
 }
 
-function getWindows(name: string) {
+function getWindow(name: string) {
   if (!name || name === MAIN_WINDOW_NAME) {
     return App.mainWindow;
   } else {
@@ -46,9 +49,12 @@ function getWebContents(windowName: string) {
   if (windowName.startsWith(BROWSER_VIEW_NAME_PREFIX)) {
     window = ElectronEvents.viewWindowMap.get(windowName);
   } else {
-    window = getWindows(windowName);
+    window = getWindow(windowName);
   }
-  return window.webContents;
+  if (window) {
+    return window.webContents;
+  }
+  return null;
 }
 
 ipcMain.on('logger', (event, args) => {
@@ -109,11 +115,18 @@ ipcMain.handle('get-main-LoadURL', (event, args) => {
 });
 
 /**
- * 新开一个窗口
- * [windowName 文件名, url 文件url, parent:是否子窗口, ...other:其他配置参数]
+ *
+ * @param windowName 新的窗口名字
+ * @param url 需要打开的URL
+ * @param parent 是否作为主窗口的子窗口
+ * @param options 其他选项
  */
-ipcMain.handle('newWindow', async (event, args) => {
-  const [windowName, url, parent, options] = args;
+async function createWindow(
+  windowName: string,
+  url: string | null,
+  parent: boolean,
+  options: { [key: string]: any }
+) {
   if (ElectronEvents.windowMap.has(windowName)) {
     ElectronEvents.windowMap.get(windowName).show();
     return;
@@ -139,39 +152,45 @@ ipcMain.handle('newWindow', async (event, args) => {
       viewport
     )
   );
-
-  newWindow.loadURL(url).then();
   ElectronEvents.windowMap.set(windowName, newWindow);
   newWindow.once('close', () => {
     ElectronEvents.windowMap.delete(windowName);
   });
-
   newWindow.on('resized', () => {
     const [width, height] = newWindow.getSize();
     saveWindowViewport(windowKey, { width, height });
   });
-
-  return new Promise((resolve, reject) => {
-    newWindow.once('ready-to-show', () => {
-      newWindow.show();
-      resolve(windowName);
+  if (url) {
+    await newWindow.loadURL(url);
+    await new Promise((resolve, reject) => {
+      newWindow.once('ready-to-show', () => {
+        newWindow.show();
+        resolve(windowName);
+      });
     });
-  });
+  }
+  return newWindow;
+}
+
+/**
+ * 新开一个窗口
+ * [windowName 文件名, url 文件url, parent:是否子窗口, ...other:其他配置参数]
+ */
+ipcMain.handle(ELECTRON_IPC_EVENT.CREATE_WINDOW, async (event, args) => {
+  const [windowName, url, parent, options] = args;
+  await createWindow(windowName, url, parent, options);
 });
 
 /**
- * 获取窗口
- * @param name
+ * 开关独立VIEW
  */
-
-
 ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
   const [parentName, windowName, url, height] = args;
   if (ElectronEvents.viewWindowMap.has(windowName)) {
     closeWindowView(parentName, windowName);
     return;
   }
-  let win = getWindows(parentName);
+  let win = getWindow(parentName);
   if (win) {
     const viewHeight = height || 300;
     const view = new BrowserView({
@@ -183,38 +202,110 @@ ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
         preload: join(__dirname, 'main.preload.js'),
       },
     });
-    win.setBrowserView(view);
-    const rectangle = win.getBounds();
-    const bounds = {
-      y: rectangle.height - viewHeight,
-      x: 0,
-      width: rectangle.width,
-      height: viewHeight,
-    };
-    view.setBounds(bounds);
-    win.on('resize', () => {
+
+    ElectronEvents.viewWindowMap.set(windowName, view);
+    view.webContents.on('destroyed', () => {
+      ElectronEvents.viewWindowMap.delete(windowName);
+    });
+
+    addBrowserView(win, view, (win: BrowserWindow, view: BrowserView) => {
       const rectangle = win.getBounds();
-      view.setBounds({
+      const bounds = {
         y: rectangle.height - viewHeight,
         x: 0,
         width: rectangle.width,
         height: viewHeight,
-      });
+      };
+      view.setBounds(bounds);
+      return bounds;
     });
-
-    ElectronEvents.viewWindowMap.set(windowName, view);
-
-    win.webContents.send(ELECTRON_IPC_EVENT.ADD_WINDOW_VIEW_BOUNDS, bounds);
 
     await view.webContents.loadURL(url);
   }
+});
+
+function addBrowserView(
+  window: BrowserWindow,
+  view: BrowserView,
+  resize: (win: BrowserWindow, view: BrowserView) => Rectangle
+) {
+  window.addBrowserView(view);
+  const bounds = resize(window, view);
+  fromEvent(window, 'resize')
+    .pipe(takeWhile(() => window.getBrowserViews().indexOf(view) >= 0))
+    .subscribe((next) => resize(window, view));
+
+  window.webContents.send(ELECTRON_IPC_EVENT.ADD_WINDOW_VIEW_BOUNDS, bounds);
+}
+
+ipcMain.handle(ELECTRON_IPC_EVENT.SEPARATE_VIEW, async (event, args) => {
+  const [parentName, viewName, windowName, viewPlacement] = args;
+
+  const window = getWindow(parentName);
+  const view = ElectronEvents.viewWindowMap.get(viewName);
+  window.removeBrowserView(view);
+  window.webContents.send(ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS);
+  let newWindow = getWindow(windowName);
+  if (!newWindow) {
+    newWindow = await createWindow(windowName, null, false, {
+      show: true,
+      frame: false,
+    });
+    newWindow.setMenu(null);
+  }
+  newWindow.hide();
+  addBrowserView(newWindow, view, (win: BrowserWindow, view: BrowserView) => {
+    const rectangle = win.getBounds();
+    let bounds: Rectangle;
+    if (viewPlacement) {
+      const placement = viewPlacement as ViewPlacement;
+      switch (placement.placement) {
+        case 'bottom':
+          bounds = {
+            y: rectangle.height - (placement.height || 0),
+            x: 0,
+            width: placement.width || rectangle.width,
+            height: placement.height || rectangle.height,
+          };
+          break;
+        case 'right':
+          bounds = {
+            y: 0,
+            x: rectangle.width - (placement.width || 0),
+            width: placement.width || rectangle.width,
+            height: placement.height || rectangle.height,
+          };
+          break;
+        case 'top':
+        case 'left':
+        default:
+          bounds = {
+            y: 0,
+            x: 0,
+            width: placement.width || rectangle.width,
+            height: placement.height || rectangle.height,
+          };
+          break;
+      }
+    } else {
+      bounds = {
+        y: 0,
+        x: 0,
+        width: rectangle.width,
+        height: rectangle.height,
+      };
+    }
+    view.setBounds(bounds);
+    return bounds;
+  });
+  newWindow.show();
 });
 
 ipcMain.handle(
   ELECTRON_IPC_EVENT.GET_WINDOW_VIEW_BOUNDS,
   async (event, args) => {
     const [windowName, index] = args;
-    const windows = getWindows(windowName);
+    const windows = getWindow(windowName);
     if (windows) {
       const browserView = windows.getBrowserViews();
       if (browserView && browserView.length) {
@@ -231,7 +322,7 @@ ipcMain.handle(
  * @param viewName
  */
 function closeWindowView(windowName: string, viewName: string) {
-  const windows = getWindows(windowName);
+  const windows = getWindow(windowName);
   if (windows) {
     App.logger.debug(`关闭[${windowName}]-view页面~`);
     const view = ElectronEvents.viewWindowMap.get(viewName);
@@ -253,7 +344,7 @@ ipcMain.handle(ELECTRON_IPC_EVENT.CLOSE_WINDOW_VIEW, async (event, args) => {
   closeWindowView(windowName, viewName);
 });
 
-ipcMain.on('closeWindow', async (event, args) => {
+ipcMain.on(ELECTRON_IPC_EVENT.CLOSE_WINDOW, async (event, args) => {
   const [windowName] = args;
   if (windowName) {
     const window = ElectronEvents.windowMap.get(windowName);
@@ -356,8 +447,7 @@ ipcMain.on('minimizeWindow', async (event, args) => {
   }
   window && window.minimize();
 });
-ipcMain.on('toggleDevTools', (event, args) => {
-  const [name] = args;
+ipcMain.on(ELECTRON_IPC_EVENT.TOGGLE_DEV_TOOLS, (event, name) => {
   const webContents = getWebContents(name);
   if (webContents) {
     webContents.toggleDevTools();

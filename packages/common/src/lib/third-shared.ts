@@ -7,6 +7,19 @@ export const BROWSER_VIEW_NAME_PREFIX = 'view';
  * 日志控制台的VIEW页面名字
  */
 export const CONSOLE_VIEW_NAME = BROWSER_VIEW_NAME_PREFIX + '-log-console';
+/**
+ * 日志控制台的窗口名字
+ */
+export const CONSOLE_WINDOW_NAME = 'console';
+
+/**
+ * 插入browser view位置和宽高
+ */
+export interface ViewPlacement {
+  height?: number;
+  width?: number;
+  placement: 'top' | 'left' | 'right' | 'bottom';
+}
 
 /**
  * 客户端主窗口名字
@@ -31,4 +44,16 @@ export enum ELECTRON_IPC_EVENT {
   ADD_WINDOW_VIEW_BOUNDS = 'ADD_WINDOW_VIEW_BOUNDS',
 
   REMOVE_WINDOW_VIEW_BOUNDS = 'REMOVE_WINDOW_VIEW_BOUNDS',
+  /**
+   * 分离view视图到独立窗口
+   */
+  SEPARATE_VIEW = 'SEPARATE_VIEW',
+  /**
+   * 创建一个新的窗口
+   */
+  CREATE_WINDOW = 'CREATE_WINDOW',
+
+  TOGGLE_DEV_TOOLS = 'TOGGLE_DEV_TOOLS',
+
+  CLOSE_WINDOW = 'CLOSE_WINDOW',
 }

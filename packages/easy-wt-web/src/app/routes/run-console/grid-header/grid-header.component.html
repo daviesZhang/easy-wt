@@ -1,4 +1,5 @@
-<nz-space [nzSize]="24">
+<div [ngClass]="{solo:soleWindow}" class="grid-header">
+  <nz-space [nzSize]="24">
     <!--    <span  *nzSpaceItem>{{'log_console.title'|translate}}</span>-->
     <input (ngModelChange)="filter($event)" [ngModel]="filterValue" class="quick-filter" nz-input
            nzSize="small" placeholder="{{'log_console.quick_filter'|translate}}">
@@ -13,10 +14,39 @@
         <button (click)="toggleDevTools()" *nzSpaceItem nz-button nzSize="small" nzType="primary">DevTools</button>
     </ng-container>
     <nz-switch (click)="toggleTheme()" *nzSpaceItem [ngModel]="true"
-               nzCheckedChildren="{{'log_console.light_theme'|translate}}"
-               nzSize="small" nzUnCheckedChildren="{{'log_console.dark_theme'|translate}}"></nz-switch>
+               [nzCheckedChildren]="sun"
+               [nzUnCheckedChildren]="moon" nzSize="small"></nz-switch>
 
-    <button (click)="clearData()" *nzSpaceItem nz-button nzGhost nzSize="small"
+  <ng-template #sun>
+    <span nz-icon>
+      <svg><path
+        d="M960 512l-128 128v192h-192l-128 128-128-128H192v-192l-128-128 128-128V192h192l128-128 128 128h192v192z"
+        fill="#FFD878" p-id="3372"></path><path d="M736 512a224 224 0 1 0-448 0 224 224 0 1 0 448 0z" fill="#FFE4A9"
+                                                p-id="3373"></path><path
+        d="M512 109.248L626.752 224H800v173.248L914.752 512 800 626.752V800h-173.248L512 914.752 397.248 800H224v-173.248L109.248 512 224 397.248V224h173.248L512 109.248M512 64l-128 128H192v192l-128 128 128 128v192h192l128 128 128-128h192v-192l128-128-128-128V192h-192l-128-128z"
+        fill="#4D5152" p-id="3374"></path><path
+        d="M512 320c105.888 0 192 86.112 192 192s-86.112 192-192 192-192-86.112-192-192 86.112-192 192-192m0-32a224 224 0 1 0 0 448 224 224 0 0 0 0-448z"
+        fill="#4D5152" p-id="3375"></path></svg>
+    </span>
+  </ng-template>
+
+  <ng-template #moon>
+    <span nz-icon>
+  <svg><path
+    d="M1023.984 512c0 282.772-229.21 511.984-511.984 511.984C229.26 1023.984 0.016 794.772 0.016 512 0.016 229.258 229.26 0.016 512 0.016 794.774 0.016 1023.984 229.258 1023.984 512z"
+    fill="#646C77" p-id="5407"></path><path
+    d="M426.692 512c0-174.932 105.308-325.27 255.99-391.112C630.404 98.044 572.686 85.356 512 85.356 276.382 85.356 85.358 276.382 85.358 512c0 235.648 191.026 426.672 426.642 426.672 60.686 0 118.404-12.718 170.682-35.558C532 837.272 426.692 686.962 426.692 512z"
+    fill="#FECD57" p-id="5408"></path><path
+    d="M170.7 512c0-221.18 168.338-403.082 383.894-424.518A426.776 426.776 0 0 0 512 85.356C276.382 85.356 85.358 276.382 85.358 512c0 235.648 191.026 426.672 426.642 426.672 14.376 0 28.562-0.75 42.594-2.126C339.038 915.08 170.7 733.21 170.7 512z"
+    fill="#F5BA45" p-id="5409"></path></svg>
+    </span>
+  </ng-template>
+
+  <button (click)="separate()" *nzSpaceItem nz-button nzGhost nzSize="small"
+          nzType="primary">{{(soleWindow ? 'log_console.merge' : 'log_console.separate')|translate}}</button>
+
+
+  <button (click)="clearData()" *nzSpaceItem nz-button nzGhost nzSize="small"
             nzType="primary">{{'common.clear'|translate}}</button>
 
     <ng-container *ngIf="electron">
@@ -26,3 +56,4 @@
 
 
 </nz-space>
+</div>

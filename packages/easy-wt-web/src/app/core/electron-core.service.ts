@@ -1,26 +1,22 @@
-import { Inject, Injectable } from '@angular/core';
+import { Injectable } from '@angular/core';
 
 import {
   CaseEvent,
+  CONSOLE_VIEW_NAME,
+  ELECTRON_IPC_EVENT,
   ISchedule,
   IScriptCase,
   IStep,
+  MAIN_WINDOW_NAME,
   QueryParams,
   Report,
   RunConfig,
   StatReport,
-  BROWSER_VIEW_NAME_PREFIX,
-  CONSOLE_VIEW_NAME,
-  ELECTRON_IPC_EVENT,
 } from '@easy-wt/common';
 import { CoreService } from './core.service';
 import { fromEventPattern, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
-import { DOCUMENT } from '@angular/common';
-
-
-
 
 @Injectable({
   providedIn: 'root',
@@ -38,7 +34,7 @@ export class ElectronCoreService extends CoreService {
     const url = await window.electron.getMainLoadURL();
     await window.electron.invokeEvent(
       ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW,
-      'main',
+      MAIN_WINDOW_NAME,
       CONSOLE_VIEW_NAME,
       `${url}#console?startService=false`,
       300

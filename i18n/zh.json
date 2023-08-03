@@ -133,6 +133,8 @@
     "no_rows": "等待日志~",
     "light_theme": "亮",
     "dark_theme": "暗",
+    "separate": "分离",
+    "merge": "合并",
     "quick_filter": "搜索日志"
   },
   "menu": {

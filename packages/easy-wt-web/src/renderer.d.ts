@@ -25,7 +25,7 @@ export interface IElectronAPI {
     url: string,
     parent = false,
     other?: { [key: string]: any }
-  ) => Promise<string>;
+  ) => Promise<void>;
   encryptedData: (data: string) => Promise<string>;
   decryptedData: (data: string) => Promise<string>;
   closeWindow: (name: string) => void;

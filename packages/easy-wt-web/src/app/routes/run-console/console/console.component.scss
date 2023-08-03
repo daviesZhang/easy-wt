@@ -18,6 +18,10 @@
 
     ::ng-deep .ag-row {
       border-bottom: none;
+
+      &:before {
+        background: initial;
+      }
     }
 
 

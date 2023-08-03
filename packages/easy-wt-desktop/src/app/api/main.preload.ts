@@ -1,6 +1,7 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
 import {
+  ELECTRON_IPC_EVENT,
   EnvironmentConfig,
   LOG_EVENT_NAME,
   LoggerEventData,
@@ -109,7 +110,7 @@ try {
      * @param name
      */
     toggleDevTools: (name?: string) =>
-      ipcRenderer.send('toggleDevTools', [name]),
+      ipcRenderer.send(ELECTRON_IPC_EVENT.TOGGLE_DEV_TOOLS, name),
     newWindow: (
       windowName: string,
       url: string,
@@ -117,8 +118,13 @@ try {
       option?: {
         [key: string]: unknown;
       }
-    ): Promise<string> => {
-      return ipcRenderer.invoke('newWindow', [windowName, url, parent, option]);
+    ): Promise<void> => {
+      return ipcRenderer.invoke(ELECTRON_IPC_EVENT.CREATE_WINDOW, [
+        windowName,
+        url,
+        parent,
+        option,
+      ]);
     },
 
     closeApp: () => {
@@ -128,7 +134,7 @@ try {
       ipcRenderer.send('reload', [name]);
     },
     closeWindow: (name: string) => {
-      ipcRenderer.send('closeWindow', [name]);
+      ipcRenderer.send(ELECTRON_IPC_EVENT.CLOSE_WINDOW, [name]);
     },
     maximizeWindow: (name?: string) => {
       ipcRenderer.send('maximizeWindow', [name]);
