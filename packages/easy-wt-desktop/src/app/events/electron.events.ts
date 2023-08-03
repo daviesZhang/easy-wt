@@ -298,6 +298,7 @@ ipcMain.handle(ELECTRON_IPC_EVENT.SEPARATE_VIEW, async (event, args) => {
     view.setBounds(bounds);
     return bounds;
   });
+  //当前electron版本一个神奇的bug,必须先hide,再show,不然再次附加到窗口不能渲染页面
   newWindow.show();
 });
 

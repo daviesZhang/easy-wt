@@ -1,4 +1,4 @@
-<span [ngClass]="'level-'+messageData.level" class="time">{{messageData.time|date:'yyyy-MM-dd HH:mm:ss.sss'}}</span>
-<span [ngClass]="'level-'+messageData.level" class="level">{{messageData.level.toUpperCase()}}</span>
+<span [ngClass]="'level-'+messageData.level" class="time">{{messageData.time}}</span>
+<span [ngClass]="'level-'+messageData.level" class="level">{{messageData.level}}</span>
 <span *ngIf="messageData.label" [ngClass]="'level-'+messageData.level" class="label">{{messageData.label}}</span>
 <span [ngClass]="'level-'+messageData.level" class="message">{{messageData.message}}</span>

@@ -19,15 +19,15 @@
   }
 
   .level {
-    &.level-debug {
+    &.level-DEBUG {
       color: green;
     }
 
-    &.level-info {
+    &.level-INFO {
       color: green;
     }
 
-    &.level-error {
+    &.level-ERROR {
       color: red;
     }
   }

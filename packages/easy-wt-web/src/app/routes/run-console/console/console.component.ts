@@ -4,17 +4,13 @@ import { of, Subject } from 'rxjs';
 import { LoggerEventData } from '@easy-wt/common';
 
 import { GridApi, GridOptions } from 'ag-grid-community';
-import {
-  GridTableReadyEvent,
-  RequestData,
-  TemplateRendererComponent,
-} from '@easy-wt/ui-shared';
+import { GridTableReadyEvent, RequestData } from '@easy-wt/ui-shared';
 import { GridHeaderComponent } from '../grid-header/grid-header.component';
 import { TranslateService } from '@ngx-translate/core';
 import { format } from 'date-fns';
 import { MessageRendererComponent } from '../message-renderer/message-renderer.component';
 
-export type logMessage = LoggerEventData & { id: number };
+export type logMessage = LoggerEventData & { id: number; time: string };
 
 @Component({
   selector: 'easy-wt-console',
@@ -40,6 +36,9 @@ export class ConsoleComponent implements OnInit {
     enableCellTextSelection: true,
     columnDefs: [
       {
+        getQuickFilterText: (params) => {
+          return `${params.data.time} ${params.data.level} ${params.data.label} ${params.data.message}`;
+        },
         suppressMovable: true,
         resizable: false,
         field: 'message',
@@ -78,8 +77,17 @@ export class ConsoleComponent implements OnInit {
     this.message$.subscribe((next) => {
       if (this.gridApi && next) {
         this.index++;
+        const { time, level, ...other } = next;
+        const time_str = format(time, 'yyyy-MM-dd HH:mm:ss');
         this.gridApi.applyTransaction({
-          add: [{ ...next, id: this.index }],
+          add: [
+            {
+              ...other,
+              time: time_str,
+              level: level.toUpperCase(),
+              id: this.index,
+            },
+          ],
           addIndex: 0,
         });
       }
