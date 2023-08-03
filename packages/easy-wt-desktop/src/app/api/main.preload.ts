@@ -79,7 +79,6 @@ async function createCoreService(environmentConfig: EnvironmentConfig) {
   );
 }
 
-
 try {
   contextBridge.exposeInMainWorld('electron', {
     getAppVersion: () => ipcRenderer.invoke('get-app-version'),
@@ -244,7 +243,11 @@ try {
             [password]
           );
         }
-        await ffmpegUncompress();
+        try {
+          await ffmpegUncompress();
+        } catch (e) {
+          sendLogger('error', `初始化ffmpeg失败,~message:[${e.message}]`);
+        }
         await createCoreService(config);
       } catch (err) {
         sendLogger('error', `启动core服务失败~message:[${err.message}]`);
@@ -280,17 +283,24 @@ async function ffmpegUncompress() {
     }
   }
   if (process.platform == 'win32') {
-    const ffmpeg = join(__dirname, 'ffmpeg-win64.zip');
+    const exe = await ipcRenderer.invoke('get-path', ['exe']);
+    const ffmpeg = join(exe, '..', 'ffmpeg-win64.zip');
+    sendLogger('error', ffmpeg);
     if (await fs.pathExists(ffmpeg)) {
-      const ffmpegPath = path.join('Local', 'ms-playwright', 'ffmpeg-1009');
-      const appData = await ipcRenderer.invoke('get-path', ['appData']);
+      const ffmpegPath = path.join(
+        'AppData',
+        'Local',
+        'ms-playwright',
+        'ffmpeg-1009'
+      );
+      const appData = await ipcRenderer.invoke('get-path', ['home']);
       const dest = path.join(appData, ffmpegPath);
+      sendLogger('error', dest);
       if (await fs.pathExists(join(dest, 'ffmpeg-win64.exe'))) {
         return;
       }
       await compressing.zip.uncompress(ffmpeg, dest);
+      await fs.remove(ffmpeg);
     }
   }
-
-
 }
