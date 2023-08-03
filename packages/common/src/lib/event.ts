@@ -3,6 +3,21 @@ import { IScriptCase, RunConfig } from './script-case';
 import { IStep } from './step';
 
 /**
+ * 日志的事件名字
+ */
+export const LOG_EVENT_NAME = 'log';
+
+/**
+ * 日志事件推送的data
+ */
+export interface LoggerEventData {
+    level: string;
+    message: string;
+    label?: string;
+    time: number;
+}
+
+/**
  * 用例中的事件列表
  */
 export enum CaseEvent {

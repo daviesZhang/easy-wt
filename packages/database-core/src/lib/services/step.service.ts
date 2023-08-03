@@ -81,7 +81,6 @@ export class StepService {
         }
       }
     });
-
     return Promise.resolve(steps);
   }
 

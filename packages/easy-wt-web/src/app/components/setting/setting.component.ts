@@ -29,9 +29,9 @@ export class SettingComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.coreService.electron()) {
-      window.electron.onEvent('open-about', () => {
-        this.openAbout();
-      });
+        window.electron.onMainEvent('open-about', () => {
+          this.openAbout();
+        });
     }
   }
 

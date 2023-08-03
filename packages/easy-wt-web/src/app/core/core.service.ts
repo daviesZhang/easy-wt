@@ -18,6 +18,10 @@ export abstract class CoreService {
   }
 
   /**
+   * 打开日志显示工具
+   */
+  abstract openLogConsole(): Promise<void>;
+  /**
    * 事件
    * @param eventName
    */

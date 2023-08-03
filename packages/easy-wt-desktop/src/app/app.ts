@@ -13,8 +13,9 @@ import { join } from 'path';
 import { format } from 'url';
 import * as winston from 'winston';
 import { getWindowViewport, saveWindowViewport } from './store';
+import { MAIN_WINDOW_NAME } from '@easy-wt/common';
 
-export const MAIN_WINDOW_NAME = 'main';
+
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
   // be closed automatically when the JavaScript object is garbage collected.

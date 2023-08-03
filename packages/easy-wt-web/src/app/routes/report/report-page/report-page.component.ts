@@ -76,10 +76,10 @@ export class ReportPageComponent {
     return firstValueFrom(
       fromEventPattern(
         (handler) => {
-          window.electron.onEvent('reportData', handler);
+          window.electron.onMainEvent('reportData', handler);
         },
         (handler) => {
-          window.electron.offEvent('reportData', handler);
+          window.electron.offMainEvent('reportData', handler);
         }
       ).pipe(
         map(([, data]) => {
@@ -95,10 +95,13 @@ export class ReportPageComponent {
     const id = this.report.id;
     window.electron.sendMessage('main', 'export-report', type, id);
     return new Promise<string>((resolve, reject) => {
-      window.electron.onEvent(`export-report-${type}-${id}`, (event, data) => {
-        const [file] = data;
-        resolve(file as string);
-      });
+      window.electron.onMainEvent(
+        `export-report-${type}-${id}`,
+        (event, data) => {
+          const [file] = data;
+          resolve(file as string);
+        }
+      );
     });
   }
 

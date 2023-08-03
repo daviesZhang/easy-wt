@@ -4,9 +4,7 @@
  */
 
 import { ipcMain } from 'electron';
-import { Logger } from '@nestjs/common';
 
-const logger = new Logger('CaseEvents');
 
 export default class CaseEvents {
   static bootstrapCaseEvents(): Electron.IpcMain {

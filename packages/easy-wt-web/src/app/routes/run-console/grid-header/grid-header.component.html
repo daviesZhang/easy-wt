@@ -1,0 +1,28 @@
+<nz-space [nzSize]="24">
+    <!--    <span  *nzSpaceItem>{{'log_console.title'|translate}}</span>-->
+    <input (ngModelChange)="filter($event)" [ngModel]="filterValue" class="quick-filter" nz-input
+           nzSize="small" placeholder="{{'log_console.quick_filter'|translate}}">
+
+
+</nz-space>
+<div class="center">
+    <!--    <input class="quick-filter" placeholder="{{'log_console.quick_filter'|translate}}"  nzSize="small" nz-input [ngModel]="filterValue" (ngModelChange)="filter($event)">-->
+</div>
+<nz-space [nzSize]="24">
+    <ng-container *ngIf="electron&&developmentMode">
+        <button (click)="toggleDevTools()" *nzSpaceItem nz-button nzSize="small" nzType="primary">DevTools</button>
+    </ng-container>
+    <nz-switch (click)="toggleTheme()" *nzSpaceItem [ngModel]="true"
+               nzCheckedChildren="{{'log_console.light_theme'|translate}}"
+               nzSize="small" nzUnCheckedChildren="{{'log_console.dark_theme'|translate}}"></nz-switch>
+
+    <button (click)="clearData()" *nzSpaceItem nz-button nzGhost nzSize="small"
+            nzType="primary">{{'common.clear'|translate}}</button>
+
+    <ng-container *ngIf="electron">
+        <button (click)="closeView()" *nzSpaceItem nz-button nzDanger nzGhost nzSize="small"
+                nzType="primary">{{'common.close'|translate}}</button>
+    </ng-container>
+
+
+</nz-space>

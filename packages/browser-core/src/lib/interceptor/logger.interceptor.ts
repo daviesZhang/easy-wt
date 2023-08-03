@@ -13,7 +13,7 @@ import { defer, Observable, switchMap, tap } from 'rxjs';
  */
 @Injectable()
 export class LoggerStepInterceptor implements StepInterceptor {
-  private logger = new Logger(LoggerStepInterceptor.name);
+  private logger = new Logger('用例运行');
 
   intercept(
     step: IStep,
@@ -23,13 +23,7 @@ export class LoggerStepInterceptor implements StepInterceptor {
     const name = context.scriptCase!.name;
     const typeName = (step.type != null ? step.type : '') || 'unknown';
     return defer(() => {
-      this.logger.debug(
-        `[${step.caseId}-${step.id}]${name}准备执行[名称:${
-          step.name
-        }-动作:${typeName}${
-          (step.expression || '') && `-表达式:${step.expression}`
-        }]~`
-      );
+      this.logger.debug(`[${name}]准备执行[${step.name}][${typeName}]`);
       return Promise.resolve();
     }).pipe(
       switchMap(() => {
@@ -39,17 +33,17 @@ export class LoggerStepInterceptor implements StepInterceptor {
             next: () => {
               const endTime = new Date().getTime();
               this.logger.log(
-                `[${step.caseId}-${step.id}]${name}执行[名称:${
-                  step.name
-                }-动作:${typeName}]完成,用时:${endTime - beginTime}ms~`
+                `[${name}]执行[${step.name}][${typeName}]完成,用时:${
+                  endTime - beginTime
+                }ms~`
               );
             },
             error: (err) => {
               const endTime = new Date().getTime();
               this.logger.warn(
-                `[${step.caseId}-${step.id}]${name}执行[名称:${
-                  step.name
-                }-动作:${typeName}]失败,用时:${endTime - beginTime}ms~`,
+                `[${name}]执行[${step.name}][${typeName}]失败,用时:${
+                  endTime - beginTime
+                }ms~`,
                 err
               );
             },

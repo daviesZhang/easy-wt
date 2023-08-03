@@ -1,6 +1,9 @@
 import { ipcRenderer } from 'electron';
 import path from 'path';
+import { EventEmitter } from 'events';
+import { LOG_EVENT_NAME } from '@easy-wt/common';
 
+export const commonEventEmitter = new EventEmitter();
 export interface Expose {
   expose: () => {
     [key: string]: unknown;
@@ -9,6 +12,12 @@ export interface Expose {
 
 export function sendLogger(level: string, message: string, label?: string) {
   ipcRenderer.send('logger', [level, message, label]);
+  commonEventEmitter.emit(LOG_EVENT_NAME, {
+    level,
+    message,
+    label,
+    time: new Date().getTime(),
+  });
 }
 
 /**

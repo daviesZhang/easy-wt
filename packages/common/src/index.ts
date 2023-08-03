@@ -6,6 +6,7 @@ export * from './lib/step-options';
 export * from './lib/report';
 export * from './lib/event';
 export * from './lib/utils';
+export * from './lib/third-shared';
 export * from './lib/case-error';
 export * from './lib/schedule';
 export * from './lib/environment-config';

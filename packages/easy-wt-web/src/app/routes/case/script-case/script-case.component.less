@@ -9,16 +9,21 @@
   border: solid 1px @border-color;
   border-top: none;
   border-right: none;
+  border-bottom: none;
   padding: 4px 10px;
   height: 32px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-between;
   align-content: center;
   align-items: center;
 
   button.stop {
     height: 22px;
     line-height: 1;
+  }
+
+  .processing span {
+    margin: 0 4px;
   }
 
   .spin {
@@ -36,6 +41,7 @@
   order: 0;
   border-top: none;
   border-left: none;
+  border-bottom: none;
 
   .menu {
     width: 100%;

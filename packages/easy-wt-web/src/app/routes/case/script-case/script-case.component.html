@@ -41,19 +41,24 @@
         </div>
     </div>
 
-    <!--  <div class="grid-bottom">
-        <ng-container *ngIf="runningStep">
-          <nz-tag nzColor="processing">
-            <span nz-icon nzType="sync" nzSpin></span>
-            <span>{{runningStep.runCount+1}}</span>
-           {{'step.type_options.'+runningStep.step.type|lowercase|translate}}
-           {{runningStep.step.name}}
-          </nz-tag>
-          <button class="stop" nz-button nzDanger nzGhost nzType="primary" nzSize="small" >停止</button>
+    <div class="grid-bottom">
+        <div>
+            <ng-container *ngIf="runningStep">
+                <nz-tag class="processing" nzColor="processing">
+                    <span nz-icon nzSpin nzType="sync"></span>
+                    <span>第{{runningStep.runCount + 1}}次</span>
+                    <span>{{'step.type_options.' + runningStep.step.type|lowercase|translate}}</span>
+                    <span> {{runningStep.step.name}}</span>
+                </nz-tag>
 
+            </ng-container>
 
-        </ng-container>
-      </div>-->
+        </div>
+        <div>
+            <nz-tag [nzColor]="'blue'">{{'step.total_step_info'|translate:{count: steps.length} }}</nz-tag>
+        </div>
+
+    </div>
 
 
 </easy-wt-grid-table>

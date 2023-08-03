@@ -8,7 +8,7 @@ import {ensurePath} from '../utils';
  * 异常逻辑统一处理
  */
 export class ErrorInterceptor implements StepInterceptor {
-  private logger = new Logger('ErrorInterceptor');
+  private logger = new Logger('用例运行');
 
   intercept(
     step: IStep,
@@ -25,7 +25,9 @@ export class ErrorInterceptor implements StepInterceptor {
         retry({
           delay: (err, count) => {
             if (retryCount >= count) {
-              this.logger.log(`准备开始第${count}次重试步骤${step.name}~`);
+              this.logger.log(
+                `用例[${context.scriptCase.name}]步骤[${step.name}]准备开始第${count}次失败重试~`
+              );
               return of(true);
             }
             return throwError(() => err);
@@ -39,6 +41,9 @@ export class ErrorInterceptor implements StepInterceptor {
         if (err instanceof errors.TimeoutError) {
           message = 'step.error.selector_timeout';
         }
+        this.logger.error(
+          `用例[${context.scriptCase.name}]步骤[${step.name}]运行失败,错误原因:[${message}]~`
+        );
         const page = context.page as Page;
         if (page && !page.isClosed() && context.environmentConfig.output) {
           const runId = context.uuid;

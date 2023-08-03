@@ -1,4 +1,4 @@
-import { Injectable } from '@angular/core';
+import { Inject, Injectable } from '@angular/core';
 
 import {
   CaseEvent,
@@ -9,11 +9,18 @@ import {
   Report,
   RunConfig,
   StatReport,
+  BROWSER_VIEW_NAME_PREFIX,
+  CONSOLE_VIEW_NAME,
+  ELECTRON_IPC_EVENT,
 } from '@easy-wt/common';
 import { CoreService } from './core.service';
 import { fromEventPattern, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { DOCUMENT } from '@angular/common';
+
+
+
 
 @Injectable({
   providedIn: 'root',
@@ -21,9 +28,21 @@ import { NzModalService } from 'ng-zorro-antd/modal';
 export class ElectronCoreService extends CoreService {
   constructor(
     private translate: TranslateService,
+
     private modalService: NzModalService
   ) {
     super();
+  }
+
+  async openLogConsole() {
+    const url = await window.electron.getMainLoadURL();
+    await window.electron.invokeEvent(
+      ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW,
+      'main',
+      CONSOLE_VIEW_NAME,
+      `${url}#console?startService=false`,
+      300
+    );
   }
 
   findCaseById(id: number): Promise<IScriptCase> {
@@ -75,7 +94,7 @@ export class ElectronCoreService extends CoreService {
         return eventName;
       },
       (handler, signal) => {
-        window.browserCore.offEvent(signal, handler);
+        window.browserCore.onEvent(signal, handler);
       }
     );
   }
@@ -199,7 +218,10 @@ export class ElectronCoreService extends CoreService {
   }
 
   init() {
-    window.electron.onEvent('export-report', async (event, data) => {
+    window.electron.onLogEvent((message) => {
+      window.electron.sendMessage(CONSOLE_VIEW_NAME, 'log_event', message);
+    });
+    window.electron.onMainEvent('export-report', async (event, data) => {
       const [type, id] = data;
       let file: string;
       if (type === 'pdf') {

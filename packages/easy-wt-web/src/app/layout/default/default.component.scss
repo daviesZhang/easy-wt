@@ -2,7 +2,13 @@ $header-background: #faad1473;
 
 
 .default-layout {
-  height: 100%;
+
+  position: absolute;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  bottom: var(--view-bottom);
+  top: 0;
 
   .logo {
 
@@ -29,8 +35,9 @@ $header-background: #faad1473;
     justify-content: space-between;
     align-items: center;
 
-    .progress, .setting, .language {
+    .progress, .setting, .language, .console {
       -webkit-app-region: no-drag;
+      cursor: pointer;
     }
 
     .left {
@@ -60,7 +67,7 @@ $header-background: #faad1473;
   }
 
   nz-content {
-    //margin: 16px;
+
   }
 
 

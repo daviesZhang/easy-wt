@@ -1,0 +1,34 @@
+:host {
+  line-height: 1;
+
+  > * {
+    margin-right: 5px;
+  }
+
+  .message {
+    margin: 0;
+
+  }
+
+  .label {
+    color: #096dd9;
+    //background: #e6f7ff;
+    //border-color: #91d5ff;
+    display: inline-block;
+
+  }
+
+  .level {
+    &.level-debug {
+      color: green;
+    }
+
+    &.level-info {
+      color: green;
+    }
+
+    &.level-error {
+      color: red;
+    }
+  }
+}

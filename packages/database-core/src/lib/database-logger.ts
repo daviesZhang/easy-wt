@@ -4,10 +4,18 @@ import { Logger as NestLogger } from '@nestjs/common';
 export class DatabaseLogger implements TypeOrmLogger {
   private readonly logger = new NestLogger('SQL');
 
+  production = true;
+
+  constructor(production = true) {
+    this.production = production;
+  }
+
   logQuery(query: string, parameters?: unknown[]) {
-    this.logger.log(
-      `${query} -- Parameters: ${this.stringifyParameters(parameters)}`
-    );
+    if (!this.production) {
+      this.logger.log(
+        `${query} -- Parameters: ${this.stringifyParameters(parameters)}`
+      );
+    }
   }
 
   logQueryError(error: string, query: string, parameters?: unknown[]) {
@@ -27,11 +35,15 @@ export class DatabaseLogger implements TypeOrmLogger {
   }
 
   logMigration(message: string) {
-    this.logger.log(message);
+    if (!this.production) {
+      this.logger.log(message);
+    }
   }
 
   logSchemaBuild(message: string) {
-    this.logger.log(message);
+    if (!this.production) {
+      this.logger.log(message);
+    }
   }
 
   log(level: 'log' | 'info' | 'warn', message: string) {

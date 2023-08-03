@@ -301,6 +301,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       .subscribe((next) => {
         this.caseRunCount = 0;
         this.runningStep = null;
+        this.gridApi.deselectAll();
       });
   }
 
@@ -331,6 +332,8 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   onStepEnd(event: CaseStepEvent) {
     if (this.caseId === event.step.caseId) {
       this.runningStep = null;
+      const row = this.gridApi.getRowNode(event.step.id.toString());
+      row.setSelected(false);
     }
   }
 
@@ -339,9 +342,8 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       this.caseRunCount = event.caseRunCount || 0;
       this.runningStep = event;
       this.cdr.detectChanges();
-      this.gridApi.flashCells({
-        rowNodes: [this.gridApi.getRowNode(event.step.id.toString())],
-      });
+      const row = this.gridApi.getRowNode(event.step.id.toString());
+      row.setSelected(true);
     }
   }
 
@@ -455,5 +457,9 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   toggleScheduleModal(scheduleCaseId: number | null) {
     this.scheduleCaseId = scheduleCaseId;
     this.showCreateSchedule = !this.showCreateSchedule;
+  }
+
+  async openLog() {
+    this.coreService.openLogConsole();
   }
 }

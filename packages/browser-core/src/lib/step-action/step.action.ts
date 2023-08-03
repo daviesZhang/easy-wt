@@ -372,7 +372,7 @@ export class StructEndIfAction implements StepAction<StructEndIf> {
 
 @Injectable()
 export class StructWhileAction implements StepAction<StructWhile> {
-  private logger = new Logger(StructWhileAction.name);
+  private logger = new Logger('循环判断器');
 
   async run(
     step: StructWhile,
@@ -384,7 +384,7 @@ export class StructWhileAction implements StepAction<StructWhile> {
       success = !!vm.runInNewContext(expression, {});
     }
     if (success && selector) {
-      this.logger.debug(`While循环尝试寻找选择器,${JSON.stringify(selector)}`);
+      this.logger.debug(`尝试寻找选择器,${JSON.stringify(selector)}`);
       const count = await getLocator(selector, context).count();
       success = count > 0;
     }

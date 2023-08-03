@@ -1,5 +1,4 @@
 <nz-layout [ngClass]="{rounded:!this.isElectron}" class="default-layout">
-
   <nz-layout>
     <nz-header class="header">
       <div class="left">
@@ -13,9 +12,13 @@
           <li [routerLink]="['result']" nz-menu-item nzMatchRouter>{{'menu.report'|translate}}</li>
         </ul>
       </div>
-      <nz-space [nzSize]="48" class="right">
+      <nz-space [nzSize]="24" class="right">
         <easy-wt-case-progress *nzSpaceItem class="progress"></easy-wt-case-progress>
         <easy-wt-language-setting *nzSpaceItem class="language"></easy-wt-language-setting>
+        <ng-container *ngIf="isElectron">
+          <button (click)="onOpenConsole()" *nzSpaceItem class="console" nz-button
+                  nzSize="small" nzType="primary"><span nz-icon nzType="code"></span></button>
+        </ng-container>
         <ng-container *ngIf="isElectron">
           <easy-wt-setting *nzSpaceItem class="setting"/>
         </ng-container>

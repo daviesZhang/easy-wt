@@ -128,6 +128,13 @@
       "count": "执行次数"
     }
   },
+  "log_console": {
+    "title": "运行时日志",
+    "no_rows": "等待日志~",
+    "light_theme": "亮",
+    "dark_theme": "暗",
+    "quick_filter": "搜索日志"
+  },
   "menu": {
     "case": "测试用例",
     "schedule": "定时调度",
@@ -206,6 +213,7 @@
     "default_name": "新增步骤",
     "bottom_create": "插入一行",
     "enable_tip": "启用/禁用",
+    "total_step_info": "当前用例步数：{{count}}",
     "expression_tip": {
     },
     "field": {

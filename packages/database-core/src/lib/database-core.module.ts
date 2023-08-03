@@ -58,7 +58,7 @@ export class DatabaseCoreModule {
               };
             }
             Object.assign(config, {
-              logger: new DatabaseLogger(),
+              logger: new DatabaseLogger(production),
               debug: false,
               entities: [
                 RunConfigEntity,

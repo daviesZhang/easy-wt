@@ -1,12 +1,21 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
-import { EnvironmentConfig } from '@easy-wt/common';
+import {
+  EnvironmentConfig,
+  LOG_EVENT_NAME,
+  LoggerEventData,
+} from '@easy-wt/common';
 import * as path from 'path';
 
 import { environment } from '../../environments/environment';
 import { easyWTCore } from '@easy-wt/easy-wt-core';
 import { LoggerService } from '@nestjs/common/services/logger.service';
-import { getEnvFilePath, getMainWindowLoadURL, sendLogger } from './helper';
+import {
+  commonEventEmitter,
+  getEnvFilePath,
+  getMainWindowLoadURL,
+  sendLogger,
+} from './helper';
 import { CaseExposeService } from './case.preload';
 import { ScheduleExposeService } from './schedule.preload';
 import { BrowserExposeService } from './browser.preload';
@@ -79,6 +88,12 @@ try {
       const environment = await ipcRenderer.invoke('get-app-environment');
       return environment === 'development';
     },
+    /**
+     * 持久化记录日志
+     * @param level
+     * @param message
+     * @param label
+     */
     logger: (level: string, message: string, label?: string) =>
       sendLogger(level, message, label),
     getMainLoadURL: getMainWindowLoadURL,
@@ -88,6 +103,10 @@ try {
       ipcRenderer.invoke('decryptedData', [data]),
     getPath: (name: string): Promise<string> =>
       ipcRenderer.invoke('get-path', [name]),
+    /**
+     * 打开控制台
+     * @param name
+     */
     toggleDevTools: (name?: string) =>
       ipcRenderer.send('toggleDevTools', [name]),
     newWindow: (
@@ -116,11 +135,33 @@ try {
     minimizeWindow: (name?: string) => {
       ipcRenderer.send('minimizeWindow', [name]);
     },
-    onEvent: (event: string, callback) => ipcRenderer.on(event, callback),
-    offEvent: (event: string, callback) => ipcRenderer.off(event, callback),
+    /**
+     * 当有日志记录的时候发出
+     * @param callback
+     */
+    onLogEvent: (callback: (message: LoggerEventData) => void) =>
+      commonEventEmitter.on(LOG_EVENT_NAME, callback),
+    /**
+     * 注册主进程发出的页面消息事件
+     * @param event
+     * @param callback
+     */
+    onMainEvent: (event: string, callback) => ipcRenderer.on(event, callback),
+    offMainEvent: (event: string, callback) => ipcRenderer.off(event, callback),
+    /**
+     * 给其他页面发送消息事件
+     * @param windowName
+     * @param channel
+     * @param args
+     */
     sendMessage: (windowName: string, channel: string, ...args: any[]) => {
       ipcRenderer.send('sendMessage', [windowName, channel, args]);
     },
+    /**
+     * 给主进程发送事件
+     * @param channel
+     * @param args
+     */
     invokeEvent: (channel: string, ...args: any[]) => {
       return ipcRenderer.invoke(channel, args);
     },

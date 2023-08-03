@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Between, DataSource, In, Like, Repository } from 'typeorm';
 import { QueryParams, Report, StatReport } from '@easy-wt/common';
@@ -7,6 +7,7 @@ import { ReportEntity } from '../entitys';
 
 @Injectable()
 export class ReportService {
+  private log = new Logger('报告服务');
   constructor(
     @InjectRepository(ReportEntity)
     private reportRepository: Repository<Report>,
@@ -83,6 +84,11 @@ export class ReportService {
   }
 
   async save(data: Report[]): Promise<Report[]> {
-    return this.reportRepository.save(data);
+    const report = await this.reportRepository.save(data);
+    report.forEach((item) => {
+      this.log.log(`用例 [${item.name}] 报告保存成功~`);
+    });
+
+    return report;
   }
 }

@@ -17,6 +17,7 @@ import { SocketService } from './socket.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TranslateService } from '@ngx-translate/core';
 
+
 @Injectable({
   providedIn: 'root',
 })
@@ -226,5 +227,9 @@ export class RemoteCoreService extends CoreService {
     return lastValueFrom(
       this.http.get<number | null>(`/schedule/next?cron=${cron}`)
     );
+  }
+
+  async openLogConsole() {
+    //
   }
 }

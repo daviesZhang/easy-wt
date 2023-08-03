@@ -48,6 +48,13 @@ const routes: Routes = [
       ),
   },
   {
+    path: 'console',
+    loadChildren: () =>
+      import('./run-console/run-console.module').then(
+        (mod) => mod.RunConsoleModule
+      ),
+  },
+  {
     path: 'report',
     component: ReportPageComponent,
   },
