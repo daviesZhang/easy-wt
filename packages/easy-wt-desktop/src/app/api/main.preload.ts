@@ -260,14 +260,37 @@ try {
 }
 
 async function ffmpegUncompress() {
-  const ffmpeg = join(__dirname, 'ffmpeg-win64.zip');
-  if (await fs.pathExists(ffmpeg)) {
-    const ffmpegPath = path.join('Local', 'ms-playwright', 'ffmpeg-1009');
-    const appData = await ipcRenderer.invoke('get-path', ['appData']);
-    const dest = path.join(appData, ffmpegPath);
-    if (await fs.pathExists(join(dest, 'ffmpeg-win64.exe'))) {
-      return;
+  if (process.platform == 'darwin') {
+    const exe = await ipcRenderer.invoke('get-path', ['exe']);
+    const ffmpeg = join(exe, '..', '..', 'ffmpeg-mac.zip');
+    if (await fs.pathExists(ffmpeg)) {
+      const ffmpegPath = path.join(
+        'Library',
+        'Caches',
+        'ms-playwright',
+        'ffmpeg-1009'
+      );
+      const homeData = await ipcRenderer.invoke('get-path', ['home']);
+      const dest = path.join(homeData, ffmpegPath);
+      if (await fs.pathExists(join(dest, 'ffmpeg-mac'))) {
+        return;
+      }
+      await compressing.zip.uncompress(ffmpeg, dest);
+      await fs.remove(ffmpeg);
     }
-    await compressing.zip.uncompress(ffmpeg, dest);
   }
+  if (process.platform == 'win32') {
+    const ffmpeg = join(__dirname, 'ffmpeg-win64.zip');
+    if (await fs.pathExists(ffmpeg)) {
+      const ffmpegPath = path.join('Local', 'ms-playwright', 'ffmpeg-1009');
+      const appData = await ipcRenderer.invoke('get-path', ['appData']);
+      const dest = path.join(appData, ffmpegPath);
+      if (await fs.pathExists(join(dest, 'ffmpeg-win64.exe'))) {
+        return;
+      }
+      await compressing.zip.uncompress(ffmpeg, dest);
+    }
+  }
+
+
 }

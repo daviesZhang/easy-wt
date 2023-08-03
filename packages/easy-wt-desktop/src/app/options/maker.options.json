@@ -16,7 +16,11 @@
   "icon": "robot_512.png",
   "mac": {
     "icon": "robot_512.png",
-    "target": "dmg"
+    "target": "dmg",
+    "extraFiles": {
+      "from": "ffmpeg/ffmpeg-mac.zip",
+      "to": ""
+    }
   },
   "dmg": {
     "artifactName": "EasyWebTest_${os}_${arch}_${version}.dmg",
