@@ -50,6 +50,10 @@
     "deleteAppDataOnUninstall": true
   },
   "win": {
+    "extraFiles": {
+      "from": "ffmpeg/ffmpeg-win64.zip",
+      "to": ""
+    },
     "icon": "./icon/icon.ico",
     "target": [
       "nsis",

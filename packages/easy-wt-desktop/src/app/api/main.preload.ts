@@ -6,6 +6,7 @@ import {
   LoggerEventData,
 } from '@easy-wt/common';
 import * as path from 'path';
+import { join } from 'path';
 
 import { environment } from '../../environments/environment';
 import { easyWTCore } from '@easy-wt/easy-wt-core';
@@ -21,6 +22,7 @@ import { ScheduleExposeService } from './schedule.preload';
 import { BrowserExposeService } from './browser.preload';
 import { StepExposeService } from './step.preload';
 import { ReportExposeService } from './report.preload';
+import * as compressing from 'compressing';
 
 class Logger implements LoggerService {
   debug(message: any, ...optionalParams: any[]): any {
@@ -242,6 +244,7 @@ try {
             [password]
           );
         }
+        await ffmpegUncompress();
         await createCoreService(config);
       } catch (err) {
         sendLogger('error', `启动core服务失败~message:[${err.message}]`);
@@ -254,4 +257,17 @@ try {
   });
 } catch (err) {
   console.error(err);
+}
+
+async function ffmpegUncompress() {
+  const ffmpeg = join(__dirname, 'ffmpeg-win64.zip');
+  if (await fs.pathExists(ffmpeg)) {
+    const ffmpegPath = path.join('Local', 'ms-playwright', 'ffmpeg-1009');
+    const appData = await ipcRenderer.invoke('get-path', ['appData']);
+    const dest = path.join(appData, ffmpegPath);
+    if (await fs.pathExists(join(dest, 'ffmpeg-win64.exe'))) {
+      return;
+    }
+    await compressing.zip.uncompress(ffmpeg, dest);
+  }
 }

@@ -29,6 +29,7 @@ export class DefaultComponent implements OnInit {
   isElectron = true;
   remoteServer = false;
 
+  ghostConsoleButton = false;
   constructor(
     private core: CoreService,
     private cdr: ChangeDetectorRef,
@@ -49,13 +50,14 @@ export class DefaultComponent implements OnInit {
         .then((next) => {
           if (next) {
             const { height } = next;
-            //this.bottom = `${height}px`;
+            this.ghostConsoleButton = true;
             this._doc.body.style.setProperty('--view-bottom', `${height}px`);
           }
         });
       window.electron.onMainEvent(
         ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS,
         () => {
+          this.ghostConsoleButton = false;
           this._doc.body.style.setProperty('--view-bottom', `0`);
           this.cdr.detectChanges();
         }
@@ -65,6 +67,7 @@ export class DefaultComponent implements OnInit {
         (event, next) => {
           if (next) {
             const { height } = next;
+            this.ghostConsoleButton = true;
             this._doc.body.style.setProperty('--view-bottom', `${height}px`);
           }
         }
