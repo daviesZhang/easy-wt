@@ -18,12 +18,29 @@ import {
 import { EnvironmentConfig, supportDBType } from '@easy-wt/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { distinctUntilChanged, from } from 'rxjs';
-import { CommonModalComponent } from '../common-modal/common-modal.component';
-import { DOCUMENT } from '@angular/common';
+
+import { CommonModule, DOCUMENT } from '@angular/common';
 import { TranslateService } from '@ngx-translate/core';
+import { CoreService } from '../../core/core.service';
+import { CommonModalComponent, UISharedModule } from '@easy-wt/ui-shared';
+import { NzListModule } from 'ng-zorro-antd/list';
+import { NzDividerModule } from 'ng-zorro-antd/divider';
+import { NzTagModule } from 'ng-zorro-antd/tag';
+import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
+import { NzSelectModule } from 'ng-zorro-antd/select';
 
 @Component({
   selector: 'easy-wt-init-config',
+  standalone: true,
+  imports: [
+    CommonModule,
+    UISharedModule,
+    NzListModule,
+    NzDividerModule,
+    NzTagModule,
+    NzInputNumberModule,
+    NzSelectModule,
+  ],
   templateUrl: './init-config.component.html',
   styleUrls: ['./init-config.component.less'],
 })
@@ -62,6 +79,7 @@ export class InitConfigComponent implements OnInit {
     private translate: TranslateService,
     private nzModal: NzModalService,
     private fb: FormBuilder,
+    private coreService: CoreService,
     @Inject(DOCUMENT) private _doc: Document
   ) {
     this.dbDataForm = this.fb.group({
@@ -130,8 +148,8 @@ export class InitConfigComponent implements OnInit {
       },
     });
 
-    this.nzModal
-      .create({
+    const modal = this.coreService.createModal(() =>
+      this.nzModal.create({
         nzTitle: this.translate.instant('env_config.title'),
         nzContent: CommonModalComponent,
         nzFooter: null,
@@ -183,9 +201,10 @@ export class InitConfigComponent implements OnInit {
           },
         },
       })
-      .afterClose.subscribe((result) => {
-        this.closeModal.next(result);
-      });
+    );
+    modal.afterClose.subscribe((result) => {
+      this.closeModal.next(result);
+    });
   }
 
   async selectPath(name: string) {

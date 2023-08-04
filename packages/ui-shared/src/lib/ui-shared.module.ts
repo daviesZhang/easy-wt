@@ -35,7 +35,6 @@ import { NzInputNumberModule } from 'ng-zorro-antd/input-number';
 import { MenuBarControlComponent } from './components/menu-bar-control/menu-bar-control.component';
 import { KeyboardOptionsComponent } from './components/keyboard-options/keyboard-options.component';
 import { ServerConfigComponent } from './components/server-config/server-config.component';
-import { InitConfigComponent } from './components/init-config/init-config.component';
 import { NzToolTipModule } from 'ng-zorro-antd/tooltip';
 import { NzCodeEditorModule } from 'ng-zorro-antd/code-editor';
 import { JsonEditorModalComponent } from './components/json-editor-modal/json-editor-modal.component';
@@ -79,7 +78,6 @@ import { GridSimpleRendererComponent } from './components/grid-simple-renderer/g
     KeyboardOptionsComponent,
     MenuBarControlComponent,
     ServerConfigComponent,
-    InitConfigComponent,
     JsonEditorModalComponent,
     TextSaveOptionsComponent,
     CommonInputExpressionComponent,
@@ -147,7 +145,6 @@ import { GridSimpleRendererComponent } from './components/grid-simple-renderer/g
     CheckElementTextOptionsComponent,
     MenuBarControlComponent,
     ServerConfigComponent,
-    InitConfigComponent,
     JsEditorExpressionComponent,
   ],
 })

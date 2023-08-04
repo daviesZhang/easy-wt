@@ -225,61 +225,65 @@ export class MenuTreeComponent implements OnInit, OnDestroy {
    * @param siblings 是否添加作为兄弟节点
    */
   createNode(node?: FlatNode, siblings = true) {
-    this.modal.create({
-      nzTitle: this.translate.instant('case.button.add_case'),
-      nzWidth: '90%',
-      nzStyle: { top: `${this.modalTopHeight}px` },
-      nzClassName: 'case-editor-modal',
-      nzMaskClosable: false,
-      nzContent: CaseEditorComponent,
-      nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
-      nzData: {
-        caseId: node ? node.id : null,
-        siblings: siblings,
-        create: true,
-      },
-      nzOnOk: async (caseEditor) => {
-        const saved = await caseEditor.save();
-        if (typeof saved === 'boolean') {
-          return false;
-        }
-        let parent = null;
-        if (node && !siblings) {
-          //添加下级节点
-          parent = node;
-        }
-        if (node && siblings && node.parentId != null) {
-          //添加平级节点
-          parent = this.dataSource.getNode(node.parentId);
-        }
-        return this.dataSource.addNode(saved, parent).then(() => true);
-      },
-    });
+    this.coreService.createModal(() =>
+      this.modal.create({
+        nzTitle: this.translate.instant('case.button.add_case'),
+        nzWidth: '90%',
+        nzStyle: { top: `${this.modalTopHeight}px` },
+        nzClassName: 'case-editor-modal',
+        nzMaskClosable: false,
+        nzContent: CaseEditorComponent,
+        nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
+        nzData: {
+          caseId: node ? node.id : null,
+          siblings: siblings,
+          create: true,
+        },
+        nzOnOk: async (caseEditor) => {
+          const saved = await caseEditor.save();
+          if (typeof saved === 'boolean') {
+            return false;
+          }
+          let parent = null;
+          if (node && !siblings) {
+            //添加下级节点
+            parent = node;
+          }
+          if (node && siblings && node.parentId != null) {
+            //添加平级节点
+            parent = this.dataSource.getNode(node.parentId);
+          }
+          return this.dataSource.addNode(saved, parent).then(() => true);
+        },
+      })
+    );
   }
 
   async updateNode(contextNode: FlatNode) {
-    this.modal.create({
-      nzTitle: this.translate.instant('case.button.editor'),
-      nzWidth: '90%',
-      nzMaskClosable: false,
-      nzStyle: { top: `${this.modalTopHeight}px` },
-      nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
-      nzClassName: 'case-editor-modal',
-      nzContent: CaseEditorComponent,
-      nzData: {
-        caseId: contextNode.id,
-        create: false,
-      },
-      nzOnOk: async (caseEditor) => {
-        const saved = await caseEditor.update();
-        if (typeof saved === 'boolean') {
-          return false;
-        }
-        const { children, parentId } = saved;
-        this.dataSource.updateNode(contextNode, saved);
-        return true;
-      },
-    });
+    this.coreService.createModal(() =>
+      this.modal.create({
+        nzTitle: this.translate.instant('case.button.editor'),
+        nzWidth: '90%',
+        nzMaskClosable: false,
+        nzStyle: { top: `${this.modalTopHeight}px` },
+        nzBodyStyle: { maxHeight: this.modalBodyMaxHeight },
+        nzClassName: 'case-editor-modal',
+        nzContent: CaseEditorComponent,
+        nzData: {
+          caseId: contextNode.id,
+          create: false,
+        },
+        nzOnOk: async (caseEditor) => {
+          const saved = await caseEditor.update();
+          if (typeof saved === 'boolean') {
+            return false;
+          }
+          const { children, parentId } = saved;
+          this.dataSource.updateNode(contextNode, saved);
+          return true;
+        },
+      })
+    );
   }
 
   contextMenu(

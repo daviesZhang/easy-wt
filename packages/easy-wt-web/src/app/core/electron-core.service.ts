@@ -7,6 +7,7 @@ import {
   ISchedule,
   IScriptCase,
   IStep,
+  MAIN_VIEW_NAME,
   MAIN_WINDOW_NAME,
   QueryParams,
   Report,
@@ -17,6 +18,7 @@ import { CoreService } from './core.service';
 import { fromEventPattern, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
 import { NzModalService } from 'ng-zorro-antd/modal';
+import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
 
 @Injectable({
   providedIn: 'root',
@@ -213,6 +215,14 @@ export class ElectronCoreService extends CoreService {
     return window.scheduleService.getCronNextDate(cron);
   }
 
+  async setDefaultViewTop(topView = MAIN_VIEW_NAME) {
+    await window.electron.invokeEvent(
+      ELECTRON_IPC_EVENT.SET_TOP_BROWSER_VIEW,
+      MAIN_WINDOW_NAME,
+      topView
+    );
+  }
+
   init() {
     window.electron.onLogEvent((message) => {
       window.electron.sendMessage(CONSOLE_VIEW_NAME, 'log_event', message);
@@ -231,5 +241,14 @@ export class ElectronCoreService extends CoreService {
         file
       );
     });
+  }
+
+  createModal<T, R>(create: () => NzModalRef<T, R>): NzModalRef<T, R> {
+    this.setDefaultViewTop(MAIN_VIEW_NAME).then();
+    const ref = create();
+    ref.afterClose.subscribe((next) => {
+      this.setDefaultViewTop(CONSOLE_VIEW_NAME).then();
+    });
+    return ref;
   }
 }

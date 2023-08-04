@@ -83,12 +83,12 @@ export default class Main {
     if (!App.isDevelopmentMode()) {
       // UpdateEvents.initAutoUpdateService();
     }
-    if (App.isDevelopmentMode()) {
-      try {
-        const debug = require('electron-debug');
-        debug();
-      } catch (e) {}
-    }
+    // if (App.isDevelopmentMode()) {
+    //   try {
+    //     const debug = require('electron-debug');
+    //     debug();
+    //   } catch (e) {}
+    // }
   }
 }
 

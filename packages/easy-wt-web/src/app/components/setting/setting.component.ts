@@ -6,11 +6,17 @@ import { CoreService } from '../../core/core.service';
 import { AboutComponent } from '../about/about.component';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { InitConfigComponent } from '../init-config/init-config.component';
 
 @Component({
   selector: 'easy-wt-setting',
   standalone: true,
-  imports: [CommonModule, UISharedModule, NzDropDownModule],
+  imports: [
+    CommonModule,
+    UISharedModule,
+    NzDropDownModule,
+    InitConfigComponent,
+  ],
   templateUrl: './setting.component.html',
 
   styleUrls: ['./setting.component.scss'],
@@ -29,9 +35,9 @@ export class SettingComponent implements OnInit {
 
   ngOnInit(): void {
     if (this.coreService.electron()) {
-        window.electron.onMainEvent('open-about', () => {
-          this.openAbout();
-        });
+      window.electron.onMainEvent('open-about', () => {
+        this.openAbout();
+      });
     }
   }
 

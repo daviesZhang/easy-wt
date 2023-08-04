@@ -9,9 +9,12 @@ import {
   StatReport,
 } from '@easy-wt/common';
 import { Observable } from 'rxjs';
+import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
 
 export abstract class CoreService {
   abstract remoteServer();
+
+  abstract createModal<T, R>(create: () => NzModalRef<T, R>): NzModalRef<T, R>;
 
   electron(): boolean {
     return !!window.electron;

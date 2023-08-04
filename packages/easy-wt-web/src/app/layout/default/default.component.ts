@@ -10,7 +10,11 @@ import {
 import { CoreService } from '../../core/core.service';
 import { FormGroup } from '@angular/forms';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
-import { ELECTRON_IPC_EVENT, MAIN_WINDOW_NAME } from '@easy-wt/common';
+import {
+  ELECTRON_IPC_EVENT,
+  MAIN_WINDOW_NAME,
+  Rectangle,
+} from '@easy-wt/common';
 import { DOCUMENT } from '@angular/common';
 
 @Component({
@@ -30,6 +34,8 @@ export class DefaultComponent implements OnInit {
   remoteServer = false;
 
   ghostConsoleButton = false;
+
+  positionStyle = {};
   constructor(
     private core: CoreService,
     private cdr: ChangeDetectorRef,
@@ -47,32 +53,62 @@ export class DefaultComponent implements OnInit {
           MAIN_WINDOW_NAME,
           0
         )
-        .then((next) => {
+        .then((next: Array<Rectangle>) => {
           if (next) {
-            const { height } = next;
-            this.ghostConsoleButton = true;
-            this._doc.body.style.setProperty('--view-bottom', `${height}px`);
+            const position = this.layoutPosition(next);
+            this.positionStyle = position;
+            // this._doc.body.style.setProperty('--view-bottom', `0px`);
           }
         });
       window.electron.onMainEvent(
         ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS,
-        () => {
-          this.ghostConsoleButton = false;
-          this._doc.body.style.setProperty('--view-bottom', `0`);
+        (event, next: Array<Rectangle>) => {
+          const position = this.layoutPosition(next);
+          this.positionStyle = position;
           this.cdr.detectChanges();
         }
       );
       window.electron.onMainEvent(
         ELECTRON_IPC_EVENT.ADD_WINDOW_VIEW_BOUNDS,
-        (event, next) => {
+        (event, next: Array<Rectangle>) => {
           if (next) {
-            const { height } = next;
-            this.ghostConsoleButton = true;
-            this._doc.body.style.setProperty('--view-bottom', `${height}px`);
+            const position = this.layoutPosition(next);
+
+            this.positionStyle = position;
+            // this._doc.body.style.setProperty('--view-bottom', `0px`);
           }
         }
       );
     }
+  }
+
+  layoutPosition(rectangles: Array<Rectangle>) {
+    const main = rectangles[0];
+    const position: {
+      top: number | string;
+      bottom: number | string;
+      left: number | string;
+      right: number | string;
+    } = { top: 0, bottom: 0, left: 0, right: 0 };
+    for (let i = 1; i < rectangles.length; i++) {
+      const rectangle = rectangles[i];
+      if (main.width == rectangle.width) {
+        position.left = 0;
+      } else if (rectangle.x > main.width / 2) {
+        //放在右边
+        position.right = `${rectangle.width}px`;
+      } else {
+        position.left = `${rectangle.width}px`;
+      }
+      if (rectangle.y > main.height / 2) {
+        //放在下面
+        position.bottom = `${rectangle.height}px`;
+      } else {
+        position.top = `${rectangle.height}px`;
+      }
+    }
+    console.log(position);
+    return position;
   }
 
   async onOpenConsole() {

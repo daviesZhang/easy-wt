@@ -5,6 +5,7 @@ import { UISharedModule } from '@easy-wt/ui-shared';
 import { NzTagModule } from 'ng-zorro-antd/tag';
 import { bufferCount, Subject } from 'rxjs';
 import { NzMessageService } from 'ng-zorro-antd/message';
+import { MAIN_VIEW_NAME } from '@easy-wt/common';
 
 @Component({
   selector: 'easy-wt-about',
@@ -25,7 +26,7 @@ export class AboutComponent implements OnDestroy {
     this.getVersion().then();
 
     this.showDevTools$.pipe(bufferCount(12)).subscribe((next) => {
-      window.electron.toggleDevTools();
+      window.electron.toggleDevTools(MAIN_VIEW_NAME);
     });
   }
 

@@ -27,11 +27,7 @@ import { fromEvent, takeWhile } from 'rxjs';
 import Rectangle = Electron.Rectangle;
 
 export default class ElectronEvents {
-  static windowMap = new Map<string, BrowserWindow>();
-  static viewWindowMap = new Map<string, BrowserView>();
-
   static bootstrapElectronEvents(): Electron.IpcMain {
-    ElectronEvents.windowMap.set(MAIN_WINDOW_NAME, App.mainWindow);
     return ipcMain;
   }
 }
@@ -40,14 +36,14 @@ function getWindow(name: string) {
   if (!name || name === MAIN_WINDOW_NAME) {
     return App.mainWindow;
   } else {
-    return ElectronEvents.windowMap.get(name);
+    return App.windowMap.get(name);
   }
 }
 
 function getWebContents(windowName: string) {
   let window: BrowserWindow | BrowserView;
   if (windowName.startsWith(BROWSER_VIEW_NAME_PREFIX)) {
-    window = ElectronEvents.viewWindowMap.get(windowName);
+    window = App.viewWindowMap.get(windowName);
   } else {
     window = getWindow(windowName);
   }
@@ -127,8 +123,8 @@ async function createWindow(
   parent: boolean,
   options: { [key: string]: any }
 ) {
-  if (ElectronEvents.windowMap.has(windowName)) {
-    ElectronEvents.windowMap.get(windowName).show();
+  if (App.windowMap.has(windowName)) {
+    App.windowMap.get(windowName).show();
     return;
   }
   const windowKey = windowName.replace(/-\w+$/, '');
@@ -137,8 +133,8 @@ async function createWindow(
     Object.assign(
       {
         parent: parent ? App.mainWindow : null,
-        show: false,
-        frame: true,
+        show: true,
+        frame: false,
         webPreferences: {
           devTools: App.isDevelopmentMode(),
           nodeIntegration: true,
@@ -152,9 +148,9 @@ async function createWindow(
       viewport
     )
   );
-  ElectronEvents.windowMap.set(windowName, newWindow);
+  App.windowMap.set(windowName, newWindow);
   newWindow.once('close', () => {
-    ElectronEvents.windowMap.delete(windowName);
+    App.windowMap.delete(windowName);
   });
   newWindow.on('resized', () => {
     const [width, height] = newWindow.getSize();
@@ -162,12 +158,12 @@ async function createWindow(
   });
   if (url) {
     await newWindow.loadURL(url);
-    await new Promise((resolve, reject) => {
-      newWindow.once('ready-to-show', () => {
-        newWindow.show();
-        resolve(windowName);
-      });
-    });
+    // await new Promise((resolve, reject) => {
+    //   newWindow.once('ready-to-show', () => {
+    //     // newWindow.show();
+    //     resolve(windowName);
+    //   });
+    // });
   }
   return newWindow;
 }
@@ -181,12 +177,31 @@ ipcMain.handle(ELECTRON_IPC_EVENT.CREATE_WINDOW, async (event, args) => {
   await createWindow(windowName, url, parent, options);
 });
 
+
+ipcMain.handle(
+    ELECTRON_IPC_EVENT.SET_TOP_BROWSER_VIEW,
+    async (event, args) => {
+      const [windowName, viewName] = args;
+      const window = getWindow(windowName);
+      if (window) {
+        const view = App.viewWindowMap.get(viewName);
+        if (view) {
+          window.getBrowserViews().forEach(item => {
+            if (item === view) {
+              window.setTopBrowserView(view);
+            }
+          })
+        }
+      }
+    }
+);
+
 /**
  * 开关独立VIEW
  */
 ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
   const [parentName, windowName, url, height] = args;
-  if (ElectronEvents.viewWindowMap.has(windowName)) {
+  if (App.viewWindowMap.has(windowName)) {
     closeWindowView(parentName, windowName);
     return;
   }
@@ -203,9 +218,9 @@ ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
       },
     });
 
-    ElectronEvents.viewWindowMap.set(windowName, view);
+    App.viewWindowMap.set(windowName, view);
     view.webContents.on('destroyed', () => {
-      ElectronEvents.viewWindowMap.delete(windowName);
+      App.viewWindowMap.delete(windowName);
     });
 
     addBrowserView(win, view, (win: BrowserWindow, view: BrowserView) => {
@@ -234,17 +249,30 @@ function addBrowserView(
   fromEvent(window, 'resize')
     .pipe(takeWhile(() => window.getBrowserViews().indexOf(view) >= 0))
     .subscribe((next) => resize(window, view));
+  const rectangles = window.getBrowserViews().map((view) => view.getBounds());
 
-  window.webContents.send(ELECTRON_IPC_EVENT.ADD_WINDOW_VIEW_BOUNDS, bounds);
+  window.getBrowserViews().forEach((view) => {
+    view.webContents.send(
+      ELECTRON_IPC_EVENT.ADD_WINDOW_VIEW_BOUNDS,
+      rectangles
+    );
+  });
+
 }
 
 ipcMain.handle(ELECTRON_IPC_EVENT.SEPARATE_VIEW, async (event, args) => {
   const [parentName, viewName, windowName, viewPlacement] = args;
 
   const window = getWindow(parentName);
-  const view = ElectronEvents.viewWindowMap.get(viewName);
+  const view = App.viewWindowMap.get(viewName);
   window.removeBrowserView(view);
-  window.webContents.send(ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS);
+  const rectangles = window.getBrowserViews().map((view) => view.getBounds());
+  window.getBrowserViews().forEach((view) => {
+    view.webContents.send(
+      ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS,
+      rectangles
+    );
+  });
   let newWindow = getWindow(windowName);
   if (!newWindow) {
     newWindow = await createWindow(windowName, null, false, {
@@ -308,9 +336,10 @@ ipcMain.handle(
     const [windowName, index] = args;
     const windows = getWindow(windowName);
     if (windows) {
+      //BrowserWindow.fromBrowserView()
       const browserView = windows.getBrowserViews();
       if (browserView && browserView.length) {
-        return browserView[index || 0].getBounds();
+        return browserView.map((view) => view.getBounds());
       }
     }
     return null;
@@ -323,19 +352,25 @@ ipcMain.handle(
  * @param viewName
  */
 function closeWindowView(windowName: string, viewName: string) {
-  const windows = getWindow(windowName);
-  if (windows) {
-    App.logger.debug(`关闭[${windowName}]-view页面~`);
-    const view = ElectronEvents.viewWindowMap.get(viewName);
+  const window = getWindow(windowName);
+  if (window) {
+    const view = App.viewWindowMap.get(viewName);
     if (view) {
-      windows.webContents.send(ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS);
       try {
-        ElectronEvents.viewWindowMap.delete(viewName);
-        windows.removeBrowserView(view);
-        view.webContents.close();
+        App.viewWindowMap.delete(viewName);
+        window.removeBrowserView(view);
       } catch (e) {
         App.logger.error(`关闭[${windowName}]-view页面发生错误~.${e}`);
       }
+      const rectangles = window
+        .getBrowserViews()
+        .map((view) => view.getBounds());
+      window.getBrowserViews().forEach((view) => {
+        view.webContents.send(
+          ELECTRON_IPC_EVENT.REMOVE_WINDOW_VIEW_BOUNDS,
+          rectangles
+        );
+      });
     }
   }
 }
@@ -348,9 +383,9 @@ ipcMain.handle(ELECTRON_IPC_EVENT.CLOSE_WINDOW_VIEW, async (event, args) => {
 ipcMain.on(ELECTRON_IPC_EVENT.CLOSE_WINDOW, async (event, args) => {
   const [windowName] = args;
   if (windowName) {
-    const window = ElectronEvents.windowMap.get(windowName);
+    const window = App.windowMap.get(windowName);
     window && window.close();
-    ElectronEvents.windowMap.delete(windowName);
+    App.windowMap.delete(windowName);
   }
 });
 
@@ -366,9 +401,9 @@ ipcMain.on('sendMessage', async (event, args) => {
     window = App.mainWindow;
   } else {
     if (windowName.startsWith(BROWSER_VIEW_NAME_PREFIX)) {
-      window = ElectronEvents.viewWindowMap.get(windowName);
+      window = App.viewWindowMap.get(windowName);
     } else {
-      window = ElectronEvents.windowMap.get(windowName);
+      window = App.windowMap.get(windowName);
     }
   }
   if (window) {
@@ -379,7 +414,7 @@ ipcMain.on('sendMessage', async (event, args) => {
 ipcMain.on('reload', async (event, args) => {
   const [windowName] = args;
   if (windowName) {
-    const window = ElectronEvents.windowMap.get(windowName);
+    const window = App.windowMap.get(windowName);
     window && window.reload();
   } else {
     App.application.relaunch();
@@ -393,7 +428,7 @@ ipcMain.handle('showSaveDialog', async (event, args) => {
   const [options, windowName] = args;
   let window: BrowserWindow | null = null;
   if (windowName) {
-    window = ElectronEvents.windowMap.get(windowName);
+    window = App.windowMap.get(windowName);
   }
   const result = await dialog.showSaveDialog(window, options);
   return result.filePath;
@@ -406,7 +441,7 @@ ipcMain.handle('showOpenDialog', async (event, args) => {
   const [options, windowName] = args;
   let window: BrowserWindow | null = null;
   if (windowName) {
-    window = ElectronEvents.windowMap.get(windowName);
+    window = App.windowMap.get(windowName);
   }
   const result = await dialog.showOpenDialog(window, options);
   return result.filePaths;
@@ -419,7 +454,7 @@ ipcMain.on('maximizeWindow', async (event, args) => {
   const [windowName] = args;
   let window: BrowserWindow;
   if (windowName) {
-    window = ElectronEvents.windowMap.get(windowName);
+    window = App.windowMap.get(windowName);
   } else {
     window = App.mainWindow;
   }
@@ -442,7 +477,7 @@ ipcMain.on('minimizeWindow', async (event, args) => {
   const [windowName] = args;
   let window: BrowserWindow;
   if (windowName) {
-    window = ElectronEvents.windowMap.get(windowName);
+    window = App.windowMap.get(windowName);
   } else {
     window = App.mainWindow;
   }

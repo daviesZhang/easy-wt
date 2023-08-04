@@ -14,8 +14,8 @@ import {
   GridTableComponent,
   GridTableReadyEvent,
   RequestData,
-  TemplateRendererComponent,
-} from '@easy-wt/grid-table';
+} from '../../grid-table/grid-table/grid-table.component';
+import { TemplateRendererComponent } from '../../grid-table/template-renderer/template-renderer.component';
 import { IStep, Report, StepResultData } from '@easy-wt/common';
 
 import { DatePipe, DOCUMENT } from '@angular/common';

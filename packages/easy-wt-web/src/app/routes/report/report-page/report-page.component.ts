@@ -4,7 +4,7 @@ import { ActivatedRoute } from '@angular/router';
 import { firstValueFrom, from, fromEventPattern, map, Observable } from 'rxjs';
 import { GridOptions } from 'ag-grid-community';
 import { GridTableComponent, RequestData } from '@easy-wt/ui-shared';
-import { Report } from '@easy-wt/common';
+import { MAIN_VIEW_NAME, Report } from '@easy-wt/common';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { environment } from '../../../../environments/environment';
@@ -93,7 +93,7 @@ export class ReportPageComponent {
 
   electronExport(type: 'pdf' | 'html') {
     const id = this.report.id;
-    window.electron.sendMessage('main', 'export-report', type, id);
+    window.electron.sendMessage(MAIN_VIEW_NAME, 'export-report', type, id);
     return new Promise<string>((resolve, reject) => {
       window.electron.onMainEvent(
         `export-report-${type}-${id}`,

@@ -1,5 +1,6 @@
 import {
   app,
+  BrowserView,
   BrowserWindow,
   Menu,
   nativeImage,
@@ -13,8 +14,9 @@ import { join } from 'path';
 import { format } from 'url';
 import * as winston from 'winston';
 import { getWindowViewport, saveWindowViewport } from './store';
-import { MAIN_WINDOW_NAME } from '@easy-wt/common';
-
+import { MAIN_VIEW_NAME, MAIN_WINDOW_NAME } from '@easy-wt/common';
+import WebContents = Electron.WebContents;
+import BrowserWindowConstructorOptions = Electron.BrowserWindowConstructorOptions;
 
 export default class App {
   // Keep a global reference of the window object, if you don't, the window will
@@ -22,6 +24,10 @@ export default class App {
   static mainWindow: Electron.BrowserWindow;
   static application: Electron.App;
   static BrowserWindow;
+
+  static windowMap = new Map<string, BrowserWindow>();
+
+  static viewWindowMap = new Map<string, BrowserView>();
 
   static logger: winston.Logger;
 
@@ -84,8 +90,8 @@ export default class App {
     // This method will be called when Electron has finished
     // initialization and is ready to create browser windows.
     // Some APIs can only be used after this event occurs.
-    await App.initMainWindow();
-    await App.loadMainWindow();
+    const webContents = await App.initMainWindow();
+    await App.loadMainWindow(webContents);
     App.createTray();
   }
 
@@ -136,12 +142,7 @@ export default class App {
           ],
         },
       ];
-      if (App.isDevelopmentMode()) {
-        template.push({
-          label: 'Debug',
-          submenu: [{ role: 'toggleDevTools' }, { role: 'reload' }],
-        });
-      }
+
       const menu = Menu.buildFromTemplate(template);
 
       Menu.setApplicationMenu(menu);
@@ -163,7 +164,7 @@ export default class App {
         label: 'About EASY-WT',
         click: () => {
           App.mainWindow.show();
-          App.mainWindow.webContents.send('open-about');
+          App.viewWindowMap.get(MAIN_VIEW_NAME).webContents.send('open-about');
         },
       },
       {
@@ -180,7 +181,7 @@ export default class App {
     });
   }
 
-  private static async loadMainWindow() {
+  private static async loadMainWindow(webContents: WebContents) {
     // load the index.html of the app.
     if (!App.application.isPackaged) {
       this.loadURL = `http://localhost:${rendererAppPort}`;
@@ -191,7 +192,7 @@ export default class App {
         slashes: true,
       });
     }
-    await App.mainWindow.loadURL(this.loadURL);
+    await webContents.loadURL(this.loadURL);
   }
 
   private static async initMainWindow() {
@@ -209,14 +210,15 @@ export default class App {
     this.windowWidth = width;
     this.windowHeight = height;
     // Create the browser window.
-    App.mainWindow = new BrowserWindow({
+    const options = {
       width: width,
       height: height,
       minWidth: 900,
       minHeight: 700,
       x,
       y,
-      show: false,
+      show: true,
+      transparent: true,
       frame: false,
       autoHideMenuBar: true,
       webPreferences: {
@@ -227,14 +229,38 @@ export default class App {
         backgroundThrottling: false,
         preload: join(__dirname, 'main.preload.js'),
       },
-    });
+    } as BrowserWindowConstructorOptions;
+    App.mainWindow = new BrowserWindow(options);
+
+    App.windowMap.set(MAIN_WINDOW_NAME, App.mainWindow);
+    App.mainWindow.setBackgroundColor('red');
     App.mainWindow.setMenu(null);
     if (!x || !y) {
       App.mainWindow.center();
     }
+    const view = new BrowserView(options);
+    // App.mainWindow.setIgnoreMouseEvents(true);
+    App.viewWindowMap.set(MAIN_VIEW_NAME, view);
+    App.mainWindow.addBrowserView(view);
+
+    function onResize() {
+      const bounds = App.mainWindow.getBounds();
+      view.setBounds({
+        x: 0,
+        y: 0,
+        height: bounds.height,
+        width: bounds.width,
+      });
+    }
+
+    onResize();
+    App.mainWindow.on('resize', () => onResize());
+
+    const webContents = view.webContents;
+
     // if main window is ready to show, close the splash window and show the main window
     App.mainWindow.once('ready-to-show', () => {
-      App.mainWindow.show();
+      App.mainWindow.setBackgroundColor('rgba(9,109,217,0)');
     });
     App.mainWindow.on('resized', (event) => {
       const bounds = App.mainWindow.getBounds();
@@ -258,5 +284,7 @@ export default class App {
       // when you should delete the corresponding element.
       App.mainWindow = null;
     });
+
+    return webContents;
   }
 }

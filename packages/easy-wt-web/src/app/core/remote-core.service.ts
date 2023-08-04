@@ -16,7 +16,7 @@ import { filter, lastValueFrom, map, Observable } from 'rxjs';
 import { SocketService } from './socket.service';
 import { NzMessageService } from 'ng-zorro-antd/message';
 import { TranslateService } from '@ngx-translate/core';
-
+import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
 
 @Injectable({
   providedIn: 'root',
@@ -231,5 +231,9 @@ export class RemoteCoreService extends CoreService {
 
   async openLogConsole() {
     //
+  }
+
+  createModal<T, R>(create: () => NzModalRef<T, R>): NzModalRef<T, R> {
+    return create();
   }
 }
