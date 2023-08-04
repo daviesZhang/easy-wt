@@ -197,15 +197,31 @@ ipcMain.handle(
 );
 
 /**
+ * 根据view的名字,找到它附加的window,并且show
+ * @param viewName
+ * 找到返回true,没找到返回false
+ */
+function findViewAndShow(viewName: string) {
+  let view = App.viewWindowMap.get(viewName);
+  if (view) {
+    const window = BrowserWindow.fromBrowserView(view);
+    if (window) {
+      window.show();
+      return true;
+    }
+    return false;
+  }
+}
+/**
  * 开关独立VIEW
  */
 ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
-  const [parentName, windowName, url, height] = args;
-  if (App.viewWindowMap.has(windowName)) {
-    closeWindowView(parentName, windowName);
+  const [windowName, viewName, url, height] = args;
+  const find = findViewAndShow(viewName);
+  if (find) {
     return;
   }
-  let win = getWindow(parentName);
+  let win = getWindow(windowName);
   if (win) {
     const viewHeight = height || 300;
     const view = new BrowserView({
@@ -217,12 +233,10 @@ ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
         preload: join(__dirname, 'main.preload.js'),
       },
     });
-
-    App.viewWindowMap.set(windowName, view);
+    App.viewWindowMap.set(viewName, view);
     view.webContents.on('destroyed', () => {
-      App.viewWindowMap.delete(windowName);
+      App.viewWindowMap.delete(viewName);
     });
-
     addBrowserView(win, view, (win: BrowserWindow, view: BrowserView) => {
       const rectangle = win.getBounds();
       const bounds = {
@@ -234,7 +248,6 @@ ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
       view.setBounds(bounds);
       return bounds;
     });
-
     await view.webContents.loadURL(url);
   }
 });
@@ -260,9 +273,11 @@ function addBrowserView(
 
 }
 
+/**
+ * 分离VIEW,先把VIEW从现有的parentName窗口上删除,然后附加到windowName窗口上,不存在则创建
+ */
 ipcMain.handle(ELECTRON_IPC_EVENT.SEPARATE_VIEW, async (event, args) => {
   const [parentName, viewName, windowName, viewPlacement] = args;
-
   const window = getWindow(parentName);
   const view = App.viewWindowMap.get(viewName);
   window.removeBrowserView(view);
