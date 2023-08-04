@@ -233,7 +233,8 @@ export default class App {
     App.mainWindow = new BrowserWindow(options);
 
     App.windowMap.set(MAIN_WINDOW_NAME, App.mainWindow);
-    App.mainWindow.setBackgroundColor('red');
+
+    App.mainWindow.setBackgroundColor('blueviolet');
     App.mainWindow.setMenu(null);
     if (!x || !y) {
       App.mainWindow.center();
