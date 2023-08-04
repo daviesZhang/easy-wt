@@ -234,13 +234,13 @@ export default class App {
 
     App.windowMap.set(MAIN_WINDOW_NAME, App.mainWindow);
 
-    App.mainWindow.setBackgroundColor('blueviolet');
+    App.mainWindow.setBackgroundColor('#FAF9DE');
     App.mainWindow.setMenu(null);
     if (!x || !y) {
       App.mainWindow.center();
     }
     const view = new BrowserView(options);
-    // App.mainWindow.setIgnoreMouseEvents(true);
+
     App.viewWindowMap.set(MAIN_VIEW_NAME, view);
     App.mainWindow.addBrowserView(view);
 
@@ -253,12 +253,9 @@ export default class App {
         width: bounds.width,
       });
     }
-
     onResize();
     App.mainWindow.on('resize', () => onResize());
-
     const webContents = view.webContents;
-
     // if main window is ready to show, close the splash window and show the main window
     App.mainWindow.once('ready-to-show', () => {
       App.mainWindow.setBackgroundColor('rgba(9,109,217,0)');

@@ -68,37 +68,39 @@ export class CreateCaseScheduleComponent implements OnInit {
     this.core.findCaseById(this.caseId).then((next) => {
       this.formGroup.patchValue({ scriptName: next.name });
     });
-    this.modal
-      .create({
-        nzTitle: this.translate.instant('schedule.button.add_schedule'),
-        nzContent: CommonModalComponent,
-        nzFooter: null,
+    this.core
+      .createModal(() =>
+        this.modal.create({
+          nzTitle: this.translate.instant('schedule.button.add_schedule'),
+          nzContent: CommonModalComponent,
+          nzFooter: null,
 
-        nzWidth: 500,
-        nzData: {
-          content: this.contentTemplate,
-          allowClose: true,
-          request: async () => {
-            if (!this.formGroup.valid) {
-              Object.values(this.formGroup.controls).forEach((control) => {
-                if (control.invalid) {
-                  control.markAsDirty();
-                  control.updateValueAndValidity({ onlySelf: true });
-                }
-              });
-              return false;
-            }
-            const value = this.formGroup.value;
-            const params = Object.assign(
-              {
-                caseId: this.caseId,
-              },
-              value
-            );
-            return await this.core.scheduleExecuteCase(params);
+          nzWidth: 500,
+          nzData: {
+            content: this.contentTemplate,
+            allowClose: true,
+            request: async () => {
+              if (!this.formGroup.valid) {
+                Object.values(this.formGroup.controls).forEach((control) => {
+                  if (control.invalid) {
+                    control.markAsDirty();
+                    control.updateValueAndValidity({ onlySelf: true });
+                  }
+                });
+                return false;
+              }
+              const value = this.formGroup.value;
+              const params = Object.assign(
+                {
+                  caseId: this.caseId,
+                },
+                value
+              );
+              return await this.core.scheduleExecuteCase(params);
+            },
           },
-        },
-      })
+        })
+      )
       .afterClose.subscribe((result) => {
         this.closeModal.next(result);
       });
