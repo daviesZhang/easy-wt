@@ -44,14 +44,16 @@ export class SettingComponent implements OnInit {
   openAbout() {
     const messageId = this.messageService.success('').messageId;
     this.messageService.remove(messageId);
-    this.modalService.create({
-      nzContent: AboutComponent,
-      nzTitle: null,
-      nzClassName: 'about-modal',
-      nzFooter: null,
-      nzClosable: false,
-      nzMaskClosable: false,
-    });
+    this.coreService.createModal(() =>
+      this.modalService.create({
+        nzContent: AboutComponent,
+        nzTitle: null,
+        nzClassName: 'about-modal',
+        nzFooter: null,
+        nzClosable: false,
+        nzMaskClosable: false,
+      })
+    );
   }
 
   getWindow(): Window | null {

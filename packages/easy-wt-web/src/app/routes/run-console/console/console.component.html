@@ -1,5 +1,5 @@
 <easy-wt-grid-table (gridReady)="onGridReady($event)" [getData]="getData"
-                    [gridTheme]="gridTheme"
+                    [gridTheme]="theme.currentGridTheme$|async"
                     [options]="options"
                     [serverSort]="false"
                     [showFooter]="false"

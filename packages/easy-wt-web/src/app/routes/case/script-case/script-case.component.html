@@ -1,5 +1,6 @@
 <easy-wt-grid-table (gridReady)="onGridReady($event)" *ngIf="caseId!==null"
                     saveColumnDefKey="script-case-grid"
+                    [gridTheme]="themeService.currentGridTheme$|async"
                     [getData]="getData" [initLoadData]="true"
                     [options]="options" [showFooter]="false"
                     class="grid-table script-case-grid script-case">

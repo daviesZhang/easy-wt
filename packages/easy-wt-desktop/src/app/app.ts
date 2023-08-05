@@ -142,6 +142,22 @@ export default class App {
           ],
         },
       ];
+      if (App.isDevelopmentMode()) {
+        template.push({
+          label: 'Debug',
+          submenu: [
+            {
+              role: 'toggleDevTools',
+              click: () => {
+                this.viewWindowMap
+                  .get(MAIN_VIEW_NAME)
+                  .webContents.toggleDevTools();
+              },
+            },
+            { role: 'reload' },
+          ],
+        });
+      }
 
       const menu = Menu.buildFromTemplate(template);
 

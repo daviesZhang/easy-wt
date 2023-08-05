@@ -39,8 +39,23 @@
         "styles": [
           "packages/easy-wt-web/src/styles.scss",
           "packages/easy-wt-web/src/styles.less",
-          "node_modules/@videogular/ngx-videogular/fonts/videogular.css"
+          "node_modules/@videogular/ngx-videogular/fonts/videogular.css",
+          {
+            "input": "packages/easy-wt-web/src/styles/default.less",
+            "bundleName": "default",
+            "inject": false
+          },
+          {
+            "input": "packages/easy-wt-web/src/styles/dark.less",
+            "bundleName": "dark",
+            "inject": false
+          }
         ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "src/styles/themes"
+          ]
+        },
         "scripts": []
       },
       "configurations": {

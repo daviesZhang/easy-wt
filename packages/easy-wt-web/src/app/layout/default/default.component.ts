@@ -1,7 +1,6 @@
 import {
   ChangeDetectorRef,
   Component,
-  Inject,
   OnInit,
   TemplateRef,
   ViewChild,
@@ -15,7 +14,7 @@ import {
   MAIN_WINDOW_NAME,
   Rectangle,
 } from '@easy-wt/common';
-import { DOCUMENT } from '@angular/common';
+import { ThemeService, ThemeType } from '../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-default',
@@ -36,13 +35,22 @@ export class DefaultComponent implements OnInit {
   ghostConsoleButton = false;
 
   positionStyle = {};
+
+  currentTheme: ThemeType;
+
+  loadingTheme = false;
+
+  light = true;
   constructor(
     private core: CoreService,
     private cdr: ChangeDetectorRef,
-    @Inject(DOCUMENT) private _doc: Document
+    private themeService: ThemeService
   ) {
     this.isElectron = this.core.electron();
     this.remoteServer = this.core.remoteServer();
+    this.themeService.currentTheme$.subscribe((next) => {
+      this.currentTheme = next;
+    });
   }
 
   ngOnInit(): void {
@@ -107,11 +115,17 @@ export class DefaultComponent implements OnInit {
         position.top = `${rectangle.height}px`;
       }
     }
-    console.log(position);
+
     return position;
   }
 
   async onOpenConsole() {
     await this.core.openLogConsole();
+  }
+
+  async toggleTheme() {
+    this.loadingTheme = true;
+    await this.themeService.toggleTheme();
+    setTimeout(() => (this.loadingTheme = false), 500);
   }
 }

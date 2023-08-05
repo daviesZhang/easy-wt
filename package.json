@@ -59,7 +59,6 @@
     "@types/jest": "^29.4.0",
     "@types/lodash": "^4.14.196",
     "@types/node": "18.7.1",
-    "@types/uuid": "^9.0.2",
     "@typescript-eslint/eslint-plugin": "5.62.0",
     "@typescript-eslint/parser": "5.62.0",
     "@videogular/ngx-videogular": "^8.0.0",
@@ -117,4 +116,3 @@
     "winston": "^3.10.0"
   }
 }
-

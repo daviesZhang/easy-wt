@@ -237,6 +237,7 @@ ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_BROWSER_VIEW, async (event, args) => {
     view.webContents.on('destroyed', () => {
       App.viewWindowMap.delete(viewName);
     });
+      view.setBackgroundColor('#FAF9DE');
     addBrowserView(win, view, (win: BrowserWindow, view: BrowserView) => {
       const rectangle = win.getBounds();
       const bounds = {
@@ -351,7 +352,6 @@ ipcMain.handle(
     const [windowName, index] = args;
     const windows = getWindow(windowName);
     if (windows) {
-      //BrowserWindow.fromBrowserView()
       const browserView = windows.getBrowserViews();
       if (browserView && browserView.length) {
         return browserView.map((view) => view.getBounds());

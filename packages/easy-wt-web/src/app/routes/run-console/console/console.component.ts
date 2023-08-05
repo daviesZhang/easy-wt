@@ -9,6 +9,7 @@ import { GridHeaderComponent } from '../grid-header/grid-header.component';
 import { TranslateService } from '@ngx-translate/core';
 import { format } from 'date-fns';
 import { MessageRendererComponent } from '../message-renderer/message-renderer.component';
+import { ThemeService } from '../../../core/theme.service';
 
 export type logMessage = LoggerEventData & { id: number; time: string };
 
@@ -44,14 +45,7 @@ export class ConsoleComponent implements OnInit {
         field: 'message',
         wrapText: true,
         headerComponent: GridHeaderComponent,
-        headerComponentParams: {
-          changeTheme: () => {
-            this.lightTheme = !this.lightTheme;
-            this.gridTheme = this.lightTheme
-              ? 'ag-theme-balham'
-              : 'ag-theme-balham-dark';
-          },
-        },
+        headerComponentParams: {},
         autoHeight: true,
         width: 600,
         flex: 1,
@@ -64,7 +58,11 @@ export class ConsoleComponent implements OnInit {
   message$ = new Subject<LoggerEventData>();
   getData: RequestData<logMessage, unknown> = () => of({ items: [], total: 0 });
 
-  constructor(private core: CoreService, private translate: TranslateService) {
+  constructor(
+    private core: CoreService,
+    protected theme: ThemeService,
+    private translate: TranslateService
+  ) {
     this.electron = this.core.electron();
   }
 

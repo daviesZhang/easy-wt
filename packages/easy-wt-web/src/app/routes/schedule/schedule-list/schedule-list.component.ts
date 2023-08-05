@@ -23,6 +23,7 @@ import {
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CronEditorComponent } from '../../../components/cron-editor/cron-editor.component';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-schedule-list',
@@ -50,6 +51,7 @@ export class ScheduleListComponent implements OnInit {
     private translate: TranslateService,
     private message: NzMessageService,
     private modal: NzModalService,
+    protected themeService: ThemeService,
     private fb: UntypedFormBuilder
   ) {
     this.searchForm = this.fb.group({

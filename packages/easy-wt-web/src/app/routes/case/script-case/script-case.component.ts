@@ -45,6 +45,7 @@ import {
 
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-script-case',
@@ -99,6 +100,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     private coreService: CoreService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef,
+    protected themeService: ThemeService,
     private modal: NzModalService
   ) {}
 
@@ -457,9 +459,5 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   toggleScheduleModal(scheduleCaseId: number | null) {
     this.scheduleCaseId = scheduleCaseId;
     this.showCreateSchedule = !this.showCreateSchedule;
-  }
-
-  async openLog() {
-    this.coreService.openLogConsole();
   }
 }

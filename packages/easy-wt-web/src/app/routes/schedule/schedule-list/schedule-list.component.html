@@ -27,6 +27,7 @@
   (gridReady)="onGridReady($event)"
   [getData]="getData" [initLoadData]="true" [options]="options"
   [showFooterAction]="false"
+  [gridTheme]="themeService.currentGridTheme$|async"
   [showFooter]="true" [suppressGridStatisticsBar]="false"
   class="grid-table schedule-page">
   <div class="grid-top">

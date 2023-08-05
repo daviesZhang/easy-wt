@@ -44,7 +44,7 @@ export class GridHeaderComponent implements IHeaderAngularComp {
       });
   }
 
-  agInit(params: IHeaderParams & { changeTheme: () => void }): void {
+  agInit(params: IHeaderParams): void {
     this.refresh(params);
   }
 
@@ -56,12 +56,9 @@ export class GridHeaderComponent implements IHeaderAngularComp {
     return this.getWindow()['electron'];
   }
 
-  toggleTheme: () => void;
-
   soleWindow = false;
 
-  refresh(params: IHeaderParams & { changeTheme: () => void }): boolean {
-    this.toggleTheme = params.changeTheme;
+  refresh(params: IHeaderParams): boolean {
     if (this.electron) {
       this.getElectron()
         .isDevelopmentMode()

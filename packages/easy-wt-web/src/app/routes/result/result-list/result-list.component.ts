@@ -36,6 +36,7 @@ import {
 } from '@easy-wt/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TranslateService } from '@ngx-translate/core';
+import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-result-list',
@@ -69,6 +70,7 @@ export class ResultListComponent implements OnInit {
     private message: NzMessageService,
     private modal: NzModalService,
     private translate: TranslateService,
+    protected themeService: ThemeService,
     private fb: UntypedFormBuilder
   ) {
     const now = new Date();

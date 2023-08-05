@@ -35,8 +35,12 @@ $header-background: #faad1473;
     justify-content: space-between;
     align-items: center;
 
-    .progress, .setting, .language, .console {
+    * {
       -webkit-app-region: no-drag;
+    }
+
+    .progress, .setting, .language, .console {
+
       cursor: pointer;
     }
 
@@ -46,7 +50,18 @@ $header-background: #faad1473;
     }
 
     .right {
+      display: flex;
 
+      align-items: center;
+
+      .switch {
+        height: 24px;
+        line-height: 1.5;
+      }
+
+      > * {
+        margin-left: 16px;
+      }
     }
 
     button.run-status {

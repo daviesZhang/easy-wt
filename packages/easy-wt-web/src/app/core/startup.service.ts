@@ -6,6 +6,7 @@ import {en_US, NzI18nService, zh_CN} from 'ng-zorro-antd/i18n';
 import {TranslateService} from '@ngx-translate/core';
 import {lastValueFrom} from 'rxjs';
 import {ElectronCoreService} from './electron-core.service';
+import {ThemeService} from './theme.service';
 
 /**
  * Used for application startup
@@ -18,10 +19,12 @@ export class StartupService {
     private message: NzMessageService,
     private i18n: NzI18nService,
     private translate: TranslateService,
+    private themeService: ThemeService,
     private core: CoreService
   ) {}
 
   async start() {
+    await this.themeService.loadTheme();
     const lang = localStorage.getItem('lang') || 'zh';
     switch (lang) {
       case 'zh':
