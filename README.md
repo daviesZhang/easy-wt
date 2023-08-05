@@ -5,6 +5,9 @@
 **如果这个小工具在任何地方帮助到你,请给个Star⭐️,这将激励我继续学习❤️**
 
 ![home](./doc/images/home.jpg)
+
+![dark](./doc/images/home_dark.jpg)
+
 ![report](./doc/images/report.jpg)
 
 ## 特性和亮点
