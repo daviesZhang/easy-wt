@@ -11,6 +11,7 @@ import {
   RequestData,
   Statistics,
   TemplateRendererComponent,
+  ThemeService,
 } from '@easy-wt/ui-shared';
 import { CoreService } from '../../../core/core.service';
 import { from, map, Observable } from 'rxjs';
@@ -36,7 +37,6 @@ import {
 } from '@easy-wt/common';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { TranslateService } from '@ngx-translate/core';
-import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-result-list',

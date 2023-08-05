@@ -55,6 +55,7 @@
       <easy-wt-grid-table (gridReady)="onGridReady($event)"
                           [getData]="getData"
                           [initLoadData]="true"
+                          [gridTheme]="gridTheme"
                           [options]="options" [showFooter]="false"
                           class="report-grid-table">
         <div class="grid-top">
@@ -172,8 +173,6 @@
     {{params.value}}
   </ng-container>
 </ng-template>
-
-
 <ng-template #resultTemplate let-node let-params='params'>
   <span *ngIf="node.data&&node.data.data&&node.data.data.message;else stringResultTemplate"
         [nzPopoverContent]="errorContent"

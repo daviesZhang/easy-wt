@@ -6,7 +6,8 @@ import {en_US, NzI18nService, zh_CN} from 'ng-zorro-antd/i18n';
 import {TranslateService} from '@ngx-translate/core';
 import {lastValueFrom} from 'rxjs';
 import {ElectronCoreService} from './electron-core.service';
-import {ThemeService} from './theme.service';
+import {ThemeService} from '@easy-wt/ui-shared';
+
 
 /**
  * Used for application startup

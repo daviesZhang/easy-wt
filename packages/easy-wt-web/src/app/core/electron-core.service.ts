@@ -17,8 +17,9 @@ import {
 import { CoreService } from './core.service';
 import { fromEventPattern, Observable } from 'rxjs';
 import { TranslateService } from '@ngx-translate/core';
-import { NzModalService } from 'ng-zorro-antd/modal';
+
 import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
+import { ThemeService } from '@easy-wt/ui-shared';
 
 @Injectable({
   providedIn: 'root',
@@ -26,8 +27,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
 export class ElectronCoreService extends CoreService {
   constructor(
     private translate: TranslateService,
-
-    private modalService: NzModalService
+    private themeService: ThemeService
   ) {
     super();
   }
@@ -224,6 +224,14 @@ export class ElectronCoreService extends CoreService {
   }
 
   init() {
+    window.electron.onMainEvent(
+      ELECTRON_IPC_EVENT.TOGGLE_THEME,
+      (event, theme) => {
+        if (this.themeService.currentTheme() !== theme) {
+          this.themeService.toggleTheme().then();
+        }
+      }
+    );
     window.electron.onLogEvent((message) => {
       window.electron.sendMessage(CONSOLE_VIEW_NAME, 'log_event', message);
     });

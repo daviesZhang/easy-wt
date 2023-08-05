@@ -346,6 +346,15 @@ ipcMain.handle(ELECTRON_IPC_EVENT.SEPARATE_VIEW, async (event, args) => {
   newWindow.show();
 });
 
+ipcMain.handle(ELECTRON_IPC_EVENT.TOGGLE_THEME, async (event, args) => {
+  BrowserWindow.getAllWindows().forEach((window) => {
+    window.webContents.send(ELECTRON_IPC_EVENT.TOGGLE_THEME, ...args);
+    window.getBrowserViews().forEach((view) => {
+      view.webContents.send(ELECTRON_IPC_EVENT.TOGGLE_THEME, ...args);
+    });
+  });
+});
+
 ipcMain.handle(
   ELECTRON_IPC_EVENT.GET_WINDOW_VIEW_BOUNDS,
   async (event, args) => {

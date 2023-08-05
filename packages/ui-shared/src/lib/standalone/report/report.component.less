@@ -1,7 +1,17 @@
+@import "mixin";
+
+.themeMixin({
+  :host {
+    .detail {
+      background: @layout-header-background;
+    }
+  }
+});
 .body {
   overflow-x: hidden;
   overflow-y: auto;
   height: 100%;
+
 }
 
 .loading-report {
@@ -53,12 +63,10 @@
 
   ::ng-deep .failure-row {
     background-color: #ff000057;
-    //background: linear-gradient(238.72deg, #FF0000 0%, #56124F 100%), linear-gradient(127.43deg, #00FFFF 0%, #FF4444 100%), radial-gradient(100.22% 100% at 70.57% 0%, #FF0000 0%, #00FFE0 100%), linear-gradient(127.43deg, #B7D500 0%, #3300FF 100%);
-    //background-blend-mode: hard-light, color-burn, color-dodge, normal;
+
   }
 
   ::ng-deep .skip-row {
-
     background-color: #4e4a4a57;
   }
 
@@ -122,3 +130,4 @@ nz-footer {
   white-space: pre-line;
   margin-bottom: 5px;
 }
+

@@ -30,11 +30,26 @@
           "packages/easy-wt-report-web/src/assets"
         ],
         "styles": [
-          "node_modules/ng-zorro-antd/ng-zorro-antd.less",
-          "packages/easy-wt-report-web/src/styles.scss",
-          "packages/easy-wt-report-web/src/styles.less",
-          "node_modules/@videogular/ngx-videogular/fonts/videogular.css"
+          "packages/easy-wt-web/src/styles.scss",
+          "packages/easy-wt-web/src/styles.less",
+          "packages/easy-wt-report-web/src/report.less",
+          "node_modules/@videogular/ngx-videogular/fonts/videogular.css",
+          {
+            "input": "packages/easy-wt-web/src/styles/default.less",
+            "bundleName": "default",
+            "inject": false
+          },
+          {
+            "input": "packages/easy-wt-web/src/styles/dark.less",
+            "bundleName": "dark",
+            "inject": false
+          }
         ],
+        "stylePreprocessorOptions": {
+          "includePaths": [
+            "packages/easy-wt-web/src/styles/themes"
+          ]
+        },
         "scripts": []
       },
       "configurations": {
@@ -48,7 +63,7 @@
             {
               "type": "anyComponentStyle",
               "maximumWarning": "2kb",
-              "maximumError": "4kb"
+              "maximumError": "6kb"
             }
           ],
           "outputHashing": "all"

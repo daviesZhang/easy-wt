@@ -4,6 +4,7 @@ import { AppComponent } from './app.component';
 import {
   NgxGridTableModule,
   ReportComponent,
+  ThemeService,
   UISharedModule,
 } from '@easy-wt/ui-shared';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
@@ -30,7 +31,7 @@ import {
   HttpRequest,
   HttpResponse,
 } from '@angular/common/http';
-import { filter, map, Observable, of } from 'rxjs';
+import { filter, from, map, Observable, of, switchMap } from 'rxjs';
 
 registerLocaleData(zh);
 
@@ -81,9 +82,14 @@ export const TRANSLATE_MODULE_CONFIG: TranslateModuleConfig = {
  * @param translateService
  */
 function initializeAppFactory(
-  translateService: TranslateService
+  translateService: TranslateService,
+  theme: ThemeService
 ): () => Observable<any> {
-  return () => translateService.get('report.name_file');
+  return () => {
+    return from(theme.loadTheme(true)).pipe(
+      switchMap(() => translateService.get('report.name_file'))
+    );
+  };
 }
 
 @NgModule({
@@ -110,7 +116,7 @@ function initializeAppFactory(
       provide: APP_INITIALIZER,
       useFactory: initializeAppFactory,
       multi: true,
-      deps: [TranslateService],
+      deps: [TranslateService, ThemeService],
     },
   ],
   bootstrap: [AppComponent],

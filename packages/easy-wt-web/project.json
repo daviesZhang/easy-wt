@@ -53,7 +53,7 @@
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "src/styles/themes"
+            "packages/easy-wt-web/src/styles/themes"
           ]
         },
         "scripts": []

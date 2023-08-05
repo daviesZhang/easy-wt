@@ -3,7 +3,7 @@
                     [gridTheme]="themeService.currentGridTheme$|async"
                     [getData]="getData" [initLoadData]="true"
                     [options]="options" [showFooter]="false"
-                    class="grid-table script-case-grid script-case">
+                    class="grid-table script-case-grid script-case right-empty">
 
     <div class="grid-top">
         <div class="grid-top-left">
@@ -11,6 +11,7 @@
                 <span nz-icon nzTheme="outline" nzType="reload"></span>
                 {{"case.button.refresh"|translate}}
             </button>
+
             <button (click)="addSteps()" class="control-button" nz-button nzSize="small" nzType="primary">
                 <span nz-icon nzTheme="outline" nzType="plus"></span>
                 {{"case.button.add_step"|translate}}

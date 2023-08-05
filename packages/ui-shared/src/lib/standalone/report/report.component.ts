@@ -1,14 +1,16 @@
 import {
+  ChangeDetectorRef,
   Component,
   Inject,
   Injector,
   Input,
+  OnDestroy,
   OnInit,
   TemplateRef,
   Type,
   ViewChild,
 } from '@angular/core';
-import { Observable, of, take } from 'rxjs';
+import { Observable, of, Subject, take } from 'rxjs';
 import { GridApi, GridOptions, ValueFormatterParams } from 'ag-grid-community';
 
 import { IStep, Report, StepResultData } from '@easy-wt/common';
@@ -45,6 +47,8 @@ import {
   RequestData,
 } from '../../grid-table/grid-table/grid-table.component';
 import { TemplateRendererComponent } from '../../grid-table/template-renderer/template-renderer.component';
+import { ThemeService } from '../../service/theme.service';
+import { takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'easy-wt-report',
@@ -66,9 +70,9 @@ import { TemplateRendererComponent } from '../../grid-table/template-renderer/te
     NzCollapseModule,
     NzPopoverModule,
   ],
-  styleUrls: ['./report.component.scss'],
+  styleUrls: ['./report.component.less'],
 })
-export class ReportComponent implements OnInit {
+export class ReportComponent implements OnInit, OnDestroy {
   report: Report | null = null;
 
   gridApi: GridApi;
@@ -120,11 +124,17 @@ export class ReportComponent implements OnInit {
   localHTML = false;
   resizeId = -1;
 
+  destroy$ = new Subject();
+
   resizeDirection: NzResizeDirection | null = null;
+
+  gridTheme: string;
 
   constructor(
     private inj: Injector,
     private translate: TranslateService,
+    protected themeService: ThemeService,
+    protected changeDetectorRef: ChangeDetectorRef,
     @Inject(DOCUMENT) private _doc: Document,
     private nzImageService: NzImageService
   ) {
@@ -142,6 +152,12 @@ export class ReportComponent implements OnInit {
   }
 
   ngOnInit(): void {
+    this.themeService.currentGridTheme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((next) => {
+        this.gridTheme = next;
+        this.changeDetectorRef.detectChanges();
+      });
     this.reportData.pipe(take(1)).subscribe((next) => {
       this.report = next;
       this.images = this.report.actions
@@ -340,5 +356,10 @@ export class ReportComponent implements OnInit {
       this.videoHeight = height;
       this.resizeDirection = direction;
     });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 }

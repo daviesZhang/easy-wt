@@ -14,7 +14,7 @@ import {
   MAIN_WINDOW_NAME,
   Rectangle,
 } from '@easy-wt/common';
-import { ThemeService, ThemeType } from '../../core/theme.service';
+import { ThemeService } from '@easy-wt/ui-shared';
 
 @Component({
   selector: 'easy-wt-default',
@@ -36,21 +36,15 @@ export class DefaultComponent implements OnInit {
 
   positionStyle = {};
 
-  currentTheme: ThemeType;
-
   loadingTheme = false;
 
-  light = true;
   constructor(
     private core: CoreService,
     private cdr: ChangeDetectorRef,
-    private themeService: ThemeService
+    protected themeService: ThemeService
   ) {
     this.isElectron = this.core.electron();
     this.remoteServer = this.core.remoteServer();
-    this.themeService.currentTheme$.subscribe((next) => {
-      this.currentTheme = next;
-    });
   }
 
   ngOnInit(): void {
@@ -126,6 +120,14 @@ export class DefaultComponent implements OnInit {
   async toggleTheme() {
     this.loadingTheme = true;
     await this.themeService.toggleTheme();
-    setTimeout(() => (this.loadingTheme = false), 500);
+    const theme = this.themeService.currentTheme();
+    if (this.isElectron) {
+      window.electron
+        .invokeEvent(ELECTRON_IPC_EVENT.TOGGLE_THEME, theme)
+        .then();
+    }
+    setTimeout(() => {
+      this.loadingTheme = false;
+    }, 500);
   }
 }

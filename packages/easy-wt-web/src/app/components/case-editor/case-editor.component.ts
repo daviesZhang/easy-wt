@@ -27,6 +27,7 @@ import {
   GridTableReadyEvent,
   NgxGridTableModule,
   RequestData,
+  ThemeService,
   UISharedModule,
 } from '@easy-wt/ui-shared';
 import { NzCollapseModule } from 'ng-zorro-antd/collapse';
@@ -131,6 +132,7 @@ export class CaseEditorComponent implements OnInit {
     private fb: FormBuilder,
     private translate: TranslateService,
     private coreService: CoreService,
+    protected theme: ThemeService,
     @Optional()
     @Inject(NZ_MODAL_DATA)
     private modalData: {

@@ -19,11 +19,11 @@ import {
   GridTableComponent,
   GridTableReadyEvent,
   RequestData,
+  ThemeService,
 } from '@easy-wt/ui-shared';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import { CronEditorComponent } from '../../../components/cron-editor/cron-editor.component';
 import { TranslateService } from '@ngx-translate/core';
-import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-schedule-list',

@@ -24,6 +24,7 @@ export { ReportComponent } from './lib/standalone/report/report.component';
 
 export * from './lib/grid-table/grid-table/grid-table.component';
 export { TemplateRendererComponent } from './lib/grid-table/template-renderer/template-renderer.component';
+export { ThemeService } from './lib/service/theme.service';
 
 // Utils
 export * from './lib/type';

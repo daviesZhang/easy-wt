@@ -13,7 +13,8 @@
         </ul>
       </div>
         <div class="right">
-            <nz-switch (click)="toggleTheme()" [ngModel]="currentTheme==='default'" [nzCheckedChildren]="sun"
+            <nz-switch (click)="toggleTheme()"
+                       [ngModel]="(themeService.currentTheme$|async)==='default'" [nzCheckedChildren]="sun"
                        [nzControl]="true"
                        [nzLoading]="loadingTheme"
                        [nzUnCheckedChildren]="moon"

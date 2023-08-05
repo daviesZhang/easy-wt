@@ -14,7 +14,9 @@ export enum ThemeType {
 })
 export class ThemeService {
   currentTheme$: Observable<ThemeType>;
+
   currentGridTheme$: Observable<string>;
+
   private _currentTheme$: BehaviorSubject<ThemeType>;
 
   constructor(@Inject(DOCUMENT) private _doc: Document) {
@@ -48,6 +50,9 @@ export class ThemeService {
     });
   }
 
+  public currentTheme() {
+    return this._currentTheme$.value;
+  }
   public async toggleTheme(): Promise<void> {
     this._currentTheme$.next(this.reverseTheme(this._currentTheme$.value));
     await this.loadTheme(false);

@@ -147,11 +147,14 @@ export default class App {
           label: 'Debug',
           submenu: [
             {
-              role: 'toggleDevTools',
+              label: '控制台',
               click: () => {
-                this.viewWindowMap
-                  .get(MAIN_VIEW_NAME)
-                  .webContents.toggleDevTools();
+                const webContents =
+                  this.viewWindowMap.get(MAIN_VIEW_NAME).webContents;
+                if (webContents.isDevToolsOpened()) {
+                  webContents.closeDevTools();
+                }
+                webContents.toggleDevTools();
               },
             },
             { role: 'reload' },
@@ -269,6 +272,7 @@ export default class App {
         width: bounds.width,
       });
     }
+
     onResize();
     App.mainWindow.on('resize', () => onResize());
     const webContents = view.webContents;

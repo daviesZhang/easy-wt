@@ -41,11 +41,11 @@ import {
   SelectorLocatorComponent,
   StepSelectComponent,
   TemplateRendererComponent,
+  ThemeService,
 } from '@easy-wt/ui-shared';
 
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { TranslateService } from '@ngx-translate/core';
-import { ThemeService } from '../../../core/theme.service';
 
 @Component({
   selector: 'easy-wt-script-case',

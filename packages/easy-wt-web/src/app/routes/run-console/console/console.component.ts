@@ -1,15 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoreService } from '../../../core/core.service';
-import { of, Subject } from 'rxjs';
+import { of, Subject, takeUntil } from 'rxjs';
 import { LoggerEventData } from '@easy-wt/common';
 
 import { GridApi, GridOptions } from 'ag-grid-community';
-import { GridTableReadyEvent, RequestData } from '@easy-wt/ui-shared';
+import {
+  GridTableReadyEvent,
+  RequestData,
+  ThemeService,
+} from '@easy-wt/ui-shared';
 import { GridHeaderComponent } from '../grid-header/grid-header.component';
 import { TranslateService } from '@ngx-translate/core';
 import { format } from 'date-fns';
 import { MessageRendererComponent } from '../message-renderer/message-renderer.component';
-import { ThemeService } from '../../../core/theme.service';
 
 export type logMessage = LoggerEventData & { id: number; time: string };
 
@@ -18,15 +21,14 @@ export type logMessage = LoggerEventData & { id: number; time: string };
   templateUrl: './console.component.html',
   styleUrls: ['./console.component.scss'],
 })
-export class ConsoleComponent implements OnInit {
+export class ConsoleComponent implements OnInit, OnDestroy {
   electron = false;
 
   gridApi: GridApi;
 
   index = 0;
 
-  gridTheme = 'ag-theme-balham';
-  lightTheme = true;
+  destroy$ = new Subject();
 
   options: GridOptions<logMessage> = {
     components: { noRowsOverlay: undefined },
@@ -58,12 +60,25 @@ export class ConsoleComponent implements OnInit {
   message$ = new Subject<LoggerEventData>();
   getData: RequestData<logMessage, unknown> = () => of({ items: [], total: 0 });
 
+  currentTheme: string;
   constructor(
     private core: CoreService,
     protected theme: ThemeService,
-    private translate: TranslateService
+    private translate: TranslateService,
+    private cdr: ChangeDetectorRef
   ) {
     this.electron = this.core.electron();
+    this.theme.currentGridTheme$
+      .pipe(takeUntil(this.destroy$))
+      .subscribe((next) => {
+        this.currentTheme = next;
+        this.cdr.detectChanges();
+      });
+  }
+
+  ngOnDestroy(): void {
+    this.destroy$.next(true);
+    this.destroy$.complete();
   }
 
   ngOnInit(): void {
