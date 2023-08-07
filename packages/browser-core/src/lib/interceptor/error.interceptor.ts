@@ -6,6 +6,7 @@ import {ensurePath} from '../utils';
 
 /**
  * 异常逻辑统一处理
+ * 错误拦截器作为一种兜底拦截器,总是尽量放到最后执行
  */
 export class ErrorInterceptor implements StepInterceptor {
   private logger = new Logger('用例运行');
@@ -26,7 +27,8 @@ export class ErrorInterceptor implements StepInterceptor {
           delay: (err, count) => {
             if (retryCount >= count) {
               this.logger.log(
-                `用例[${context.scriptCase.name}]步骤[${step.name}]准备开始第${count}次失败重试~`
+                `用例[${context.scriptCase.name}]步骤[${step.name}]准备开始第${count}次失败重试~`,
+                '步骤重试'
               );
               return of(true);
             }

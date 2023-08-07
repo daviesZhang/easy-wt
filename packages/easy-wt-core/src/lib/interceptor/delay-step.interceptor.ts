@@ -1,11 +1,7 @@
-import {
-  RunContext,
-  IStep,
-  StepHandler,
-  StepInterceptor,
-  StepResult,
-} from '@easy-wt/common';
-import { Observable, switchMap, take, timer } from 'rxjs';
+import {IStep, RunContext, StepHandler, StepInterceptor, StepResult,} from '@easy-wt/common';
+import {delay, Observable, of, switchMap, tap,} from 'rxjs';
+import {Logger} from '@nestjs/common';
+
 
 /**
  * 支持延迟执行功能的拦截器
@@ -13,6 +9,7 @@ import { Observable, switchMap, take, timer } from 'rxjs';
 export class DelayStepInterceptor implements StepInterceptor {
   delay: number;
 
+  private log = new Logger('延迟拦截器');
   constructor(delay: number) {
     this.delay = delay;
   }
@@ -22,9 +19,14 @@ export class DelayStepInterceptor implements StepInterceptor {
     context: RunContext,
     handler: StepHandler
   ): Observable<StepResult<IStep>> {
-    return timer(this.delay).pipe(
-      take(1),
+    return of(true).pipe(
+      tap(() => this.log.debug(`步骤延迟:${this.delay}ms`)),
+      delay(this.delay),
       switchMap(() => handler.handle(step, context))
     );
+  }
+
+  order(): number {
+    return 0;
   }
 }

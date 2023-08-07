@@ -4,6 +4,7 @@ import { IStep } from './step';
 import { IScriptCase, RunConfig } from './script-case';
 import { EnvironmentConfig } from './environment-config';
 
+export const ACTIONS_TOKEN = 'ACTIONS_TOKEN';
 export interface IContext {
   interceptors: StepInterceptor[];
 
@@ -197,9 +198,14 @@ export interface StepInterceptor {
     context: RunContext,
     handler: StepHandler
   ): Observable<StepResult<IStep>>;
+
+  /**
+   * 排序
+   * 按照从小到大的顺序调用拦截器
+   */
+  order?: () => number;
 }
 
-export const ACTIONS_TOKEN = 'ACTIONS_TOKEN';
 
 /**
  * 步骤执行接口,所有步骤要求实现此接口

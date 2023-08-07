@@ -9,7 +9,6 @@ import {
   StepInterceptor,
   StepResult,
   StepType,
-  StructEndwhile,
 } from '@easy-wt/common';
 import { Inject, Injectable, Logger } from '@nestjs/common';
 import { BrowserContext } from 'playwright';
@@ -30,7 +29,10 @@ import {
   throwError,
 } from 'rxjs';
 
-import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
+import {
+  LoggerStepBeginInterceptor,
+  LoggerStepEndInterceptor,
+} from './interceptor/logger.interceptor';
 import { ReportInterceptor } from './interceptor/report.interceptor';
 import { getWriteStreamMap } from './utils';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
@@ -46,7 +48,8 @@ export class CaseRunService {
   private logger = new Logger(CaseRunService.name);
 
   constructor(
-    private loggerStepInterceptor: LoggerStepInterceptor,
+    private loggerStepBeginInterceptor: LoggerStepBeginInterceptor,
+    private loggerStepEndInterceptor: LoggerStepEndInterceptor,
     @Inject(ACTIONS_TOKEN) private actions: Array<StepAction<IStep>>,
     @Inject(ENVIRONMENT_CONFIG_TOKEN)
     private environmentConfig: EnvironmentConfig
@@ -70,6 +73,10 @@ export class CaseRunService {
     const reportInterceptor = new ReportInterceptor(context.scriptCase);
     context.interceptors.push(reportInterceptor);
     return this.run(context).pipe(
+      tap({
+        next: (next) => reportInterceptor.next(next, context),
+        error: (err) => reportInterceptor.error(err, context),
+      }),
       last(),
       map(() => reportInterceptor.reportGenerate()),
       catchError(() => {
@@ -141,7 +148,8 @@ export class CaseRunService {
             return throwError(() => error);
           }
           this.logger.debug(
-            `准备开始第${count}次重试用例[${context.scriptCase.name}]~`
+            `准备开始第${count}次重试用例[${context.scriptCase.name}]~`,
+            '用例重试'
           );
           return this.closeBrowser(context).then(() => context.addRunCount());
         },
@@ -151,7 +159,8 @@ export class CaseRunService {
   }
 
   /**
-   * 织如入执行拦截器
+   * 织如入执行拦截器,内置的特定拦截器总是按照指定顺序执行
+   * 其他拦截器根据order 升序执行
    * @param context
    * @param steps
    * @private
@@ -166,10 +175,13 @@ export class CaseRunService {
       const result$ = new InterceptingHandler(
         new BackendStepHandler(action),
         ([] as StepInterceptor[]).concat(
-          context.interceptors,
+          this.loggerStepEndInterceptor,
           errorInterceptor,
+          context.interceptors.sort(
+            (a, b) => (a.order ? a.order() : 0) - (b.order ? b.order() : 0)
+          ),
           interruptInterceptor,
-          this.loggerStepInterceptor
+          this.loggerStepBeginInterceptor
         )
       ).handle(step, context);
       actions$.push(result$);
@@ -254,22 +266,20 @@ export class CaseRunService {
         return while$.pipe(
           switchMap((data) => {
             let action$ = [of(data), ...actions];
-            if (!data!.data!['next']) {
-              const endStep = new StructEndwhile('endwhile');
-              //当while返回false,意味着循环需要结束,添加一个结束的Observable
-              const endAction: StepResult<IStep> = {
-                next: true,
-                success: true,
-                step: endStep,
-              };
-              action$ = [of(endAction)];
+            if (data.data && data.data['next'] === false) {
+              //当while返回false,意味着循环需要结束
+              action$ = [of(data)];
             }
             return concat(...action$);
           })
         );
       }),
       takeWhile(
-        (next) => next.step !== null && typeof next.step.id === 'number'
+        (next) =>
+          next.step.type !== StepType.STRUCT_WHILE ||
+          !next.data ||
+          next.data['next'] !== false,
+        true
       )
     );
     return { next, index };

@@ -1,6 +1,11 @@
 @import "mixin";
 .themeMixin({
   :host {
+    background: @layout-header-background;
+
+    .body, .loading-report {
+      background: @layout-header-background;
+    }
     .detail {
       background: @layout-header-background;
     }

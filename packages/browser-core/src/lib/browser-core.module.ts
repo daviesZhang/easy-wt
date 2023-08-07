@@ -29,7 +29,10 @@ import {
 } from './step-action/step.action';
 import { ReportExportService } from './report-export.service';
 import { CaseRunService } from './case-run.service';
-import { LoggerStepInterceptor } from './interceptor/logger.interceptor';
+import {
+  LoggerStepBeginInterceptor,
+  LoggerStepEndInterceptor,
+} from './interceptor/logger.interceptor';
 import {
   TextSaveAction,
   TextSaveCloseAction,
@@ -45,7 +48,8 @@ export class BrowserCoreModule {
       module: BrowserCoreModule,
       providers: [
         ReportExportService,
-        LoggerStepInterceptor,
+        LoggerStepEndInterceptor,
+        LoggerStepBeginInterceptor,
         OpenBrowserAction,
         CloseBrowserAction,
         OpenPageAction,

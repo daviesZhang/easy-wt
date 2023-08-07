@@ -10,7 +10,7 @@ import {
   StepResult,
   StepResultError,
 } from '@easy-wt/common';
-import {defer, Observable, tap} from 'rxjs';
+import {defer, Observable} from 'rxjs';
 import {Logger} from '@nestjs/common';
 
 /**
@@ -41,60 +41,59 @@ export class ReportInterceptor implements StepInterceptor {
     });
   }
 
+  error(error: Error, context: RunContext) {
+    if (error instanceof StepResultError) {
+      const step = error.step;
+      if (step.id == null) {
+        return;
+      }
+      const count = context.getStepCount(step.id);
+      const stepEndTime = new Date().getTime();
+      const result: ActionResult<IStep> = {
+        ...this.stepMap.get(step.id),
+        ...error,
+        end: stepEndTime,
+        count,
+      };
+      this.stepMap.set(step.id, result);
+    }
+  }
+
+  next(actionResult: ActionResult<IStep>, context: RunContext) {
+    const step = actionResult.step;
+    if (typeof step.id !== 'number') {
+      return;
+    }
+    const count = context.getStepCount(step.id);
+    const result: ActionResult<IStep> = {
+      ...this.stepMap.get(step.id),
+      ...actionResult,
+      end: new Date().getTime(),
+      count,
+    };
+    this.stepMap.set(step.id, result);
+  }
+
   intercept(
-    step: IStep,
-    context: RunContext,
-    handler: StepHandler
+      step: IStep,
+      context: RunContext,
+      handler: StepHandler
   ): Observable<StepResult<IStep>> {
     let stepBeginTime: number;
+
     return defer(() => {
       stepBeginTime = new Date().getTime();
       this.context = context;
+      if (typeof step.id === 'number') {
+        this.stepMap.set(step.id, {begin: stepBeginTime, step});
+      }
       return handler.handle(step, context);
-    }).pipe(
-      tap({
-        next: (next) => {
-          if (step.id == null) {
-            return;
-          }
-          const count = context.getStepCount(step.id);
-          const result: ActionResult<IStep> = {
-            ...next,
-            begin: stepBeginTime,
-            end: new Date().getTime(),
-            count,
-          };
-          this.stepMap.set(step.id, result);
-        },
-        error: (err) => {
-          if (step.id == null) {
-            return;
-          }
-          const count = context.getStepCount(step.id);
-          let result: ActionResult<IStep>;
-          const stepEndTime = new Date().getTime();
-          if (err instanceof StepResultError) {
-            result = { ...err, begin: stepBeginTime, end: stepEndTime, count };
-          } else {
-            result = {
-              data: err,
-              step: step,
-              success: false,
-              next: false,
-              begin: stepBeginTime,
-              end: stepEndTime,
-              count,
-            };
-          }
-          this.stepMap.set(step.id, result);
-        },
-      })
-    );
+    });
   }
 
   getResult(): Array<ActionResult<IStep>> {
     return Array.from(this.stepMap.values()).sort(
-      (a, b) => (a.step.sort || 0) - (b.step.sort || 0)
+      (a, b) => (a.step!.sort || 0) - (b.step!.sort || 0)
     );
   }
 
@@ -128,5 +127,12 @@ export class ReportInterceptor implements StepInterceptor {
       casePath: `${casePath.join('/')}`,
       outputPath: this.context!.uuid,
     } as Report;
+  }
+
+  /**
+   * 让报告拦截器最先执行,记录用例开始的时间
+   */
+  order(): number {
+    return -Number.MAX_VALUE;
   }
 }

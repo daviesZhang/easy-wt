@@ -1,11 +1,11 @@
 import {
   CaseEvent,
-  RunContext,
+  CaseStepEvent,
   IStep,
+  RunContext,
   StepHandler,
   StepInterceptor,
   StepResult,
-  CaseStepEvent,
 } from '@easy-wt/common';
 import { Observable, of, switchMap, tap } from 'rxjs';
 import { Logger } from '@nestjs/common';
@@ -48,5 +48,9 @@ export class NoticeStepInterceptor implements StepInterceptor {
         } as CaseStepEvent);
       })
     );
+  }
+
+  order(): number {
+    return 0;
   }
 }
