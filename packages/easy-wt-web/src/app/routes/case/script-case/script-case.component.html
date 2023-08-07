@@ -87,43 +87,44 @@
   </ng-template>
 
 </nz-empty>
-<ng-template #rowButtonTemplate let-node>
 
-  <nz-button-group nzSize="small">
-    <button nzSize="small" nz-button nzType="default"
-            nz-tooltip nzTooltipTitle="{{'step.enable_tip' | translate}}"
-            (click)="stepStatusChange(node)"
-            [nzLoading]="stepStatusChangeLoading[node.data.id]">
 
-      <span *ngIf="node.data.enable" nz-icon nzTheme="outline" nzType="check"></span>
-      <span *ngIf="!node.data.enable" class="disabled-icon" nz-icon nzTheme="outline" nzType="close"></span>
-    </button>
-    <button nzSize="small"
-            nz-tooltip nzTooltipTitle="{{'step.bottom_create' | translate}}"
-            (click)="addSteps(node.data.sort+1)" nz-button nzType="default">
-       <span nz-icon>
-        <svg><path
-          d="M980.4 546.1c10.9-11.4 10.9-29.9 0-41.3l-26.3-27.5c-10.9-11.4-28.5-11.4-39.4 0l-32.8 34.5 65.7 68.8 32.8-34.5zM935.3 594.9L869.7 526 691.3 711.8l65.5 68.8zM743.5 793.5l-65-68.3-39.9 111.9z"
-          p-id="9319"></path><path
-          d="M982 848.5c-19.3 0-35 15.7-35 35v40.9H379V653.7h191c19.3 0 35-15.7 35-35s-15.7-35-35-35H344c-19.3 0-35 15.7-35 35V754H189V370.3h427.8c32 0 58-26 58-58V87.5c0-32-25.9-58-58-58H65c-32 0-58 26-58 58v224.8c0 32 26 58 58 58h54V785c0 15.3 9.8 28.3 23.5 33 5.6 3.8 12.3 6 19.5 6h147v135.4c0 19.3 15.7 35 35 35h638c19.3 0 35-15.7 35-35v-75.9c0-19.3-15.7-35-35-35zM77 99.5h527.8v200.8H77V99.5z"
-          p-id="9320"></path></svg>
-      </span></button>
-    <button nzSize="small"
-            nz-tooltip nzTooltipTitle="{{'common.copy' | translate}}"
-            nz-button nzType="default" (click)="copySteps(node)">
-      <span nz-icon nzType="copy" nzTheme="outline"></span></button>
+<nz-dropdown-menu #contextDropDownMenuComponent>
+  <ul class="grid-step-buttons" nz-menu>
+    <li (click)="stepStatusChange(contextNode)" *ngIf="contextNode&&contextNode.data.enable" nz-menu-item>
 
-    <button
-      nz-tooltip nzTooltipTitle="{{'common.delete' | translate}}"
-      nzSize="small" nz-button nzDanger nzType="default" (click)="deleteConfirm(node.data.id)">
-      <span nz-icon nzType="delete-row"
-            nzTheme="outline"></span>
-    </button>
+      <span nz-icon nzTheme="outline" nzType="stop" style="margin-right: 8px"></span>
+      {{'step.disable_row' | translate}}
+    </li>
 
-  </nz-button-group>
+    <li (click)="stepStatusChange(contextNode)" *ngIf="contextNode&&!contextNode.data.enable" nz-menu-item>
 
-</ng-template>
+      <span nz-icon nzTheme="outline" nzType="check-circle" style="margin-right: 8px"></span>
+      {{'step.enable_row' | translate}}
+    </li>
 
+    <li (click)="addSteps(contextNode.data.sort+1)" *ngIf="contextNode" nz-menu-item>
+       <span nz-icon style="margin-right: 8px">
+      <svg><path
+        d="M980.4 546.1c10.9-11.4 10.9-29.9 0-41.3l-26.3-27.5c-10.9-11.4-28.5-11.4-39.4 0l-32.8 34.5 65.7 68.8 32.8-34.5zM935.3 594.9L869.7 526 691.3 711.8l65.5 68.8zM743.5 793.5l-65-68.3-39.9 111.9z"
+        p-id="9319"></path><path
+        d="M982 848.5c-19.3 0-35 15.7-35 35v40.9H379V653.7h191c19.3 0 35-15.7 35-35s-15.7-35-35-35H344c-19.3 0-35 15.7-35 35V754H189V370.3h427.8c32 0 58-26 58-58V87.5c0-32-25.9-58-58-58H65c-32 0-58 26-58 58v224.8c0 32 26 58 58 58h54V785c0 15.3 9.8 28.3 23.5 33 5.6 3.8 12.3 6 19.5 6h147v135.4c0 19.3 15.7 35 35 35h638c19.3 0 35-15.7 35-35v-75.9c0-19.3-15.7-35-35-35zM77 99.5h527.8v200.8H77V99.5z"
+        p-id="9320"></path></svg></span>{{'step.bottom_create' | translate}}
+    </li>
+
+    <li (click)="copySteps(contextNode)" nz-menu-item>
+      <span nz-icon nzTheme="outline" nzType="copy" style="margin-right: 8px"></span>
+      {{'step.copy_row'|translate}}
+    </li>
+    <li nz-menu-divider></li>
+
+    <li (click)="deleteConfirm(contextNode.data.id)" nz-menu-item nzDanger>
+     <span nz-icon nzTheme="outline" nzType="delete-row"
+           style="margin-right: 8px"></span>
+      {{"step.delete_row"|translate}}
+    </li>
+  </ul>
+</nz-dropdown-menu>
 
 <easy-wt-create-case-schedule (closeModal)="toggleScheduleModal(null)"
 

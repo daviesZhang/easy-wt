@@ -22,13 +22,13 @@ import { from, map, merge, Subject, takeUntil } from 'rxjs';
 import { NzSafeAny } from 'ng-zorro-antd/core/types';
 import { NzModalService } from 'ng-zorro-antd/modal';
 import {
+  CellContextMenuEvent,
   CellEditRequestEvent,
   EditableCallbackParams,
   GridApi,
   GridOptions,
   IRowNode,
   RowDragEvent,
-  RowNode,
 } from 'ag-grid-community';
 
 import {
@@ -40,12 +40,15 @@ import {
   RequestData,
   SelectorLocatorComponent,
   StepSelectComponent,
-  TemplateRendererComponent,
   ThemeService,
 } from '@easy-wt/ui-shared';
 
 import { NzResizeEvent } from 'ng-zorro-antd/resizable';
 import { TranslateService } from '@ngx-translate/core';
+import {
+  NzContextMenuService,
+  NzDropdownMenuComponent,
+} from 'ng-zorro-antd/dropdown';
 
 @Component({
   selector: 'easy-wt-script-case',
@@ -70,6 +73,9 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   @ViewChild('rowButtonTemplate', { static: true })
   rowButtonTemplate!: TemplateRef<NzSafeAny>;
 
+  @ViewChild('contextDropDownMenuComponent')
+  contextDropDownMenuComponent: NzDropdownMenuComponent;
+
   destroy$ = new Subject<void>();
 
   gridApi: GridApi;
@@ -77,6 +83,8 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   options: GridOptions<step>;
 
   getData: RequestData<IStep, unknown>;
+
+  contextNode: IRowNode<step>;
 
   table!: GridTableComponent;
 
@@ -100,6 +108,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     private coreService: CoreService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef,
+    private contextMenu: NzContextMenuService,
     protected themeService: ThemeService,
     private modal: NzModalService
   ) {}
@@ -136,6 +145,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
       rowClassRules: {
         'disable-row': (params) => !params.data.enable,
       },
+      onCellContextMenu: this.rowContextMenu.bind(this),
       getRowId: (params) => params.data.id.toString(),
       rowDragManaged: true,
       onRowDragEnd: (event: RowDragEvent) => {
@@ -160,21 +170,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
           field: 'enable',
           hide: true,
         },
-        {
-          headerName: this.translate.instant('common.action'),
-          pinned: true,
-          sortable: false,
-          width: 118,
-          colId: 'action',
-          suppressAutoSize: true,
-          suppressCellFlash: true,
-          suppressSizeToFit: true,
-          editable: false,
-          cellRenderer: TemplateRendererComponent,
-          cellRendererParams: {
-            ngTemplate: this.rowButtonTemplate,
-          },
-        },
+
         {
           headerName: this.translate.instant('step.field.name'),
           field: 'name',
@@ -410,7 +406,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     });
   }
 
-  async copySteps(node: RowNode) {
+  async copySteps(node: IRowNode) {
     const data = node.data;
     const newStep = Object.assign({}, data, { id: null, sort: data.sort + 1 });
     delete newStep.id;
@@ -445,7 +441,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     this.destroy$.complete();
   }
 
-  async stepStatusChange(node: RowNode<IStep>) {
+  async stepStatusChange(node: IRowNode<IStep>) {
     const id = node.data.id;
     this.stepStatusChangeLoading[id] = true;
     const newValue = !node.data.enable;
@@ -459,5 +455,11 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
   toggleScheduleModal(scheduleCaseId: number | null) {
     this.scheduleCaseId = scheduleCaseId;
     this.showCreateSchedule = !this.showCreateSchedule;
+  }
+
+  rowContextMenu(event: CellContextMenuEvent<step>) {
+    this.contextNode = event.node;
+    const { x, y } = event.event as PointerEvent;
+    this.contextMenu.create({ x, y }, this.contextDropDownMenuComponent);
   }
 }

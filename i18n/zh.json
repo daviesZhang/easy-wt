@@ -215,6 +215,10 @@
     "default_name": "新增步骤",
     "bottom_create": "插入一行",
     "enable_tip": "启用/禁用",
+    "enable_row": "启用步骤",
+    "disable_row": "禁用步骤",
+    "delete_row": "删除步骤",
+    "copy_row": "复制一行",
     "total_step_info": "当前用例步数：{{count}}",
     "expression_tip": {
     },

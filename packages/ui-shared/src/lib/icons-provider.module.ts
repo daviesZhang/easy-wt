@@ -3,6 +3,7 @@ import { NZ_ICONS, NzIconModule } from 'ng-zorro-antd/icon';
 
 import {
   BugOutline,
+  CheckCircleOutline,
   CheckOutline,
   CloseOutline,
   CodeOutline,
@@ -35,6 +36,7 @@ import {
   ReloadOutline,
   SettingOutline,
   SmileOutline,
+  StopOutline,
   SyncOutline,
   UserOutline,
   VideoCameraOutline,
@@ -45,6 +47,9 @@ const icons = [
   CloseOutline,
   ImportOutline,
   MinusOutline,
+  StopOutline,
+
+  CheckCircleOutline,
   BugOutline,
   GithubOutline,
   ExportOutline,

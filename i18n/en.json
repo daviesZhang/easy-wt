@@ -1,28 +1,28 @@
 {
   "common": {
-    "action": "operate",
-    "open_directory": "select directory",
+    "action": "操作",
+    "open_directory": "选择目录",
     "open_file": "选择文件",
-    "enable": "enable",
-    "delete": "delete",
-    "delete_row": "Delete checked row",
-    "search": "Search",
-    "deleting": "deleting...",
-    "delete_success": "successfully deleted~",
-    "copy": "Copy",
-    "copying": "copying...",
-    "copy_success": "copy successfully",
-    "save": "save",
-    "confirm": "confirm",
-    "close": "close",
-    "cancel": "cancel",
-    "clear": "clear",
-    "ask_confirm": "Are you sure you want to do this?",
-    "begin_time": "Begin Time",
-    "end_time": "End Time",
+    "enable": "启用",
+    "delete": "删除",
+    "delete_row": "删除勾选的数据",
+    "search": "搜索",
+    "deleting": "删除中...",
+    "delete_success": "删除成功~",
+    "copy": "拷贝",
+    "copying": "拷贝中...",
+    "copy_success": "拷贝成功",
+    "save": "保存",
+    "confirm": "确定",
+    "close": "关闭",
+    "cancel": "取消",
+    "clear": "清空",
+    "ask_confirm": "确定要进行这个操作吗?",
+    "begin_time": "开始时间",
+    "end_time": "结束时间",
     "id": "ID",
-    "today": "Today",
-    "seven_day": "SevenDays",
+    "today": "今天",
+    "seven_day": "七天",
     "to_week": "本周",
     "to_month": "本月",
     "check_pattern": {
@@ -53,13 +53,16 @@
       "retry_success_title": "重连成功",
       "retry_success_content": "与服务器连接已恢复~"
     },
-    "setting": "Settings",
-    "minus": "Minimize",
-    "reload": "Reload",
+    "about": "关于 EASY-WT",
+    "setting": "应用设置",
+    "version": "版本:{{version}}",
+    "license": "本软件基于GPL-2.0协议开源",
+    "minus": "最小化",
+    "reload": "重新载入",
     "close": "退出应用",
     "lang_change": {
-      "success_tip": "语言切换成功,重新载入后生效.",
-      "reload": "重新载入"
+      "success_tip": "language is switched successfully,  reloaded to take effect.",
+      "reload": "reload"
     }
   },
   "env_config": {
@@ -96,34 +99,43 @@
     "fail": "启动核心服务时出现异常~"
   },
   "report": {
-    "dialog_title": "Export {{type}} Report",
-    "name_file": "Case Report",
+    "dialog_title": "导出{{type}}报告",
+    "name_file": "用例报告",
     "download_ready_tip": "用例报告导出已准备就绪,请等待下载自动开始...",
     "exporting": "导出{{type}}文件中...",
     "export_complete": "导出完成~",
     "export_error": "导出失败,请检查相关配置~",
-    "disable_step": "已禁用",
-    "skip_step": "未执行",
+    "disable_step": "禁用",
+    "skip_step": "跳过",
     "delete_confirm": "将会尝试将输出目录对应文件一并删除,确定要删除报告吗?",
     "stat": {
-      "title": "Total",
+      "title": "总计",
       "success": "成功运行",
       "total_check": "总检查量",
       "total_success_check": "检查通过",
       "check_proportion": "检查通过率"
     },
     "field": {
-      "case_path": "Case Path",
-      "name": "Case Name",
-      "success": "Result",
-      "success_true": "Success",
-      "success_false": "Fail",
-      "browser_type": "Browser Type",
+      "case_path": "用例路径",
+      "name": "用例名称",
+      "success": "结果",
+      "success_true": "成功",
+      "success_false": "失败",
+      "browser_type": "浏览器类型",
       "time": "耗时(秒)",
-      "total_check": "check count",
-      "success_count": "success count",
-      "count": "Execution times"
+      "total_check": "检查数",
+      "success_count": "通过数",
+      "count": "执行次数"
     }
+  },
+  "log_console": {
+    "title": "运行时日志",
+    "no_rows": "等待日志~",
+    "light_theme": "亮",
+    "dark_theme": "暗",
+    "separate": "分离",
+    "merge": "合并",
+    "quick_filter": "搜索日志"
   },
   "menu": {
     "case": "测试用例",
@@ -153,8 +165,8 @@
     }
   },
   "case": {
-    "empty_tip": "Please select a case~",
-    "empty_tree": "no case",
+    "empty_tip": "请选择用例~",
+    "empty_tree": "没有任何用例",
     "delay_placeHolder": "步骤之间延迟时间",
     "add_run_pool": "正在添加用例任务~",
     "add_run_pool_success": "用例任务添加成功~",
@@ -172,19 +184,19 @@
     },
     "button": {
       "search_case": "搜索用例(暂未完成~)",
-      "add_case": "Add Case",
-      "add_siblings_case": "Add Sibling Node",
+      "add_case": "添加用例",
+      "add_siblings_case": "添加同级节点",
       "add_children_case": "添加下级节点",
-      "schedule": "Scheduled",
+      "schedule": "定时运行",
       "editor": "修改配置",
-      "delete": "Delete Node",
+      "delete": "删除节点",
       "run": "运行用例",
       "add_step": "添加步骤",
-      "refresh": "Refresh",
+      "refresh": "刷新",
       "export": "导出用例",
       "import": "导入用例",
-      "export_parent_true": "包含上级目录",
-      "export_parent_false": "忽略上级目录",
+      "export_parent_true": "包含上级目录导出",
+      "export_parent_false": "忽略上级目录导出",
       "import_siblings_true": "作为同级导入",
       "import_siblings_false": "作为下级导入"
     },
@@ -203,6 +215,13 @@
     "default_name": "新增步骤",
     "bottom_create": "插入一行",
     "enable_tip": "启用/禁用",
+    "enable_row": "启用步骤",
+    "disable_row": "禁用步骤",
+    "delete_row": "删除步骤",
+    "copy_row": "复制一行",
+    "total_step_info": "当前用例步数：{{count}}",
+    "expression_tip": {
+    },
     "field": {
       "name": "步骤名称",
       "options": "步骤配置",
@@ -232,8 +251,8 @@
       "struct_if": "IF",
       "struct_else": "ELSE",
       "struct_endif": "END IF",
-      "struct_while": "循环开始",
-      "struct_endwhile": "循环结束",
+      "struct_while": "WHILE",
+      "struct_endwhile": "END WHILE",
       "select_page": "切换页面",
       "keyboard": "键盘事件",
       "run_script": "运行脚本",
@@ -244,7 +263,9 @@
       "image_save": "图片存储"
     },
     "error": {
-      "text_empty": "没有任何需要保存的文本"
+      "text_empty": "没有任何需要保存的文本",
+      "interrupted": "用例被手动中断",
+      "selector_timeout": "查找元素或者操作等待超时~"
     }
   },
   "schedule": {
@@ -275,6 +296,7 @@
   },
   "step_selector": {
     "filter": "过滤器",
+
     "filter_tip": "基于选择器匹配的内容再次按照文本过滤",
     "filter_has_text": "必须存在文本",
     "filter_has_not_text": "必须不存在文本",
@@ -295,7 +317,9 @@
     "type": "选择器类型",
     "type_tip": "选择器类型",
     "value_tip": "选择器内容",
-    "value": "选择器内容"
+    "value": "选择器内容",
+    "name": "辅助内容",
+    "name_tip": "对象的辅助内容"
   },
   "step_options": {
     "change_json": "切换为JSON模式",
@@ -310,15 +334,7 @@
       "element_true": "截图元素内容",
       "full_page_true": "整页截图",
       "full_page_false": "可视部分",
-      "path": "存储路径"
-    },
-    "put_params": {
-      "key_label": "参数名称",
-      "simple_label": "值模式",
-      "simple_true": "简单模式",
-      "simple_false": "表达式",
-      "attr": "属性名称",
-      "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
+      "path": "另存为"
     },
     "text_save": {
       "file_path": "存储路径",
@@ -326,10 +342,24 @@
       "overwrite": "覆盖已存在文件",
       "auto_close": "自动结束文件写入"
     },
+    "put_params": {
+      "key_label": "参数名称",
+      "simple_label": "值模式",
+      "simple_true": "简单模式",
+      "simple_false": "使用运算表达式",
+      "attr": "属性名称",
+      "attr_tip": "如果需要通过页面元素的属性设置变量,填写属性值,不填默认使用元素内容值"
+    },
     "open_page": {
-      "timeout_tip": "打开页面等待加载完成的超时时间"
+      "timeout_tip": "打开页面等待加载完成的超时时间",
+      "default_timeout_tip": "本页面的操作默认超时时间,比如查找元素等",
+      "default_timeout_label": "页面默认超时",
+      "default_timeout_value": "{{timeout}}ms"
     },
     "open_browser": {
+      "default_timeout_tip": "浏览器的其他操作默认超时时间,比如打开页面、查找元素等",
+      "default_timeout_label": "全局超时",
+      "default_timeout_value": "{{timeout}}ms",
       "devices_name_label": "设备仿真",
       "devices_name_tip": "内置支持的设备列表",
       "user_agent_tip": "用户代理字符串",
@@ -403,7 +433,7 @@
     "autosizeColumn": "自动调整列",
     "fitColumn": "列铺满表格",
     "deleteBatch": "批量删除",
-    "autoRefresh": "AutoRefresh",
+    "autoRefresh": "自动刷新",
     "deleteConfirm": "是否删除当前选中行(共选中{{number}})?",
     "paginationTotal": " 第 {{begin}} 至 {{end}} 行 - 共 {{total}} 行",
     "deleteBatchTip": "删除当前选择的行",
@@ -484,6 +514,7 @@
     "fillOpacity": "内容透明度",
     "strokeOpacity": "边框透明度",
     "noDataToChart": "没有可以生成图表的数据",
-    "enable": "启用"
+    "enable": "启用",
+    "cleanGridColumnDef": "还原表格"
   }
 }
