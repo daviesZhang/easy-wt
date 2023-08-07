@@ -103,13 +103,22 @@ export default class App {
     }
   }
 
+  private static aboutMenu() {
+    return {
+      label: 'About EASY-WT',
+      click: () => {
+        App.mainWindow.show();
+        App.viewWindowMap.get(MAIN_VIEW_NAME).webContents.send('open-about');
+      },
+    };
+  }
   private static setMenu() {
     if (this.isMac) {
       const template: Electron.MenuItemConstructorOptions[] = [
         {
           label: app.name,
           submenu: [
-            { role: 'about' },
+            this.aboutMenu(),
             { type: 'separator' },
             { role: 'services' },
             { type: 'separator' },
@@ -179,13 +188,7 @@ export default class App {
 
     const tray = new Tray(icon.resize({ height: 20, width: 20 }));
     const contextMenu = Menu.buildFromTemplate([
-      {
-        label: 'About EASY-WT',
-        click: () => {
-          App.mainWindow.show();
-          App.viewWindowMap.get(MAIN_VIEW_NAME).webContents.send('open-about');
-        },
-      },
+      this.aboutMenu(),
       {
         label: 'Quit',
         click: () => {
