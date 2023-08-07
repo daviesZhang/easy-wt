@@ -35,6 +35,7 @@ import { CaseRunService, getNanoId } from '@easy-wt/browser-core';
 import { EventEmitter } from 'events';
 import { NoticeStepInterceptor } from '../interceptor/notice-step.interceptor';
 import { DelayStepInterceptor } from '../interceptor/delay-step.interceptor';
+import { InterruptInterceptor } from '../interceptor/interrupt.interceptor';
 
 @Injectable()
 export class CasePoolService {
@@ -43,6 +44,7 @@ export class CasePoolService {
   private runCase$ = new Subject<Observable<CaseQueue>>();
 
   logger = new Logger();
+  private readonly interruptInterceptor: InterruptInterceptor;
 
   constructor(
     private scriptCaseService: ScriptCaseService,
@@ -64,6 +66,8 @@ export class CasePoolService {
           });
         },
       });
+
+    this.interruptInterceptor = new InterruptInterceptor();
   }
 
   /**
@@ -111,12 +115,18 @@ export class CasePoolService {
           } catch (err) {
             this.logger.error(`保存用例报告时出现异常[${err.message}]~`);
             return Promise.reject(new CaseError(err, uuid, scriptCase));
+          } finally {
+            this.logger.debug(`用例[${scriptCase.name}]执行完成~`, '用例运行');
           }
         });
         this.runCase$.next(action);
         this.eventEmitter.emit(CaseEvent.CASE_QUEUE_ADD, { uuid, scriptCase });
       }
     }
+  }
+
+  interrupt(uuid: string) {
+    this.interruptInterceptor.interrupt(uuid);
   }
 
   /**
@@ -141,22 +151,33 @@ export class CasePoolService {
           map((id) =>
             this.createContext(scriptCase, type, id, {
               runConfig: config,
-              interceptors: [new NoticeStepInterceptor(this.eventEmitter)],
+              interceptors: [
+                this.interruptInterceptor,
+                new NoticeStepInterceptor(this.eventEmitter),
+              ],
             })
           ),
-          switchMap((context) =>
-            this.runService.runAndReport(context).pipe(
+          switchMap((context) => {
+            this.eventEmitter.emit(CaseEvent.CASE_BEGIN, {
+              browserType: context.browserType,
+              runConfig: context.runConfig,
+              uuid: context.uuid,
+              scriptCase: context.scriptCase,
+            });
+            return this.runService.runAndReport(context).pipe(
               tap({
                 next: (report) =>
                   this.eventEmitter.emit(CaseEvent.CASE_END, report),
-                error: (error) =>
+                error: (error) => {
+                  this.interruptInterceptor.removeId(context.uuid);
                   this.eventEmitter.emit(
                     CaseEvent.CASE_ERROR,
                     new CaseError(error, config.uuid, scriptCase)
-                  ),
+                  );
+                },
               })
-            )
-          )
+            );
+          })
         );
       })
     );

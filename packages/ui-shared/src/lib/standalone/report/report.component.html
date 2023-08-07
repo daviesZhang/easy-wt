@@ -133,7 +133,7 @@
 
           <ng-container
             *ngComponentOutlet="img.component;injector:createInjector(img.params)"></ng-container>
-          <pre *ngIf="img.data.message">信息:{{img.data.message}}</pre>
+          <pre *ngIf="img.data.message">信息:{{img.data.message|translate}}</pre>
           <div (click)="showImages(img.src)" class="image">
             <img [alt]="img.step.name" [src]="img.src" height="200px" style="max-width: 100%"/>
           </div>
@@ -179,7 +179,7 @@
         nz-popover nzPopoverTitle="步骤信息">{{params.valueFormatted}}</span>
 
   <ng-template #errorContent>
-    <div style="max-width: 300px;max-height: 200px;overflow-y: auto;">{{node.data.data.message}}</div>
+    <div style="max-width: 300px;max-height: 200px;overflow-y: auto;">{{node.data.data.message|translate}}</div>
   </ng-template>
   <ng-template #stringResultTemplate>
     <span>{{params.valueFormatted}}</span>

@@ -1,4 +1,4 @@
-import { Component, Inject } from '@angular/core';
+import { Component } from '@angular/core';
 import { ICellEditorParams, ICellRendererParams } from 'ag-grid-community';
 import {
   ICellEditorAngularComp,
@@ -6,7 +6,6 @@ import {
 } from 'ag-grid-angular';
 import { Wait } from '@easy-wt/common';
 import { AbstractOptions } from '../abstract-options';
-import { DOCUMENT } from '@angular/common';
 import { FormBuilder, FormControl } from '@angular/forms';
 import { TranslateService } from '@ngx-translate/core';
 
@@ -27,7 +26,6 @@ export class WaitOptionsComponent
 
   constructor(
     private translate: TranslateService,
-    @Inject(DOCUMENT) private _doc: Document,
     private fb: FormBuilder
   ) {
     super(null);

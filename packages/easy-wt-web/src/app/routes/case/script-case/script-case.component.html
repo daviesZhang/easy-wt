@@ -52,6 +52,11 @@
                     <span>{{'step.type_options.' + runningStep.step.type|lowercase|translate}}</span>
                     <span> {{runningStep.step.name}}</span>
                 </nz-tag>
+              <nz-tag (click)="interruptHandle()"
+                      *ngIf="isElectron&&runId"
+                      class="interrupt" nz-tooltip="{{'case.button.interrupt_tip' | translate}}" nzColor="warning">
+                {{'case.button.interrupt' | translate}}
+              </nz-tag>
 
             </ng-container>
 

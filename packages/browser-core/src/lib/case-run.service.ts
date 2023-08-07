@@ -38,10 +38,9 @@ import { getWriteStreamMap } from './utils';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { InterceptingHandler } from './interceptor/intercepting.handler';
 import { BackendStepHandler } from './interceptor/backend-step.handler';
-import { InterruptInterceptor } from './interceptor/interrupt.interceptor';
 
 const errorInterceptor = new ErrorInterceptor();
-const interruptInterceptor = new InterruptInterceptor();
+
 
 @Injectable()
 export class CaseRunService {
@@ -180,7 +179,6 @@ export class CaseRunService {
           context.interceptors.sort(
             (a, b) => (a.order ? a.order() : 0) - (b.order ? b.order() : 0)
           ),
-          interruptInterceptor,
           this.loggerStepBeginInterceptor
         )
       ).handle(step, context);

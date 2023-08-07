@@ -54,11 +54,13 @@ export interface CaseStepEvent {
   step: IStep;
   result?: StepResult<IStep>;
   caseRunCount: number;
+  uuid: string;
   runCount: number;
 }
 
 export interface CaseBeginEvent {
   browserType: string;
+  uuid: string;
   runConfig: RunConfig;
   scriptCase: IScriptCase;
 }

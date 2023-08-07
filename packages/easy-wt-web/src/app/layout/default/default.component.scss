@@ -10,19 +10,7 @@ $header-background: #faad1473;
   bottom: var(--view-bottom);
   top: 0;
 
-  .logo {
 
-    padding: 0 8px;
-    margin: 16px 40px;
-    background: rgba(102, 11, 243, 0.3);
-    font-size: 2rem;
-    text-transform: uppercase;
-    color: white;
-    letter-spacing: .2rem;
-    line-height: 1;
-    position: relative;
-    border-radius: 10px;
-  }
 
   .header {
     user-select: none;
@@ -35,8 +23,18 @@ $header-background: #faad1473;
     justify-content: space-between;
     align-items: center;
 
-    * {
-      -webkit-app-region: no-drag;
+    .logo {
+
+      padding: 0 8px;
+      margin: 16px 40px;
+      background: rgba(102, 11, 243, 0.3);
+      font-size: 2rem;
+      text-transform: uppercase;
+      color: white;
+      letter-spacing: .2rem;
+      line-height: 1;
+      position: relative;
+      border-radius: 10px;
     }
 
     .progress, .setting, .language, .console {
@@ -50,16 +48,15 @@ $header-background: #faad1473;
     }
 
     .right {
+      -webkit-app-region: no-drag;
       display: flex;
-
       align-items: center;
-
       .switch {
         height: 24px;
         line-height: 1.5;
       }
-
       > * {
+
         margin-left: 16px;
       }
     }
@@ -72,8 +69,7 @@ $header-background: #faad1473;
   .menu.ant-menu {
     background: transparent;
     -webkit-app-region: no-drag;
-    //background: radial-gradient(ellipse farthest-side at 76% 77%, rgba(245, 228, 212, 0.25) 4%, rgba(255, 255, 255, 0) calc(4% + 1px)), radial-gradient(circle at 76% 40%, #fef6ec 4%, rgba(255, 255, 255, 0) 4.18%), linear-gradient(135deg, #ff0000 0%, #000036 100%), radial-gradient(ellipse at 28% 0%, #ffcfac 0%, rgba(98, 149, 144, 0.5) 100%), linear-gradient(180deg, #cd6e8a 0%, #f5eab0 69%, #d6c8a2 70%, #a2758d 100%);
-    //background-blend-mode: normal, normal, screen, overlay, normal;
+
   }
 
   nz-header {

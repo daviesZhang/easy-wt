@@ -11,12 +11,15 @@ import {
 } from 'rxjs';
 import { Expose, sendLogger } from './helper';
 import { INestApplicationContext } from '@nestjs/common';
+import { CasePoolService } from '@easy-wt/easy-wt-core';
 
 export class CaseExposeService implements Expose {
   private caseService: ScriptCaseService;
+  private casePoolService: CasePoolService;
 
   constructor(applicationContext: INestApplicationContext) {
     this.caseService = applicationContext.get(ScriptCaseService);
+    this.casePoolService = applicationContext.get(CasePoolService);
   }
 
   expose() {
@@ -35,6 +38,7 @@ export class CaseExposeService implements Expose {
       findRoots: () => this.caseService.findRoots(),
       findAncestorsTree: (id: number) => this.caseService.findAncestorsTree(id),
       delete: (id: number): Promise<number[]> => this.caseService.delete(id),
+      interrupt: (uuid: string): void => this.casePoolService.interrupt(uuid),
       exportCase: this.exportCase.bind(this),
       importCase: this.importCase.bind(this),
     };

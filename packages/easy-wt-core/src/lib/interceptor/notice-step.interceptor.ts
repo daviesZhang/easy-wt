@@ -24,16 +24,9 @@ export class NoticeStepInterceptor implements StepInterceptor {
   ): Observable<StepResult<IStep>> {
     return of(true).pipe(
       tap(() => {
-        if (!context.previousResult) {
-          //没有上一个的执行结果,意味着是第一个,触发用例开始事件
-          this.event.emit(CaseEvent.CASE_BEGIN, {
-            browserType: context.browserType,
-            runConfig: context.runConfig,
-            scriptCase: context.scriptCase,
-          });
-        }
         this.event.emit(CaseEvent.STEP_BEGIN, {
           step,
+          uuid: context.uuid,
           runCount: context.getStepCount(step.id),
           caseRunCount: context.getRunCount(),
         } as CaseStepEvent);
@@ -42,6 +35,7 @@ export class NoticeStepInterceptor implements StepInterceptor {
       tap((next) => {
         this.event.emit(CaseEvent.STEP_END, {
           step,
+          uuid: context.uuid,
           runCount: context.getStepCount(step.id),
           result: next,
           caseRunCount: context.getRunCount(),
@@ -51,6 +45,6 @@ export class NoticeStepInterceptor implements StepInterceptor {
   }
 
   order(): number {
-    return 0;
+    return -1;
   }
 }

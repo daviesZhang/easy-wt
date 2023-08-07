@@ -108,7 +108,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     expression: {
       edit: true,
       tip: '如果不为空,等待特定时间(毫秒)~',
-      type: 'number',
+      type: 'string',
     },
     options: {},
   },

@@ -49,6 +49,7 @@ import {
   NzContextMenuService,
   NzDropdownMenuComponent,
 } from 'ng-zorro-antd/dropdown';
+import { NzMessageService } from 'ng-zorro-antd/message';
 
 @Component({
   selector: 'easy-wt-script-case',
@@ -97,6 +98,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
    * 当前运行的浏览器类型
    */
   runBrowserType: string | null = '';
+  runId: string | null = '';
 
   stepStatusChangeLoading: { [key: number]: boolean } = {};
 
@@ -104,14 +106,19 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
   runningStep: CaseStepEvent | null = null;
 
+  isElectron = false;
+
   constructor(
     private coreService: CoreService,
     private translate: TranslateService,
     private cdr: ChangeDetectorRef,
     private contextMenu: NzContextMenuService,
+    private message: NzMessageService,
     protected themeService: ThemeService,
     private modal: NzModalService
-  ) {}
+  ) {
+    this.isElectron = this.coreService.electron();
+  }
 
   onSelectCase(id: number) {
     if (this.caseId !== null && this.caseId !== id) {
@@ -296,8 +303,10 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
     merge(caseEnd, caseErr)
       .pipe(takeUntil(this.destroy$))
-      .subscribe((next) => {
+      .subscribe(() => {
         this.caseRunCount = 0;
+        this.runBrowserType = '';
+        this.runId = '';
         this.runningStep = null;
         this.gridApi.deselectAll();
       });
@@ -339,6 +348,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     if (this.caseId === event.step.caseId) {
       this.caseRunCount = event.caseRunCount || 0;
       this.runningStep = event;
+      this.runId = event.uuid;
       this.cdr.detectChanges();
       const row = this.gridApi.getRowNode(event.step.id.toString());
       row.setSelected(true);
@@ -461,5 +471,14 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     this.contextNode = event.node;
     const { x, y } = event.event as PointerEvent;
     this.contextMenu.create({ x, y }, this.contextDropDownMenuComponent);
+  }
+
+  interruptHandle() {
+    if (this.runId) {
+      window.scriptCaseService.interrupt(this.runId);
+      this.message.info(
+        this.translate.instant('case.button.interrupt_success')
+      );
+    }
   }
 }

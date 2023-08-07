@@ -125,6 +125,10 @@ export class RunContext implements IContext {
 
   private runCount = 1;
 
+  /**
+   * 标识 中断执行
+   * @private
+   */
   private _interrupted = false;
 
   constructor(params: IContext) {

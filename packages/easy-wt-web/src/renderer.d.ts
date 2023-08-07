@@ -99,6 +99,7 @@ export interface ScriptCaseService {
   findRoots: () => Promise<IScriptCase[]>;
   findAncestorsTree: (id: number) => Promise<IScriptCase>;
   delete: (id: number) => Promise<number[]>;
+  interrupt: (uuid: string) => void;
   exportCase: (
     id: number,
     savePath: string,
