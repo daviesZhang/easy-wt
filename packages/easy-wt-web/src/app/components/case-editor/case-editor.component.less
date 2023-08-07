@@ -1,115 +1,119 @@
-:host {
+@import "mixin";
+
+.themeMixin({
 
 
-  display: flex;
-  flex-direction: column;
-  margin: auto;
-
-  .left-wrap {
-    height: 100%;
+  :host {
     display: flex;
-    align-items: center;
-    justify-content: center;
+    flex-direction: column;
+    margin: auto;
 
-    .left {
-      background: #fff;
-      border: 1px solid #ddd;
-      text-align: center;
-      font-size: 12px;
-      height: 20px;
-      line-height: 20px;
+    .left-wrap {
+      height: 100%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+
+      .left {
+        background: @body-background;
+        border: 1px solid;
+        border-color: @border-color-base;
+
+        text-align: center;
+        font-size: 12px;
+        height: 20px;
+        line-height: 20px;
+      }
     }
-  }
 
-  .content {
-    flex-grow: 1;
-    display: flex;
-    min-height: 350px;
-  }
+    .content {
+      flex-grow: 1;
+      display: flex;
+      min-height: 350px;
+    }
 
-  .footer {
-    margin-bottom: 10px;
-    display: flex;
-    justify-content: flex-end;
-    padding: 0 16px;
-  }
-
-  form {
-    flex: 1 1;
-
-    .case-config {
+    .footer {
+      margin-bottom: 10px;
+      display: flex;
+      justify-content: flex-end;
       padding: 0 16px;
     }
 
-    .case-config, .config-panel {
-      nz-form-label {
-        width: 160px;
+    form {
+      flex: 1 1;
+
+      .case-config {
+        padding: 0 16px;
       }
 
+      .case-config, .config-panel {
+        nz-form-label {
+          width: 160px;
+        }
 
-    }
 
-    .run-params {
-
-      .ng-dirty.ng-invalid:not(nz-select),
-      .ng-touched.ng-invalid:not(nz-select),
-      nz-select.ng-dirty.ng-invalid nz-select-top-control,
-      nz-select.ng-touched.ng-invalid nz-select-top-control {
-        border-color: #ff4d4f;
       }
 
-      nz-form-item {
-        margin-bottom: 4px;
-      }
+      .run-params {
 
-      ::ng-deep .ant-collapse-content-box {
-        //padding-left: 0;
-        //padding-right: 0;
+        .ng-dirty.ng-invalid:not(nz-select),
+        .ng-touched.ng-invalid:not(nz-select),
+        nz-select.ng-dirty.ng-invalid nz-select-top-control,
+        nz-select.ng-touched.ng-invalid nz-select-top-control {
+          border-color: #ff4d4f;
+        }
 
-        nz-input-group.params-name {
-          input {
+        nz-form-item {
+          margin-bottom: 4px;
+        }
+
+        ::ng-deep .ant-collapse-content-box {
+          nz-input-group.params-name {
+            input {
+              border-radius: 0;
+            }
+          }
+
+          .params-value .ant-input-group-addon:first-child {
             border-radius: 0;
+            border-left: none;
           }
-        }
 
-        .params-value .ant-input-group-addon:first-child {
-          border-radius: 0;
-          border-left: none;
-        }
+          .params-value .ant-input-group-addon:last-child {
+            padding: 0;
 
-        .params-value .ant-input-group-addon:last-child {
-          padding: 0;
-
-          button {
-            width: 30px;
-            height: 30px;
+            button {
+              width: 30px;
+              height: 30px;
+            }
           }
+
         }
 
       }
 
     }
 
-  }
+    .merge-config {
 
-  .merge-config {
-
-    flex-direction: column;
-
-    display: flex;
-
-    .config {
-      padding: 8px 4px 0 4px;
-      border-left: 1px solid rgb(189, 195, 199);
-      border-right: 1px solid rgb(189, 195, 199);
-
-    }
-
-    .merge-config-content {
-      display: flex;
       flex-direction: column;
+
+      display: flex;
+
+      .config {
+        padding: 8px 4px 0 4px;
+        border-left: 1px solid;
+        border-right: 1px solid;
+        border-color: @ag-border-color;
+
+      }
+
+      .merge-config-content {
+        display: flex;
+        flex-direction: column;
+      }
     }
+
+
   }
-
-
-}
+});
