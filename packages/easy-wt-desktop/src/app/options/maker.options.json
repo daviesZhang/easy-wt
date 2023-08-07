@@ -1,7 +1,7 @@
 {
   "$schema": "../../../../../node_modules/nx-electron/src/validation/maker.schema.json",
   "asar": true,
-  "artifactName": "EasyWebTest_${os}_${arch}_${version}",
+  "artifactName": "EasyWebTest_${os}_${arch}_${version}.${ext}",
   "productName": "EasyWebTest",
   "extraResources": [
     {
