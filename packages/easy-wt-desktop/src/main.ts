@@ -53,6 +53,7 @@ export default class Main {
           ),
         }),
         new LogEventTransport({
+          level: ['debug'],
           format: winston.format.combine(
             winston.format.timestamp({ format: 'YYYY-MM-dd HH:mm:ss.sss' }),
             winston.format.json()

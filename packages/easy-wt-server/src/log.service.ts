@@ -51,6 +51,7 @@ export class LogService implements LoggerService {
       transports: [
         new WsLogTransport(
           {
+            level: ['debug'],
             format: winston.format.combine(
               winston.format.timestamp({ format: 'YYYY-MM-dd HH:mm:ss.sss' }),
               winston.format.json()
