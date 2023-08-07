@@ -1,9 +1,9 @@
 import { Injectable } from '@angular/core';
 
 import {
-  CaseEvent,
   CONSOLE_VIEW_NAME,
   ELECTRON_IPC_EVENT,
+  event,
   ISchedule,
   IScriptCase,
   IStep,
@@ -85,7 +85,7 @@ export class ElectronCoreService extends CoreService {
     return window.scriptCaseService.findAncestorsTree(id);
   }
 
-  eventObservable<T>(eventName: CaseEvent): Observable<T> {
+  eventObservable<T>(eventName: event): Observable<T> {
     return fromEventPattern<T>(
       (handler) => {
         window.browserCore.onEvent(eventName, handler);

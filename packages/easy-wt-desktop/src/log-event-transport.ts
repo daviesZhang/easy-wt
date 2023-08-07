@@ -1,7 +1,7 @@
 import Transport from 'winston-transport';
 
 import App from './app/app';
-import { CONSOLE_VIEW_NAME, ELECTRON_IPC_EVENT } from '@easy-wt/common';
+import { CommonEvent, CONSOLE_VIEW_NAME } from '@easy-wt/common';
 
 export class LogEventTransport extends Transport {
   constructor(opts) {
@@ -20,7 +20,7 @@ export class LogEventTransport extends Transport {
     });
     const view = App.viewWindowMap.get(CONSOLE_VIEW_NAME);
     if (view) {
-      view.webContents.send(ELECTRON_IPC_EVENT.CONSOLE_LOG, info);
+      view.webContents.send(CommonEvent.CONSOLE_LOG_EVENT, info);
     }
     // Perform the writing to the remote service
     if (callback) {

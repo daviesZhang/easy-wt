@@ -1,5 +1,5 @@
 import {
-  CaseEvent,
+  event,
   ISchedule,
   IScriptCase,
   IStep,
@@ -28,7 +28,7 @@ export abstract class CoreService {
    * 事件
    * @param eventName
    */
-  abstract eventObservable<T>(eventName: CaseEvent): Observable<T>;
+  abstract eventObservable<T>(eventName: event): Observable<T>;
 
   /**
    * 找到所有节点,返回树结构

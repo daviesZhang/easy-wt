@@ -1,7 +1,7 @@
 import { Injectable } from '@angular/core';
 
 import {
-  CaseEvent,
+  event,
   ISchedule,
   IScriptCase,
   IStep,
@@ -22,6 +22,7 @@ import { NzModalRef } from 'ng-zorro-antd/modal/modal-ref';
   providedIn: 'root',
 })
 export class RemoteCoreService extends CoreService {
+  private currentURL: string;
   constructor(
     private http: HttpClient,
     private translate: TranslateService,
@@ -29,9 +30,10 @@ export class RemoteCoreService extends CoreService {
     private message: NzMessageService
   ) {
     super();
+    this.currentURL = location.href.replace(/#.*$/, '');
   }
 
-  eventObservable<T>(eventName: CaseEvent): Observable<T> {
+  eventObservable<T>(eventName: event): Observable<T> {
     return this.ws.initOrGetMessage().pipe(
       filter((message) => message.event === eventName),
       map((message) => message.data as T)
@@ -39,8 +41,7 @@ export class RemoteCoreService extends CoreService {
   }
 
   openReportPage(id: number) {
-    const href = location.href.replace(/#.*$/, '');
-    window.open(`${href}#report?id=${id}`, '_blank');
+    window.open(`${this.currentURL}#report?id=${id}`, '_blank');
     return Promise.resolve();
   }
 
@@ -231,6 +232,7 @@ export class RemoteCoreService extends CoreService {
 
   async openLogConsole() {
     //
+    window.open(`${this.currentURL}#console`, '_blank');
   }
 
   createModal<T, R>(create: () => NzModalRef<T, R>): NzModalRef<T, R> {

@@ -13,6 +13,7 @@ import path from 'path';
 import { environment } from './environments/environment';
 import { WsAdapter } from '@nestjs/platform-ws';
 import { EnvironmentConfig } from '@easy-wt/common';
+import { WsGateway } from './app/ws.gateway';
 
 async function bootstrap() {
   const config: EnvironmentConfig = await fs.readJSON(
@@ -22,14 +23,15 @@ async function bootstrap() {
   );
   config.output = path.resolve(config.output);
   const app = await NestFactory.create(AppModule.register(config), {
-    logger: new LogService(),
+    bufferLogs: true,
   });
-  // app.use(compression());
-
+  app.useWebSocketAdapter(new WsAdapter(app));
+  const ws = app.get(WsGateway);
+  app.useLogger(new LogService(ws));
   const globalPrefix = 'api';
   app.setGlobalPrefix(globalPrefix);
   const port = process.env.PORT || 3000;
-  app.useWebSocketAdapter(new WsAdapter(app));
+
   await app.listen(port);
   Logger.log(
     `🚀 Application is running on: http://localhost:${port}/${globalPrefix}`

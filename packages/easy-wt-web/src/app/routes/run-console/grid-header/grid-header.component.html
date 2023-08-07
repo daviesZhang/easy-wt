@@ -14,10 +14,11 @@
         <button (click)="toggleDevTools()" *nzSpaceItem nz-button nzSize="small" nzType="primary">DevTools</button>
     </ng-container>
 
+  <ng-container *ngIf="electron">
 
     <button (click)="separate()" *nzSpaceItem nz-button nzGhost nzSize="small"
           nzType="primary">{{(soleWindow ? 'log_console.merge' : 'log_console.separate')|translate}}</button>
-
+  </ng-container>
 
   <button (click)="clearData()" *nzSpaceItem nz-button nzGhost nzSize="small"
             nzType="primary">{{'common.clear'|translate}}</button>

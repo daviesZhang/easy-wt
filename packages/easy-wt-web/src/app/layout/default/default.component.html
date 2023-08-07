@@ -45,7 +45,7 @@
             </ng-template>
             <easy-wt-case-progress class="progress"></easy-wt-case-progress>
             <easy-wt-language-setting class="language"></easy-wt-language-setting>
-        <ng-container *ngIf="isElectron">
+          <ng-container>
             <button (click)="onOpenConsole()" [nzGhost]="!ghostConsoleButton" class="console" nz-button
                   nzSize="small" nzType="primary"><span nz-icon nzType="code"></span></button>
         </ng-container>

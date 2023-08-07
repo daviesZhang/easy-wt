@@ -1,6 +1,7 @@
 import {
   CaseEvent,
   EnvironmentConfig,
+  event,
   ISchedule,
   IScriptCase,
   IStep,
@@ -55,10 +56,7 @@ export interface IElectronAPI {
 export interface BrowserCore {
   executeCase: (caseId: number[], config: Partial<RunConfig>) => Promise<void>;
 
-  onEvent: (
-    eventName: CaseEvent,
-    listener: (...args: unknown[]) => void
-  ) => void;
+  onEvent: (eventName: event, listener: (...args: unknown[]) => void) => void;
   offEvent: (
     eventName: CaseEvent,
     listener: (...args: unknown[]) => void

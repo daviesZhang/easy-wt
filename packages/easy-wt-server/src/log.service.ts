@@ -2,13 +2,38 @@ import { LoggerService } from '@nestjs/common/services/logger.service';
 
 import * as winston from 'winston';
 import { Logger, transports } from 'winston';
+import Transport from 'winston-transport';
 import path from 'path';
 import { environment } from './environments/environment';
+import { WsGateway } from './app/ws.gateway';
+import { CommonEvent } from '@easy-wt/common';
+
+class WsLogTransport extends Transport {
+  constructor(opts, private ws: WsGateway) {
+    super(opts);
+    //
+    // Consume any custom options here. e.g.:
+    // - Connection information for databases
+    // - Authentication information for APIs (e.g. loggly, papertrail,
+    //   logentries, etc.).
+    //
+  }
+
+  log(info, callback) {
+    setImmediate(() => {
+      this.emit('logged', info);
+    });
+    this.ws.emit(CommonEvent.CONSOLE_LOG_EVENT, info);
+    if (callback) {
+      callback();
+    }
+  }
+}
 
 export class LogService implements LoggerService {
   logger: Logger;
 
-  constructor(logBasePath?: string) {
+  constructor(ws: WsGateway, logBasePath?: string) {
     if (!logBasePath) {
       logBasePath = __dirname;
     }
@@ -24,6 +49,15 @@ export class LogService implements LoggerService {
         }),
       ],
       transports: [
+        new WsLogTransport(
+          {
+            format: winston.format.combine(
+              winston.format.timestamp({ format: 'YYYY-MM-dd HH:mm:ss.sss' }),
+              winston.format.json()
+            ),
+          },
+          ws
+        ),
         new winston.transports.File({
           filename: path.join(logBasePath, 'logs', 'logs.log'),
           level: environment.level,

@@ -37,7 +37,7 @@ export interface Rectangle {
   height: number;
 }
 
-
+const CONSOLE_LOG_EVENT = 'CONSOLE_LOG';
 
 /**
  * 客户端主线程,渲染线程通信事件列表
@@ -73,6 +73,4 @@ export enum ELECTRON_IPC_EVENT {
   CLOSE_WINDOW = 'CLOSE_WINDOW',
 
   TOGGLE_THEME = 'TOGGLE_THEME',
-
-  CONSOLE_LOG = 'CONSOLE_LOG',
 }

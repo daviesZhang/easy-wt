@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoreService } from '../../../core/core.service';
 import { of, Subject, takeUntil } from 'rxjs';
-import { ELECTRON_IPC_EVENT, LoggerEventData } from '@easy-wt/common';
+import { CommonEvent, LoggerEventData } from '@easy-wt/common';
 
 import { GridApi, GridOptions } from 'ag-grid-community';
 import {
@@ -83,9 +83,10 @@ export class ConsoleComponent implements OnInit, OnDestroy {
 
   ngOnInit(): void {
     if (this.electron) {
-      this.getLogger();
+      this.getElectronLogger();
     } else {
       //
+      this.getWsLogger();
     }
     this.message$.subscribe((next) => {
       if (this.gridApi && next) {
@@ -106,13 +107,20 @@ export class ConsoleComponent implements OnInit, OnDestroy {
     });
   }
 
-  getLogger() {
+  getElectronLogger() {
     window.electron.onMainEvent(
-      ELECTRON_IPC_EVENT.CONSOLE_LOG,
+      CommonEvent.CONSOLE_LOG_EVENT,
       (event, message) => {
         this.message$.next(message);
       }
     );
+  }
+
+  getWsLogger() {
+    this.core.eventObservable<LoggerEventData>(CommonEvent.CONSOLE_LOG_EVENT)
+      .subscribe(message => {
+        this.message$.next(message);
+      });
   }
 
   onGridReady(event: GridTableReadyEvent) {

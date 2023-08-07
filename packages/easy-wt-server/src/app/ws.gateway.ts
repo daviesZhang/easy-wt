@@ -9,7 +9,7 @@ import {
 
 import * as WebSocket from 'ws';
 
-import { CaseEvent } from '@easy-wt/common';
+import { CaseEvent, CommonEvent } from '@easy-wt/common';
 
 import { Logger } from '@nestjs/common';
 
@@ -41,7 +41,7 @@ export class WsGateway implements OnGatewayInit, OnGatewayConnection {
     client.send(JSON.stringify({ event: 'connect', data: 'success' }));
   }
 
-  emit(event: CaseEvent, data: any) {
+  emit(event: CaseEvent | CommonEvent, data: any) {
     this.server.clients.forEach((client) => {
       client.send(JSON.stringify({ event: event, data: data }));
     });

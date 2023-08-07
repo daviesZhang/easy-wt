@@ -17,6 +17,11 @@ export interface LoggerEventData {
   timestamp: string;
 }
 
+export enum CommonEvent {
+  CONSOLE_LOG_EVENT = 'CONSOLE_LOG_EVENT',
+}
+
+export type event = CaseEvent | CommonEvent;
 /**
  * 用例中的事件列表
  */
