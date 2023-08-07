@@ -4,7 +4,6 @@ import {
   ISchedule,
   IScriptCase,
   IStep,
-  LoggerEventData,
   QueryParams,
   Report,
   RunConfig,
@@ -46,7 +45,6 @@ export interface IElectronAPI {
     config: Partial<EnvironmentConfig>
   ) => Promise<EnvironmentConfig>;
   startService: (config: EnvironmentConfig) => Promise<void>;
-  onLogEvent: (callback: (message: LoggerEventData) => void) => void;
   onMainEvent: (event: string, callback) => void;
   offMainEvent: (event: string, callback) => void;
   sendMessage: (windowName: string, channel: string, ...args: any[]) => void;

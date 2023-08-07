@@ -1,23 +1,13 @@
 import { contextBridge, ipcRenderer } from 'electron';
 import * as fs from 'fs-extra';
-import {
-  ELECTRON_IPC_EVENT,
-  EnvironmentConfig,
-  LOG_EVENT_NAME,
-  LoggerEventData,
-} from '@easy-wt/common';
+import { ELECTRON_IPC_EVENT, EnvironmentConfig } from '@easy-wt/common';
 import * as path from 'path';
 import { join } from 'path';
 
 import { environment } from '../../environments/environment';
 import { easyWTCore } from '@easy-wt/easy-wt-core';
 import { LoggerService } from '@nestjs/common/services/logger.service';
-import {
-  commonEventEmitter,
-  getEnvFilePath,
-  getMainWindowLoadURL,
-  sendLogger,
-} from './helper';
+import { getEnvFilePath, getMainWindowLoadURL, sendLogger } from './helper';
 import { CaseExposeService } from './case.preload';
 import { ScheduleExposeService } from './schedule.preload';
 import { BrowserExposeService } from './browser.preload';
@@ -142,12 +132,7 @@ try {
     minimizeWindow: (name?: string) => {
       ipcRenderer.send('minimizeWindow', [name]);
     },
-    /**
-     * 当有日志记录的时候发出
-     * @param callback
-     */
-    onLogEvent: (callback: (message: LoggerEventData) => void) =>
-      commonEventEmitter.on(LOG_EVENT_NAME, callback),
+
     /**
      * 注册主进程发出的页面消息事件
      * @param event

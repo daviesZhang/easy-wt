@@ -1,7 +1,7 @@
 import { ChangeDetectorRef, Component, OnDestroy, OnInit } from '@angular/core';
 import { CoreService } from '../../../core/core.service';
 import { of, Subject, takeUntil } from 'rxjs';
-import { LoggerEventData } from '@easy-wt/common';
+import { ELECTRON_IPC_EVENT, LoggerEventData } from '@easy-wt/common';
 
 import { GridApi, GridOptions } from 'ag-grid-community';
 import {
@@ -11,10 +11,10 @@ import {
 } from '@easy-wt/ui-shared';
 import { GridHeaderComponent } from '../grid-header/grid-header.component';
 import { TranslateService } from '@ngx-translate/core';
-import { format } from 'date-fns';
+
 import { MessageRendererComponent } from '../message-renderer/message-renderer.component';
 
-export type logMessage = LoggerEventData & { id: number; time: string };
+export type logMessage = LoggerEventData & { id: number };
 
 @Component({
   selector: 'easy-wt-console',
@@ -40,7 +40,7 @@ export class ConsoleComponent implements OnInit, OnDestroy {
     columnDefs: [
       {
         getQuickFilterText: (params) => {
-          return `${params.data.time} ${params.data.level} ${params.data.label} ${params.data.message}`;
+          return `${params.data.timestamp} ${params.data.level} ${params.data.label} ${params.data.message}`;
         },
         suppressMovable: true,
         resizable: false,
@@ -90,13 +90,12 @@ export class ConsoleComponent implements OnInit, OnDestroy {
     this.message$.subscribe((next) => {
       if (this.gridApi && next) {
         this.index++;
-        const { time, level, ...other } = next;
-        const time_str = format(time, 'yyyy-MM-dd HH:mm:ss');
+        const { level, ...other } = next;
+
         this.gridApi.applyTransaction({
           add: [
             {
               ...other,
-              time: time_str,
               level: level.toUpperCase(),
               id: this.index,
             },
@@ -108,9 +107,12 @@ export class ConsoleComponent implements OnInit, OnDestroy {
   }
 
   getLogger() {
-    window.electron.onMainEvent('log_event', (event, [message]) => {
-      this.message$.next(message);
-    });
+    window.electron.onMainEvent(
+      ELECTRON_IPC_EVENT.CONSOLE_LOG,
+      (event, message) => {
+        this.message$.next(message);
+      }
+    );
   }
 
   onGridReady(event: GridTableReadyEvent) {

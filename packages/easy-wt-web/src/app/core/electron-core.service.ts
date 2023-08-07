@@ -232,9 +232,6 @@ export class ElectronCoreService extends CoreService {
         }
       }
     );
-    window.electron.onLogEvent((message) => {
-      window.electron.sendMessage(CONSOLE_VIEW_NAME, 'log_event', message);
-    });
     window.electron.onMainEvent('export-report', async (event, data) => {
       const [type, id] = data;
       let file: string;

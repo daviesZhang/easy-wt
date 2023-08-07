@@ -8,6 +8,7 @@ import { transports } from 'winston';
 import * as path from 'path';
 import { environment } from './environments/environment';
 import { electronAppName } from './app/constants';
+import { LogEventTransport } from './log-event-transport';
 
 export default class Main {
   static initialize() {
@@ -46,6 +47,12 @@ export default class Main {
         new winston.transports.File({
           filename: path.join(userData, 'logs', 'error.log'),
           level: environment.level,
+          format: winston.format.combine(
+            winston.format.timestamp({ format: 'YYYY-MM-dd HH:mm:ss.sss' }),
+            winston.format.json()
+          ),
+        }),
+        new LogEventTransport({
           format: winston.format.combine(
             winston.format.timestamp({ format: 'YYYY-MM-dd HH:mm:ss.sss' }),
             winston.format.json()
