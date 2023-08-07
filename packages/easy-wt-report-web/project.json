@@ -12,6 +12,9 @@
         "{options.outputPath}"
       ],
       "options": {
+        "allowedCommonJsDependencies": [
+          "lodash"
+        ],
         "indexTransform": "packages/easy-wt-report-web/index-html-transform.js",
         "outputPath": "dist/packages/easy-wt-report-web",
         "index": "packages/easy-wt-report-web/src/index.html",
@@ -30,24 +33,23 @@
           "packages/easy-wt-report-web/src/assets"
         ],
         "styles": [
-          "packages/easy-wt-web/src/styles.scss",
           "packages/easy-wt-web/src/styles.less",
           "packages/easy-wt-report-web/src/report.less",
           "node_modules/@videogular/ngx-videogular/fonts/videogular.css",
           {
-            "input": "packages/easy-wt-web/src/styles/default.less",
+            "input": "packages/ui-shared/src/styles/default.less",
             "bundleName": "default",
             "inject": false
           },
           {
-            "input": "packages/easy-wt-web/src/styles/dark.less",
+            "input": "packages/ui-shared/src/styles/dark.less",
             "bundleName": "dark",
             "inject": false
           }
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "packages/easy-wt-web/src/styles/themes"
+            "packages/ui-shared/src/styles/themes"
           ]
         },
         "scripts": []
@@ -62,7 +64,7 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
+              "maximumWarning": "6kb",
               "maximumError": "6kb"
             }
           ],

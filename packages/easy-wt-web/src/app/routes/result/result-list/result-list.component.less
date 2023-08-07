@@ -1,34 +1,38 @@
+@import "mixin";
 
-:host {
-  flex-direction: column;
-}
-
-.grid-table ::ng-deep .failure-row {
-  //background-color: #ff000057;
-  span.value {
-    color: red;
-  }
-}
-
-:host .grid-table.result-page ::ng-deep .footer {
-  border-bottom: none;
-}
+.themeMixin({
+  :host {
+    flex-direction: column;
 
 
-.search-panel {
-  background: var(--ag-header-background-color);
-  display: flex;
-  //min-height: 50px;
-  padding: 5px 15px 0 15px;
+    .grid-table ::ng-deep .failure-row {
+      //background-color: #ff000057;
+      span.value {
+        color: red;
+      }
+    }
 
-  .ant-advanced-search-form {
-    display: flex;
-    flex-wrap: wrap;
+    :host .grid-table.result-page ::ng-deep .footer {
+      border-bottom: none;
+    }
 
-    > * {
-      min-width: 250px;
-      margin-right: 8px;
-      margin-bottom: 5px;
+
+    .search-panel {
+      background: @ag-header-background-color;
+      display: flex;
+      //min-height: 50px;
+      padding: 5px 15px 0 15px;
+
+      .ant-advanced-search-form {
+        display: flex;
+        flex-wrap: wrap;
+
+        > * {
+          min-width: 250px;
+          margin-right: 8px;
+          margin-bottom: 5px;
+        }
+      }
     }
   }
-}
+});

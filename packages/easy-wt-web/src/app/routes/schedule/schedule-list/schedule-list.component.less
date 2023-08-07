@@ -1,27 +1,31 @@
+@import "mixin";
 
-:host {
-  flex-direction: column;
-}
-
-.grid-table.schedule-page ::ng-deep .footer {
-  justify-content: flex-end;
-
-}
+.themeMixin({
+  :host {
+    flex-direction: column;
 
 
-.search-panel {
-  display: flex;
-  background: var(--ag-header-background-color);
-  padding: 5px 15px 0 15px;
+    .grid-table.schedule-page ::ng-deep .footer {
+      justify-content: flex-end;
 
-  .ant-advanced-search-form {
-    display: flex;
-    flex-wrap: wrap;
+    }
 
-    > * {
-      min-width: 250px;
-      margin-right: 8px;
-      margin-bottom: 5px;
+
+    .search-panel {
+      display: flex;
+      background: @ag-header-background-color;
+      padding: 5px 15px 0 15px;
+
+      .ant-advanced-search-form {
+        display: flex;
+        flex-wrap: wrap;
+
+        > * {
+          min-width: 250px;
+          margin-right: 8px;
+          margin-bottom: 5px;
+        }
+      }
     }
   }
-}
+});

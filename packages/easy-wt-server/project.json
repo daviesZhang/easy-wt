@@ -15,6 +15,9 @@
       ],
       "defaultConfiguration": "production",
       "options": {
+        "allowedCommonJsDependencies": [
+          "lodash"
+        ],
         "target": "node",
         "compiler": "tsc",
         "outputPath": "dist/packages/easy-wt-server",

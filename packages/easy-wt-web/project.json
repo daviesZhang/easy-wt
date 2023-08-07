@@ -37,23 +37,22 @@
           }
         ],
         "styles": [
-          "packages/easy-wt-web/src/styles.scss",
           "packages/easy-wt-web/src/styles.less",
           "node_modules/@videogular/ngx-videogular/fonts/videogular.css",
           {
-            "input": "packages/easy-wt-web/src/styles/default.less",
+            "input": "packages/ui-shared/src/styles/default.less",
             "bundleName": "default",
             "inject": false
           },
           {
-            "input": "packages/easy-wt-web/src/styles/dark.less",
+            "input": "packages/ui-shared/src/styles/dark.less",
             "bundleName": "dark",
             "inject": false
           }
         ],
         "stylePreprocessorOptions": {
           "includePaths": [
-            "packages/easy-wt-web/src/styles/themes"
+            "packages/ui-shared/src/styles/themes"
           ]
         },
         "scripts": []
@@ -69,8 +68,8 @@
             },
             {
               "type": "anyComponentStyle",
-              "maximumWarning": "2kb",
-              "maximumError": "10kb"
+              "maximumWarning": "6kb",
+              "maximumError": "6kb"
             }
           ],
           "outputHashing": "all"

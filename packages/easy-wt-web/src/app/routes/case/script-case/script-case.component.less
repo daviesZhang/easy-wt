@@ -1,8 +1,7 @@
 @import "mixin";
-
 .themeMixin({
   :host {
-    background: var(--ag-background-color);
+    background: @ag-background-color;
 
 
     .empty-case {
@@ -11,13 +10,13 @@
 
     .script-case-grid .grid-bottom {
       border: solid 1px;
-      border-color: var(--ag-border-color);
+      border-color: @ag-border-color;
       border-top: none;
       border-right: none;
       border-bottom: none;
       padding: 4px 10px;
       height: 32px;
-      background: var(--ag-header-background-color);
+      background: @ag-header-background-color;
       display: flex;
       justify-content: space-between;
       align-content: center;
@@ -40,7 +39,7 @@
     .box {
       display: flex;
       border: solid 1px;
-      border-color: var(--ag-border-color);
+      border-color: @ag-border-color;
       height: 100%;
       order: 0;
       border-top: none;
@@ -155,6 +154,4 @@
 
 
   }
-
-
 });
