@@ -254,7 +254,7 @@
       "struct_while": "WHILE",
       "struct_endwhile": "END WHILE",
       "select_page": "切换页面",
-      "keyboard": "键盘事件",
+      "keyboard": "键盘操作",
       "run_script": "运行脚本",
       "mouse": "鼠标操作",
       "page_locator": "元素定位器",

@@ -36,7 +36,9 @@ export class KeyboardOptionsComponent
     super(null);
   }
 
-  agInit(params: ICellEditorParams | ICellRendererParams): void {}
+  agInit(params: ICellEditorParams | ICellRendererParams): void {
+    this.refresh(params);
+  }
 
   refresh(params: ICellRendererParams | ICellEditorParams): boolean {
     this.options = params.value || {};

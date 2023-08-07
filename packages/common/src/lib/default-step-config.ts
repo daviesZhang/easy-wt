@@ -1,5 +1,5 @@
 import {StepType} from './common';
-import {IStep, OpenBrowser, OpenPage, TextSave} from './step';
+import {IStep, Keyboard, OpenBrowser, OpenPage, TextSave} from './step';
 
 /**
  * 默认的超时时间
@@ -79,7 +79,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     options: {
       type: 'press',
     },
-  },
+  } as StepTypeConfig<Keyboard>,
   CLICK_ELEMENT: {
     operateType: 'operate',
     order: 1,
