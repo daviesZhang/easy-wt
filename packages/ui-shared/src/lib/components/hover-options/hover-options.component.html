@@ -1,0 +1,76 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+
+  <div class='list-item'>
+
+    <ng-template #timeout>
+      <nz-form-label class='tooltip-title-wrapper'
+                     nzNoColon
+
+                     nzTooltipTitle="{{'step_options.timeout_tip'|translate}}">
+        <span>{{'step_options.timeout_label'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]='timeout'
+                    nzAddOnAfter='ms'
+                    nzCompact
+                    nzSize='small'>
+      <nz-input-number [nzMin]='0'
+                       formControlName='timeout'
+                       nzPlaceHolder="{{'step_options.timeout_label'|translate}}"
+                       nzSize='small'>
+      </nz-input-number>
+    </nz-input-group>
+  </div>
+
+
+  <div class='list-item'>
+
+    <ng-template #modifiersTemplate>
+      <nz-form-label class='tooltip-title-wrapper'
+                     nzNoColon
+                     nzTooltipTitle="{{'step_options.hover.modifiers_tip'|translate}}">
+        <span>{{'step_options.hover.modifiers_label'|translate}}</span>
+      </nz-form-label>
+    </ng-template>
+    <nz-input-group [nzAddOnBefore]='modifiersTemplate'
+                    nzCompact
+                    nzSize='small'>
+      <nz-select formControlName='modifiers'
+                 nzAllowClear
+                 nzMode="multiple"
+                 nzSize="small"
+                 style="width: 100%">
+        <nz-option *ngFor="let item of modifiers" [nzLabel]="item" [nzValue]="item"></nz-option>
+      </nz-select>
+    </nz-input-group>
+  </div>
+
+  <div class="list-item" formGroupName="position">
+    <nz-input-group [nzAddOnBefore]="positionTemplate" nzCompact nzSize="small">
+      <ng-template #positionTemplate>
+        <nz-form-label class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.hover.position_tip' | translate}}"
+        >
+          <span>{{'step_options.hover.position_label' | translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <input [placeholder]="'step_options.hover.x_label' | translate"
+             formControlName="x"
+             nz-input
+             nzSize="small"
+             style="width: 50%"/>
+      <input [placeholder]="'step_options.hover.y_label' | translate"
+             formControlName="y"
+             nz-input nzSize="small"
+             style="width: 50%"/>
+    </nz-input-group>
+  </div>
+
+</easy-wt-case-step-options>
+

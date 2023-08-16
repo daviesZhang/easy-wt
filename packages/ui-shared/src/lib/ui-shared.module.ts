@@ -57,6 +57,8 @@ import { TranslateModule } from '@ngx-translate/core';
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
 import { GridSimpleRendererComponent } from './components/grid-simple-renderer/grid-simple-renderer.component';
 import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/drag-and-drop-options.component';
+import { HoverOptionsComponent } from './components/hover-options/hover-options.component';
+import { ScrollIntoViewOptionsComponent } from './components/scroll-into-view-options/scroll-into-view-options.component';
 
 @NgModule({
   declarations: [
@@ -72,6 +74,7 @@ import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/
     PutParamsOptionsComponent,
     InputTextOptionsComponent,
     ClickElementOptionsComponent,
+    HoverOptionsComponent,
     ClickLinkOptionsComponent,
     CheckElementExistOptionsComponent,
     CheckElementTextOptionsComponent,
@@ -86,6 +89,7 @@ import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/
     CaseStepOptionsComponent,
     JsEditorExpressionComponent,
     MouseOptionsComponent,
+    ScrollIntoViewOptionsComponent,
     GridSimpleRendererComponent,
     InvalidDirective,
   ],
@@ -141,12 +145,15 @@ import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/
     InputTextOptionsComponent,
     ClickElementOptionsComponent,
     KeyboardOptionsComponent,
+    HoverOptionsComponent,
+    ScrollIntoViewOptionsComponent,
     GridSimpleRendererComponent,
     ClickLinkOptionsComponent,
     CheckElementExistOptionsComponent,
     DragAndDropOptionsComponent,
     CheckElementTextOptionsComponent,
     MenuBarControlComponent,
+
     ServerConfigComponent,
     JsEditorExpressionComponent,
   ],

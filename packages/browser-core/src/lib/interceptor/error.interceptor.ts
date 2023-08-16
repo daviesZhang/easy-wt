@@ -42,7 +42,7 @@ export class ErrorInterceptor implements StepInterceptor {
         let message = err.message || err;
         if (err instanceof errors.TimeoutError) {
           message = 'step.error.selector_timeout';
-        } else if (message && message.indexOf('strict mode violation')) {
+        } else if (message && message.indexOf('strict mode violation') >= 0) {
           message = 'step.error.strict_mode_selector';
         }
         this.logger.error(

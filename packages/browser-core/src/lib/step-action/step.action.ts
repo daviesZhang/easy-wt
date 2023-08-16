@@ -309,8 +309,8 @@ export class PageLocatorAction implements StepAction<PageLocator> {
     context: RunContext
   ): Promise<StepResult<PageLocator>> {
     const { selector } = step;
-    const locator = getLocator(selector, context);
-    return Promise.resolve(resultSuccess(true, step, { locator }));
+    getLocator(selector, context);
+    return Promise.resolve(resultSuccess(true, step, {}));
   }
 
   support(step: IStep): boolean {

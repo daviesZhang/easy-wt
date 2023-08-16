@@ -17,6 +17,8 @@ import { MouseOptionsComponent } from './components/mouse-options/mouse-options.
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
 import { OpenPageOptionsComponent } from './components/open-page-options/open-page-options.component';
 import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/drag-and-drop-options.component';
+import { HoverOptionsComponent } from './components/hover-options/hover-options.component';
+import { ScrollIntoViewOptionsComponent } from './components/scroll-into-view-options/scroll-into-view-options.component';
 
 export function optionsComponentSelector(
   type: StepType
@@ -52,6 +54,10 @@ export function optionsComponentSelector(
       return { component: OpenPageOptionsComponent };
     case StepType.DRAG_AND_DROP:
       return { component: DragAndDropOptionsComponent };
+    case StepType.HOVER:
+      return { component: HoverOptionsComponent };
+    case StepType.SCROLL_INTO_VIEW:
+      return { component: ScrollIntoViewOptionsComponent };
     default:
       return { component: CommonJsonOptionsComponent };
   }

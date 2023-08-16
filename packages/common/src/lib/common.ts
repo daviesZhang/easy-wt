@@ -110,6 +110,17 @@ export enum StepType {
   DRAG_AND_DROP = 'DRAG_AND_DROP',
 
   /**
+   * 尝试将页面滚动到元素
+   */
+  SCROLL_INTO_VIEW = 'SCROLL_INTO_VIEW',
+  /**
+   * 触发HOVER
+   */
+  HOVER = 'HOVER',
+  /**
+   *
+   */
+  /**
    * 定位器
    */
   PAGE_LOCATOR = 'PAGE_LOCATOR',
