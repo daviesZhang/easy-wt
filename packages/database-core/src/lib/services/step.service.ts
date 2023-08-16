@@ -9,7 +9,7 @@ import {
   Not,
   Repository,
 } from 'typeorm';
-import { IStep, Step } from '@easy-wt/common';
+import { IStep } from '@easy-wt/common';
 
 import { StepEntity } from '../entitys';
 
@@ -17,19 +17,19 @@ import { StepEntity } from '../entitys';
 export class StepService {
   constructor(
     @InjectRepository(StepEntity)
-    private stepRepository: Repository<Step>,
+    private stepRepository: Repository<IStep>,
     private dataSource: DataSource
   ) {}
 
-  findAll(): Promise<Step[]> {
+  findAll(): Promise<IStep[]> {
     return this.stepRepository.find();
   }
 
-  findById(id: number): Promise<Step> {
+  findById(id: number): Promise<IStep> {
     return this.stepRepository.findOneBy({ id: id });
   }
 
-  findByCaseId(caseId: number): Promise<Step[]> {
+  findByCaseId(caseId: number): Promise<IStep[]> {
     return this.stepRepository.findBy({ caseId: caseId });
   }
 

@@ -56,6 +56,7 @@ import { InvalidDirective } from './invalid.directive';
 import { TranslateModule } from '@ngx-translate/core';
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
 import { GridSimpleRendererComponent } from './components/grid-simple-renderer/grid-simple-renderer.component';
+import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/drag-and-drop-options.component';
 
 @NgModule({
   declarations: [
@@ -80,6 +81,7 @@ import { GridSimpleRendererComponent } from './components/grid-simple-renderer/g
     ServerConfigComponent,
     JsonEditorModalComponent,
     TextSaveOptionsComponent,
+    DragAndDropOptionsComponent,
     CommonInputExpressionComponent,
     CaseStepOptionsComponent,
     JsEditorExpressionComponent,
@@ -142,6 +144,7 @@ import { GridSimpleRendererComponent } from './components/grid-simple-renderer/g
     GridSimpleRendererComponent,
     ClickLinkOptionsComponent,
     CheckElementExistOptionsComponent,
+    DragAndDropOptionsComponent,
     CheckElementTextOptionsComponent,
     MenuBarControlComponent,
     ServerConfigComponent,

@@ -16,6 +16,7 @@ import { CommonInputExpressionComponent } from './components/common-input-expres
 import { MouseOptionsComponent } from './components/mouse-options/mouse-options.component';
 import { TextSaveOptionsComponent } from './components/text-save-options/text-save-options.component';
 import { OpenPageOptionsComponent } from './components/open-page-options/open-page-options.component';
+import { DragAndDropOptionsComponent } from './components/drag-and-drop-options/drag-and-drop-options.component';
 
 export function optionsComponentSelector(
   type: StepType
@@ -49,6 +50,8 @@ export function optionsComponentSelector(
       return { component: TextSaveOptionsComponent };
     case StepType.OPEN_PAGE:
       return { component: OpenPageOptionsComponent };
+    case StepType.DRAG_AND_DROP:
+      return { component: DragAndDropOptionsComponent };
     default:
       return { component: CommonJsonOptionsComponent };
   }

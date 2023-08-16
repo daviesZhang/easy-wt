@@ -1,7 +1,7 @@
 import { Injectable, Logger } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { DataSource, TreeRepository } from 'typeorm';
-import { IScriptCase, ScriptCase } from '@easy-wt/common';
+import { IScriptCase } from '@easy-wt/common';
 import { RunConfigEntity, ScriptCaseEntity, StepEntity } from '../entitys';
 
 @Injectable()
@@ -10,7 +10,7 @@ export class ScriptCaseService {
 
   constructor(
     @InjectRepository(ScriptCaseEntity)
-    private caseTreeRepository: TreeRepository<ScriptCase>,
+    private caseTreeRepository: TreeRepository<ScriptCaseEntity>,
     private dataSource: DataSource
   ) {}
 
@@ -52,11 +52,14 @@ export class ScriptCaseService {
    * @param id
    */
   findDescendantTreeById(id: number): Promise<IScriptCase> {
-    const scriptCase = new ScriptCase();
+    const scriptCase = new ScriptCaseEntity();
     scriptCase.id = id;
-    return this.caseTreeRepository.findDescendantsTree({ id } as ScriptCase, {
-      relations: ['runConfig', 'steps'],
-    });
+    return this.caseTreeRepository.findDescendantsTree(
+      { id } as ScriptCaseEntity,
+      {
+        relations: ['runConfig', 'steps'],
+      }
+    );
   }
 
   async update(id: number, data: IScriptCase): Promise<string> {
@@ -97,7 +100,7 @@ export class ScriptCaseService {
       { relations: ['runConfig', 'steps'] }
     );
     const saved = await this.dataSource.transaction(async (manager) => {
-      async function saveRoot(node: ScriptCase, parentId: number) {
+      async function saveRoot(node: IScriptCase, parentId: number) {
         const newNode = Object.assign({}, node, {
           id: null,
           parent: typeof parentId === 'number' ? { id: parentId } : null,
@@ -127,7 +130,7 @@ export class ScriptCaseService {
       }
 
       async function saveChildren(
-        nodes: ScriptCase[],
+        nodes: IScriptCase[],
         parentId: number
       ): Promise<void> {
         for (const node of nodes) {
@@ -206,7 +209,7 @@ export class ScriptCaseService {
   async delete(id: number): Promise<number[]> {
     const list = await this.caseTreeRepository.findDescendants({
       id,
-    } as ScriptCase);
+    } as ScriptCaseEntity);
     await this.caseTreeRepository.delete({ id });
     return list.map((item) => item.id);
   }

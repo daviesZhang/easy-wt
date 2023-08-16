@@ -40,6 +40,8 @@ import {
 import { OpenBrowserAction } from './step-action/open-browser.action';
 import { CheckElementTextAction } from './step-action/check-element-text.action';
 import { CheckElementExistAction } from './step-action/check-element-exist.action';
+import { DragAndDropAction } from './step-action/drag-and-drop.action';
+import { BeforeInterceptor } from './interceptor/before.interceptor';
 
 @Module({})
 export class BrowserCoreModule {
@@ -50,6 +52,7 @@ export class BrowserCoreModule {
         ReportExportService,
         LoggerStepEndInterceptor,
         LoggerStepBeginInterceptor,
+        BeforeInterceptor,
         OpenBrowserAction,
         CloseBrowserAction,
         OpenPageAction,
@@ -65,6 +68,7 @@ export class BrowserCoreModule {
         TextSaveCloseAction,
         StructWhileAction,
         StructEndwhileAction,
+        DragAndDropAction,
         WaitAction,
         ClickLinkAction,
         ClickElementAction,
@@ -84,6 +88,7 @@ export class BrowserCoreModule {
             ScreenshotAction,
             CheckElementExistAction,
             CheckElementTextAction,
+            DragAndDropAction,
             PutParamsAction,
             TextSaveAction,
             TextSaveCloseAction,

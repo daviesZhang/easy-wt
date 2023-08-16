@@ -1,5 +1,5 @@
 import { ScriptCaseService } from '@easy-wt/database-core';
-import { IScriptCase, ScriptCase } from '@easy-wt/common';
+import { IScriptCase } from '@easy-wt/common';
 import * as compressing from 'compressing';
 import {
   fromEvent,
@@ -26,8 +26,8 @@ export class CaseExposeService implements Expose {
     return {
       findAll: () => this.caseService.findAll(),
       findById: (id: number) => this.caseService.findById(id),
-      save: (item: ScriptCase) => this.caseService.save(item),
-      update: (id: number, item: ScriptCase) =>
+      save: (item: IScriptCase) => this.caseService.save(item),
+      update: (id: number, item: IScriptCase) =>
         this.caseService.update(id, item),
       findCasesById: (categoryId: number) =>
         this.caseService.findCasesById(categoryId),

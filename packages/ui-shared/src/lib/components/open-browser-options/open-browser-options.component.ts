@@ -59,7 +59,6 @@ export class OpenBrowserOptionsComponent
 
   viewportSizeValidation(form: FormGroup): ValidationErrors | null {
     const { width, height } = form.value;
-
     const message = () =>
       this.translate.instant('step_options.open_browser.viewport_size_error');
 

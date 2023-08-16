@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { ICellEditorAngularComp } from 'ag-grid-angular';
 import { ICellEditorParams } from 'ag-grid-community';
-import { step, STEP_CONFIG } from '@easy-wt/common';
+import { IStep, STEP_CONFIG } from '@easy-wt/common';
 
 @Component({
   selector: 'easy-wt-common-input-expression',
@@ -18,7 +18,7 @@ export class CommonInputExpressionComponent implements ICellEditorAngularComp {
   tip = '';
   suffixString = '';
 
-  agInit(params: ICellEditorParams<step>): void {
+  agInit(params: ICellEditorParams<IStep>): void {
     this.value = params.value;
     if (params['suffixString']) {
       this.suffixString = params['suffixString'];

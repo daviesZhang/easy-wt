@@ -132,6 +132,13 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
       mouseButton: 'left',
     },
   },
+  DRAG_AND_DROP: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
+    expression: { edit: false },
+    options: {},
+  },
   SELECT_PAGE: {
     operateType: 'operate',
     order: 1,

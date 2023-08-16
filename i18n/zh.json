@@ -246,6 +246,7 @@
       "screenshot": "截图",
       "click_element": "点击元素",
       "click_link": "点击链接",
+      "drag_and_drop": "拖放元素",
       "check_element_exist": "检查元素存在",
       "check_element_text": "检查元素文本",
       "wait": "等待",
@@ -268,7 +269,9 @@
     "error": {
       "text_empty": "没有任何需要保存的文本",
       "interrupted": "用例被手动中断",
-      "selector_timeout": "查找元素或者操作等待超时~"
+      "selector_timeout": "查找元素或者操作等待超时~",
+      "strict_mode_selector": "匹配到多个元素,需要更明确的选择器~",
+      "drag_and_drop_source_empty": "没有需要拖放的元素~"
     }
   },
   "schedule": {
@@ -378,6 +381,14 @@
       "record_video": "录制视频",
       "record_video_label": "录制操作过程",
       "executablePath": "路径：{{executablePath}}"
+    },
+    "drag-and-drop": {
+      "source_position_label": "拖动点",
+      "target_position_label": "放置点",
+      "x_label": "相对于元素的x坐标",
+      "y_label": "相对于元素的y坐标",
+      "source_position_tip": "从元素的指定坐标开始拖动",
+      "target_position_tip": "拖动到元素的指定坐标"
     },
     "check_element_exist": {
       "exist_label": "检查存在",

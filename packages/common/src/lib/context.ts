@@ -39,7 +39,7 @@ export interface IContext {
   /**
    * 运行时配置
    */
-  runConfig: RunConfig;
+  runConfig: Partial<RunConfig>;
 
   /**
    * 浏览器类型
@@ -99,7 +99,7 @@ export class RunContext implements IContext {
   /**
    * 运行时配置
    */
-  runConfig: RunConfig;
+  runConfig: Partial<RunConfig>;
 
   /**
    * 浏览器类型

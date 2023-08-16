@@ -38,6 +38,7 @@ import { getWriteStreamMap } from './utils';
 import { ErrorInterceptor } from './interceptor/error.interceptor';
 import { InterceptingHandler } from './interceptor/intercepting.handler';
 import { BackendStepHandler } from './interceptor/backend-step.handler';
+import { BeforeInterceptor } from './interceptor/before.interceptor';
 
 const errorInterceptor = new ErrorInterceptor();
 
@@ -49,6 +50,7 @@ export class CaseRunService {
   constructor(
     private loggerStepBeginInterceptor: LoggerStepBeginInterceptor,
     private loggerStepEndInterceptor: LoggerStepEndInterceptor,
+    private beforeInterceptor: BeforeInterceptor,
     @Inject(ACTIONS_TOKEN) private actions: Array<StepAction<IStep>>,
     @Inject(ENVIRONMENT_CONFIG_TOKEN)
     private environmentConfig: EnvironmentConfig
@@ -179,7 +181,8 @@ export class CaseRunService {
           context.interceptors.sort(
             (a, b) => (a.order ? a.order() : 0) - (b.order ? b.order() : 0)
           ),
-          this.loggerStepBeginInterceptor
+          this.loggerStepBeginInterceptor,
+          this.beforeInterceptor
         )
       ).handle(step, context);
       actions$.push(result$);

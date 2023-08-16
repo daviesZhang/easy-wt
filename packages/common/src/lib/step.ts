@@ -1,20 +1,20 @@
 import {CheckPattern, KeyboardEvent, StepType} from './common';
-import {IScriptCase} from './script-case';
 import {mouseButton, mouseEvent} from './step-options';
+
 
 /**
  * 步骤
  */
 export interface IStep {
-  id?: number | null;
+  id: number;
 
-  caseId?: number;
+  caseId: number;
 
   name: string;
 
-  type?: StepType;
+  type: StepType;
 
-  sort?: number;
+  sort: number;
 
   options?: unknown;
 
@@ -24,12 +24,10 @@ export interface IStep {
 
   expression?: string;
 
-  scriptCase?: IScriptCase;
-
   enable?: boolean;
 }
 
-export type step = Omit<IStep, 'scriptCase'>;
+
 export const SELECTOR_TYPE: Readonly<Array<string>> = [
   'Role',
   'AltText',
@@ -55,20 +53,7 @@ export interface Selector {
   connect?: 'and' | 'or' | 'locator';
 }
 
-export class Step implements IStep {
-  id: number | null = null;
-  caseId?: number;
-  name!: string;
-  type?: StepType;
-  sort?: number;
-  selector?: Selector;
-  desc?: string;
-  options?: unknown;
-  expression?: string;
-  scriptCase?: IScriptCase;
 
-  enable?: boolean;
-}
 
 export type ScreenshotOptions = {
   alwaysScreenshot?: boolean;
@@ -78,7 +63,7 @@ export type ScreenshotOptions = {
   encoding?: 'base64' | 'binary';
 };
 
-export class CheckElementExist implements IStep {
+export interface CheckElementExist extends IStep {
   name: string;
   type: StepType;
   selector: Selector;
@@ -87,40 +72,19 @@ export class CheckElementExist implements IStep {
     timeout?: number;
     exist: boolean;
     failedContinue: boolean;
-  } = {
-    failedContinue: false,
-    exist: true,
-    fullPage: false,
   };
-
-  constructor(name: string, selector: Selector) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.CHECK_ELEMENT_EXIST;
-  }
 }
 
-export class Keyboard implements IStep {
+export interface Keyboard extends IStep {
   name: string;
   type: StepType;
 
   expression: string;
 
-  options: { type: KeyboardEvent } = { type: 'down' };
-
-  constructor(
-    name: string,
-    expression: string,
-    options: { type: KeyboardEvent }
-  ) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.KEYBOARD;
-    this.options = options;
-  }
+  options: { type: KeyboardEvent };
 }
 
-export class CheckElementText implements IStep {
+export interface CheckElementText extends IStep {
   name: string;
   type: StepType;
   selector: Selector;
@@ -129,17 +93,10 @@ export class CheckElementText implements IStep {
     pattern?: CheckPattern;
     timeout?: number;
     failedContinue: boolean;
-  } = { failedContinue: false };
-
-  constructor(name: string, selector: Selector, expression: string) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.CHECK_ELEMENT_TEXT;
-    this.expression = expression;
-  }
+  };
 }
 
-export class Screenshot implements IStep {
+export interface Screenshot extends IStep {
   name: string;
   type: StepType;
 
@@ -148,15 +105,11 @@ export class Screenshot implements IStep {
     path?: string;
     fullPage?: boolean;
     encoding?: 'base64' | 'binary';
-  } = { fullPage: false, encoding: 'binary' };
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.SCREENSHOT;
-  }
+  };
 }
 
-export class Wait implements IStep {
+
+export interface Wait extends IStep {
   name: string;
   type: StepType;
   /**
@@ -167,15 +120,9 @@ export class Wait implements IStep {
   selector?: Selector;
 
   options?: { timeout: number };
-
-  constructor(name: string, expression: string) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.WAIT;
-  }
 }
 
-export class Mouse implements IStep {
+export interface Mouse extends IStep {
   name: string;
 
   options?: {
@@ -186,30 +133,18 @@ export class Mouse implements IStep {
   };
 
   type: StepType;
-
-  constructor(name: string, options: Mouse['options']) {
-    this.name = name;
-    this.type = StepType.MOUSE;
-    this.options = options;
-  }
 }
 
-export class RunScript implements IStep {
+export interface RunScript extends IStep {
   name: string;
   type: StepType;
 
   expression: string;
 
   options?: { timeout: number };
-
-  constructor(name: string, expression: string) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.RUN_SCRIPT;
-  }
 }
 
-export class ClickElement implements IStep {
+export interface ClickElement extends IStep {
   name: string;
 
   selector: Selector;
@@ -222,85 +157,58 @@ export class ClickElement implements IStep {
     timeout?: number;
     button?: mouseButton;
   };
-
-  constructor(name: string, selector: Selector) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.CLICK_ELEMENT;
-  }
 }
 
-export class ClickLink implements IStep {
+export interface ClickLink extends IStep {
   name: string;
   selector: Selector;
   type: StepType;
   options: { timeout?: number; switchPage?: boolean };
-
-  constructor(name: string, selector: Selector, options: ClickLink['options']) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.CLICK_LINK;
-    this.options = options;
-  }
 }
 
-export class StructWhile implements IStep {
+/**
+ * 拖放
+ */
+export interface DragAndDrop extends IStep {
+  name: string;
+  selector: Selector;
+  type: StepType;
+  options: {
+    sourcePosition?: { x: number; y: number };
+    targetPosition?: { x: number; y: number };
+  };
+}
+
+export interface StructWhile extends IStep {
   name: string;
   type: StepType;
   expression?: string;
   selector?: Selector;
-
-  constructor(name: string, expression?: string) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.STRUCT_WHILE;
-  }
 }
 
-export class StructEndwhile implements IStep {
+export interface StructEndwhile extends IStep {
   name: string;
   type: StepType;
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.STRUCT_ENDWHILE;
-  }
 }
 
-export class StructIf implements IStep {
+export interface StructIf extends IStep {
   name: string;
   type: StepType;
   expression?: string;
   selector?: Selector;
-
-  constructor(name: string, expression?: string) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.STRUCT_IF;
-  }
 }
 
-export class StructElse implements IStep {
+export interface StructElse extends IStep {
   name: string;
   type: StepType;
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.STRUCT_ELSE;
-  }
 }
 
-export class StructEndIf implements IStep {
+export interface StructEndIf extends IStep {
   name: string;
   type: StepType;
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.STRUCT_ENDIF;
-  }
 }
 
-export class OpenBrowser implements IStep {
+export interface OpenBrowser extends IStep {
   name: string;
 
   type: StepType;
@@ -316,70 +224,41 @@ export class OpenBrowser implements IStep {
     deviceScaleFactor?: number;
     recordVideo?: boolean;
   };
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.OPEN_BROWSER;
-  }
 }
 
-export class SelectPage implements IStep {
+export interface SelectPage extends IStep {
   name: string;
 
   type: StepType;
   expression: string;
 
   options?: Record<string, unknown>;
-
-  constructor(name: string, expression: string) {
-    this.name = name;
-    this.type = StepType.SELECT_PAGE;
-    this.expression = expression;
-  }
 }
 
-export class CloseBrowser implements IStep {
+export interface CloseBrowser extends IStep {
   name: string;
   type: StepType;
 
   options?: { [key: string]: any };
-
-  constructor(name: string) {
-    this.name = name;
-    this.type = StepType.CLOSE_BROWSER;
-  }
 }
 
-export class InputText implements IStep {
+export interface InputText extends IStep {
   name: string;
   type: StepType;
 
   selector: Selector;
   options?: { timeout?: number; force?: boolean };
   expression: string;
-
-  constructor(name: string, selector: Selector, expression: string) {
-    this.name = name;
-    this.selector = selector;
-    this.expression = expression;
-    this.type = StepType.INPUT_TEXT;
-  }
 }
 
-export class OpenPage implements IStep {
+export interface OpenPage extends IStep {
   name: string;
   type: StepType;
   expression: string;
   options?: { timeout?: number; defaultTimeout?: number | string };
-
-  constructor(name: string, expression: string) {
-    this.name = name;
-    this.expression = expression;
-    this.type = StepType.OPEN_PAGE;
-  }
 }
 
-export class PutParams implements IStep {
+export interface PutParams extends IStep {
   name: string;
   type: StepType;
 
@@ -387,41 +266,24 @@ export class PutParams implements IStep {
   expression?: string;
 
   options: { key: string; simple?: boolean; attr?: string };
-
-  constructor(
-    name: string,
-    options: { key: string; simple: boolean },
-    expression?: string
-  ) {
-    this.name = name;
-    this.options = options;
-    this.type = StepType.PUT_PARAMS;
-    this.expression = expression;
-  }
 }
 
 /**
  * 页面选择器
  */
-export class PageLocator implements IStep {
+export interface PageLocator extends IStep {
   name: string;
   type: StepType;
 
   selector: Selector;
 
   expression?: string;
-
-  constructor(name: string, selector: Selector) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.PAGE_LOCATOR;
-  }
 }
 
 /**
  * 保存文本
  */
-export class TextSave implements IStep {
+export interface TextSave extends IStep {
   name: string;
 
   type: StepType;
@@ -436,26 +298,12 @@ export class TextSave implements IStep {
     overwrite: boolean;
     autoClose: boolean;
   };
-
-  constructor(name: string, selector: Selector, options: TextSave['options']) {
-    this.name = name;
-    this.selector = selector;
-    this.type = StepType.TEXT_SAVE;
-    this.options = options;
-  }
 }
 
-export class TextSaveClose implements IStep {
+export interface TextSaveClose extends IStep {
   name: string;
 
   type: StepType;
 
   expression?: string;
-
-  constructor(name: string, expression: string) {
-    this.name = name;
-
-    this.type = StepType.TEXT_SAVE_CLOSE;
-    this.expression = expression;
-  }
 }

@@ -42,6 +42,8 @@ export class ErrorInterceptor implements StepInterceptor {
         let message = err.message || err;
         if (err instanceof errors.TimeoutError) {
           message = 'step.error.selector_timeout';
+        } else if (message && message.indexOf('strict mode violation')) {
+          message = 'step.error.strict_mode_selector';
         }
         this.logger.error(
           `用例[${context.scriptCase.name}]步骤[${step.name}]运行失败,错误原因:[${message}]~`

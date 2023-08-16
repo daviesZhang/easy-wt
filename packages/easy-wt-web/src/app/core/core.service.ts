@@ -88,7 +88,7 @@ export abstract class CoreService {
    * @param item
    * @param sort 是否处理排序问题,如果false,不处理sort字段在,直接存入
    */
-  abstract saveStep(item: IStep[], sort?: boolean): Promise<IStep[]>;
+  abstract saveStep(item: Partial<IStep>[], sort?: boolean): Promise<IStep[]>;
 
   abstract updateStep(id: number, item: Partial<IStep>): Promise<string>;
 

@@ -1,9 +1,10 @@
 import { Component } from '@angular/core';
 import { ICellRendererAngularComp } from 'ag-grid-angular';
 import { ICellRendererParams } from 'ag-grid-community';
-import { step } from '@easy-wt/common';
+
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 import { paramsHtml } from '../../utils/utils';
+import { IStep } from '@easy-wt/common';
 
 @Component({
   selector: 'easy-wt-grid-simple-renderer',
@@ -15,11 +16,11 @@ export class GridSimpleRendererComponent implements ICellRendererAngularComp {
 
   constructor(private domSanitizer: DomSanitizer) {}
 
-  agInit(params: ICellRendererParams<step>): void {
+  agInit(params: ICellRendererParams<IStep>): void {
     this.refresh(params);
   }
 
-  refresh(params: ICellRendererParams<step>): boolean {
+  refresh(params: ICellRendererParams<IStep>): boolean {
     const value = params.valueFormatted || params.value;
 
     this.value = value;

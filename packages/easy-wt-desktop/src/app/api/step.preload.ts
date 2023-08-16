@@ -1,8 +1,8 @@
 import { Expose } from './helper';
-import { Step } from '@easy-wt/common';
 
 import { StepService } from '@easy-wt/database-core';
 import { INestApplicationContext } from '@nestjs/common';
+import { IStep } from '@easy-wt/common';
 
 export class StepExposeService implements Expose {
   private stepService: StepService;
@@ -15,9 +15,9 @@ export class StepExposeService implements Expose {
     return {
       findAll: () => this.stepService.findAll(),
       findById: (id: number) => this.stepService.findById(id),
-      save: (item: Array<Step>, sort?: boolean) =>
+      save: (item: Array<IStep>, sort?: boolean) =>
         this.stepService.save(item, sort),
-      update: (id: number, item: Step) => this.stepService.update(id, item),
+      update: (id: number, item: IStep) => this.stepService.update(id, item),
       findByCaseId: (caseId: number) => this.stepService.findByCaseId(caseId),
       delete: (id: Array<number>) => this.stepService.delete(id),
     };

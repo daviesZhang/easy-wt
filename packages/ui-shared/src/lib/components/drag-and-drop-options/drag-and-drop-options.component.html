@@ -1,0 +1,52 @@
+<easy-wt-case-step-options (save)="getValue($event)" *ngIf="api"
+                           [api]="api" [formGroup]="formGroup"
+                           [items]="items"
+                           [options]="options"
+                           [renderer]="renderer" nz-form>
+
+
+  <div class="list-item" formGroupName="sourcePosition">
+    <nz-input-group [nzAddOnBefore]="sourcePositionTemplate" nzCompact nzSize="small">
+      <ng-template #sourcePositionTemplate>
+        <nz-form-label class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.drag-and-drop.source_position_tip' | translate}}"
+        >
+          <span>{{'step_options.drag-and-drop.source_position_label' | translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <input [placeholder]="'step_options.drag-and-drop.x_label' | translate"
+             formControlName="x" nz-input
+             nzSize="small"
+             style="width: 50%"/>
+      <input [placeholder]="'step_options.drag-and-drop.y_label' | translate"
+             formControlName="y"
+             nz-input nzSize="small"
+             style="width: 50%"/>
+    </nz-input-group>
+  </div>
+
+  <div class="list-item" formGroupName="targetPosition">
+    <nz-input-group [nzAddOnBefore]="targetPositionTemplate" nzCompact nzSize="small">
+      <ng-template #targetPositionTemplate>
+        <nz-form-label class="tooltip-title-wrapper"
+                       nzNoColon
+                       nzTooltipTitle="{{'step_options.drag-and-drop.target_position_tip' | translate}}"
+        >
+          <span>{{'step_options.drag-and-drop.target_position_label' | translate}}</span>
+        </nz-form-label>
+      </ng-template>
+      <input [placeholder]="'step_options.drag-and-drop.x_label' | translate"
+             formControlName="x"
+             nz-input
+             nzSize="small"
+             style="width: 50%"/>
+      <input [placeholder]="'step_options.drag-and-drop.y_label' | translate"
+             formControlName="y"
+             nz-input nzSize="small"
+             style="width: 50%"/>
+    </nz-input-group>
+  </div>
+
+</easy-wt-case-step-options>
+

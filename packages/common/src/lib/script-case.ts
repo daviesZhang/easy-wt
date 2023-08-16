@@ -1,17 +1,17 @@
-import { IStep } from './step';
+import {IStep} from './step';
 
-import { SupportBrowserType } from './common';
+import {SupportBrowserType} from './common';
 
 /**
  * 用例接口
  */
 export interface IScriptCase {
-  id?: number;
+  id: number;
 
   /**
    * 是否文件夹
    */
-  directory?: boolean;
+  directory: boolean;
 
   name: string;
 
@@ -30,9 +30,9 @@ export interface IScriptCase {
  * 运行时配置文件
  */
 export interface RunConfig {
-  id?: number;
+  id: number;
 
-  caseId?: number;
+  caseId: number;
 
   browserType?: Array<SupportBrowserType>;
 
@@ -59,22 +59,7 @@ export interface RunConfig {
   delay?: number;
 }
 
-/**
- * 用例
- */
-export class ScriptCase implements IScriptCase {
-  children?: ScriptCase[];
-  directory!: boolean;
-  id!: number;
-  name!: string;
 
-  parent?: ScriptCase;
-  parentId?: number;
-
-  steps: IStep[] = [];
-
-  runConfig?: RunConfig;
-}
 
 export interface CaseQueue {
   uuid: string;

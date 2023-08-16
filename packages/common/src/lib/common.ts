@@ -104,6 +104,10 @@ export enum StepType {
    * 鼠标操作
    */
   MOUSE = 'MOUSE',
+  /**
+   * 拖放
+   */
+  DRAG_AND_DROP = 'DRAG_AND_DROP',
 
   /**
    * 定位器

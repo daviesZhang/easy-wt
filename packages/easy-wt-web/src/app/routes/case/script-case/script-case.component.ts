@@ -13,7 +13,6 @@ import {
   IScriptCase,
   IStep,
   Report,
-  step,
   STEP_CONFIG,
   StepType,
 } from '@easy-wt/common';
@@ -81,11 +80,11 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
 
   gridApi: GridApi;
 
-  options: GridOptions<step>;
+  options: GridOptions<IStep>;
 
   getData: RequestData<IStep, unknown>;
 
-  contextNode: IRowNode<step>;
+  contextNode: IRowNode<IStep>;
 
   table!: GridTableComponent;
 
@@ -467,7 +466,7 @@ export class ScriptCaseComponent implements OnInit, OnDestroy {
     this.showCreateSchedule = !this.showCreateSchedule;
   }
 
-  rowContextMenu(event: CellContextMenuEvent<step>) {
+  rowContextMenu(event: CellContextMenuEvent<IStep>) {
     this.contextNode = event.node;
     const { x, y } = event.event as PointerEvent;
     this.contextMenu.create({ x, y }, this.contextDropDownMenuComponent);

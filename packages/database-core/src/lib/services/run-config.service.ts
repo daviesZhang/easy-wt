@@ -1,9 +1,9 @@
 import { Injectable } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { DataSource, MoreThan, MoreThanOrEqual, Repository } from 'typeorm';
-import { RunConfig, Step } from '@easy-wt/common';
+import { DataSource, Repository } from 'typeorm';
+import { RunConfig } from '@easy-wt/common';
 
-import { RunConfigEntity, StepEntity } from '../entitys';
+import { RunConfigEntity } from '../entitys';
 
 @Injectable()
 export class RunConfigService {

@@ -457,14 +457,14 @@ export class WaitAction implements StepAction<Wait> {
   async run(step: Wait, context: RunContext): Promise<StepResult<Wait>> {
     const { expression, selector } = step;
     const options = step.options;
-
     const promises = [];
     if (selector && Object.keys(selector).length) {
       promises.push(getLocator(selector, context).waitFor(options));
     }
     if (expression && /^\d+$/g.test(expression)) {
-      if (getPage(context)) {
-        promises.push(getPage(context).waitForTimeout(parseInt(expression)));
+      const page = getPage(context);
+      if (page) {
+        promises.push(page.waitForTimeout(parseInt(expression)));
       } else {
         promises.push(lastValueFrom(timer(parseInt(expression)).pipe(take(1))));
       }

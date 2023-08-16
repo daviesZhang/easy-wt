@@ -84,7 +84,7 @@ export class CaseEditorComponent implements OnInit {
 
   paramsNamePattern = /^[\w_]+$/;
 
-  effectRunConfig: RunConfig | null = null;
+  effectRunConfig: Partial<RunConfig> | null = null;
   getData: RequestData<any, any>;
   lastGridData: Array<unknown> = [];
   gridOptions: GridOptions = {
@@ -121,10 +121,7 @@ export class CaseEditorComponent implements OnInit {
   });
   protected scriptCase?: Omit<IScriptCase, 'steps'>;
   protected loading = true;
-  /**
-   * 是否浏览器环境
-   */
-  private isBrowser = true;
+
   private gridApi: GridApi;
   private resizeAnimationId: number;
 
