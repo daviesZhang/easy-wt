@@ -1,6 +1,6 @@
 {
   "name": "@easy-wt/source",
-  "version": "0.0.2",
+  "version": "0.0.3",
   "license": "MIT",
   "scripts": {
     "desktop:production": "nx run easy-wt-desktop:make:production",
