@@ -12,6 +12,7 @@ import {
 import { getLocator } from '../utils';
 
 import { Locator } from 'playwright';
+import isPlainObject from 'lodash/isPlainObject';
 
 @Injectable()
 export class DragAndDropAction implements StepAction<DragAndDrop> {
@@ -26,6 +27,22 @@ export class DragAndDropAction implements StepAction<DragAndDrop> {
       });
     }
     const { selector, options } = step;
+    if (options) {
+      if (
+        !options.targetPosition ||
+        !isPlainObject(options.targetPosition) ||
+        Object.keys(options.targetPosition).length !== 2
+      ) {
+        delete options.targetPosition;
+      }
+      if (
+        !options.sourcePosition ||
+        !isPlainObject(options.sourcePosition) ||
+        Object.keys(options.sourcePosition).length !== 2
+      ) {
+        delete options.sourcePosition;
+      }
+    }
     const target = getLocator(selector, context);
     await source.dragTo(target, options);
     return resultSuccess(true, step);

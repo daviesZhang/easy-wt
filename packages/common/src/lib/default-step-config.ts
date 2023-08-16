@@ -87,6 +87,7 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     expression: { edit: false },
     options: { delay: 500, clickCount: 1 },
   },
+
   SCREENSHOT: {
     operateType: 'operate',
     order: 1,
@@ -133,6 +134,20 @@ export const STEP_CONFIG: Record<StepType, StepTypeConfig<IStep>> = {
     },
   },
   DRAG_AND_DROP: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
+    expression: { edit: false },
+    options: {},
+  },
+  SCROLL_INTO_VIEW: {
+    operateType: 'operate',
+    order: 1,
+    selector: { edit: true },
+    expression: { edit: false },
+    options: {},
+  },
+  HOVER: {
     operateType: 'operate',
     order: 1,
     selector: { edit: true },

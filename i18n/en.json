@@ -247,6 +247,8 @@
       "click_element": "点击元素",
       "click_link": "点击链接",
       "drag_and_drop": "拖放元素",
+      "hover": "鼠标悬浮",
+      "scroll_into_view": "滚动到元素",
       "check_element_exist": "检查元素存在",
       "check_element_text": "检查元素文本",
       "wait": "等待",
@@ -332,6 +334,7 @@
     "editor_options_title": "编辑配置",
     "timeout_label": "超时时间",
     "timeout": "超时{{timeout}}ms",
+    "timeout_tip": "超时时间",
     "alwaysScreenshot_true": "始终截图",
     "alwaysScreenshot_false": "仅失败截图",
     "alwaysScreenshot_label": "检查通过时截图(默认仅失败截图)",
@@ -382,13 +385,25 @@
       "record_video_label": "录制操作过程",
       "executablePath": "路径：{{executablePath}}"
     },
-    "drag-and-drop": {
+    "drag_and_drop": {
       "source_position_label": "拖动点",
       "target_position_label": "放置点",
+      "position": "坐标:{{x}}:{{y}}",
       "x_label": "相对于元素的x坐标",
       "y_label": "相对于元素的y坐标",
       "source_position_tip": "从元素的指定坐标开始拖动",
-      "target_position_tip": "拖动到元素的指定坐标"
+      "source_position": "拖动坐标:{{x}}:{{y}}",
+      "target_position_tip": "拖动到元素的指定坐标",
+      "target_position": "放置坐标:{{x}}:{{y}}"
+    },
+    "hover": {
+      "position_label": "悬浮坐标",
+      "position_tip": "鼠标在元素内的位置",
+      "x_label": "相对于元素的x坐标",
+      "y_label": "相对于元素的y坐标",
+      "modifiers_tip": "要同时按下的修饰键",
+      "modifiers_label": "按键",
+      "position": "坐标:{{x}}:{{y}}"
     },
     "check_element_exist": {
       "exist_label": "检查存在",

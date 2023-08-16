@@ -50,6 +50,36 @@ export class DragAndDropOptionsComponent
     this.api = params.api;
     this.renderer = !!params['renderer'];
     this.items = [];
+
+    if (
+      this.options.sourcePosition &&
+      (this.options.sourcePosition.x || this.options.sourcePosition.y)
+    ) {
+      this.items.push({
+        value: this.translate.instant(
+          'step_options.drag_and_drop.source_position',
+          {
+            x: this.options.sourcePosition.x || 0,
+            y: this.options.sourcePosition.y || 0,
+          }
+        ),
+      });
+    }
+    if (
+      this.options.targetPosition &&
+      (this.options.targetPosition.x || this.options.targetPosition.y)
+    ) {
+      this.items.push({
+        value: this.translate.instant(
+          'step_options.drag_and_drop.target_position',
+          {
+            x: this.options.targetPosition.x || 0,
+            y: this.options.targetPosition.y || 0,
+          }
+        ),
+      });
+    }
+
     return true;
   }
 }

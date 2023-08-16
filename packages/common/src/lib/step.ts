@@ -1,7 +1,6 @@
 import {CheckPattern, KeyboardEvent, StepType} from './common';
 import {mouseButton, mouseEvent} from './step-options';
 
-
 /**
  * 步骤
  */
@@ -27,7 +26,6 @@ export interface IStep {
   enable?: boolean;
 }
 
-
 export const SELECTOR_TYPE: Readonly<Array<string>> = [
   'Role',
   'AltText',
@@ -52,8 +50,6 @@ export interface Selector {
 
   connect?: 'and' | 'or' | 'locator';
 }
-
-
 
 export type ScreenshotOptions = {
   alwaysScreenshot?: boolean;
@@ -107,7 +103,6 @@ export interface Screenshot extends IStep {
     encoding?: 'base64' | 'binary';
   };
 }
-
 
 export interface Wait extends IStep {
   name: string;
@@ -169,11 +164,36 @@ export interface ClickLink extends IStep {
 /**
  * 拖放
  */
+export interface ScrollIntoView extends IStep {
+  name: string;
+  options?: {
+    timeout?: number;
+  };
+}
+
+/**
+ * 拖放
+ */
+export interface Hover extends IStep {
+  name: string;
+  options?: {
+    timeout?: number;
+    modifiers?: Array<'Alt' | 'Control' | 'Meta' | 'Shift'>;
+    position?: {
+      x: number;
+      y: number;
+    };
+  };
+}
+
+/**
+ * 拖放
+ */
 export interface DragAndDrop extends IStep {
   name: string;
   selector: Selector;
   type: StepType;
-  options: {
+  options?: {
     sourcePosition?: { x: number; y: number };
     targetPosition?: { x: number; y: number };
   };

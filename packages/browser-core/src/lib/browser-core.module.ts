@@ -42,6 +42,8 @@ import { CheckElementTextAction } from './step-action/check-element-text.action'
 import { CheckElementExistAction } from './step-action/check-element-exist.action';
 import { DragAndDropAction } from './step-action/drag-and-drop.action';
 import { BeforeInterceptor } from './interceptor/before.interceptor';
+import { ScrollIntoViewAction } from './step-action/scroll-into-view.action';
+import { HoverAction } from './step-action/hover.action';
 
 @Module({})
 export class BrowserCoreModule {
@@ -76,6 +78,8 @@ export class BrowserCoreModule {
         KeyboardAction,
         RunScriptAction,
         MouseAction,
+        ScrollIntoViewAction,
+        HoverAction,
         PageLocatorAction,
         {
           provide: ACTIONS_TOKEN,
@@ -86,6 +90,8 @@ export class BrowserCoreModule {
             OpenPageAction,
             InputTextAction,
             ScreenshotAction,
+            ScrollIntoViewAction,
+            HoverAction,
             CheckElementExistAction,
             CheckElementTextAction,
             DragAndDropAction,

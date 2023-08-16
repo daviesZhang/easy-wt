@@ -18,7 +18,7 @@ import { Page } from 'playwright';
 import partialRight from 'lodash/partialRight';
 import assignInWith from 'lodash/assignInWith';
 import isNil from 'lodash/isNil';
-import omitBy from 'lodash/omitBy';
+import isPlainObject from 'lodash/isPlainObject';
 
 @Injectable()
 export class BeforeInterceptor implements StepInterceptor {
@@ -72,6 +72,16 @@ export class BeforeInterceptor implements StepInterceptor {
     };
   }
 
+  dropNullUndefined(d: any): any {
+    return Object.entries(d).reduce(
+      (acc, [k, v]) =>
+        isNil(v)
+          ? acc
+          : { ...acc, [k]: isPlainObject(v) ? this.dropNullUndefined(v) : v },
+      {}
+    );
+  }
+
   intercept(
     step: IStep,
     context: RunContext,
@@ -85,14 +95,12 @@ export class BeforeInterceptor implements StepInterceptor {
       /**
        * 给步骤选项部分套上默认值,并去掉空内容
        */
-      copyStep.options = omitBy(
-        this.defaultOptions(
-          {},
-          STEP_CONFIG[copyStep.type].options,
-          copyStep.options || {}
-        ),
-        isNil
+      const options = this.defaultOptions(
+        {},
+        STEP_CONFIG[copyStep.type].options,
+        copyStep.options || {}
       );
+      copyStep.options = this.dropNullUndefined(options);
       context.addStepCount(copyStep.id!);
       return handler.handle(copyStep, context);
     });
